@@ -216,7 +216,7 @@ def main(workingDir):
         folder = checkOutboxFolder(workingDir)
         if folder != None:
             n = sendFilesToContact(workingDir, folder)
-        time.sleep(60)  # wait one minute
+        time.sleep(600)  # wait ten minutes
 
 if (__name__ == '__main__'):
     logger = logging.getLogger('wechat')

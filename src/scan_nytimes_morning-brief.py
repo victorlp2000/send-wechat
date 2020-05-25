@@ -57,7 +57,7 @@ def getArticleList(lastAccess):
 def appendArticle(articles, element, lastAccess):
     info = getArticleInfo(element)
     if lastAccess != None and info != None:
-        if info['href'] == lastAccess['href'] or info['title'] == lastAccess['title']:
+        if info['title'] == lastAccess['title']:
             return True
     if (info != None):
         articles.append(info)
@@ -121,9 +121,8 @@ def main():
             imgFile = contactDir + '/' + fn
             logger.info('Save "%s" to "%s".', fn, contact)
             page.savePageAsImageFile(imgFile)
-
-    json_file.saveFile(lastAccessFile, article)
-
+        last = {'title': article['title']}
+        json_file.saveFile(lastAccessFile, last)
     driver.close()
 
 # webpage: 纽约时报中文网 - 简报

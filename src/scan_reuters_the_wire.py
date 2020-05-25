@@ -58,7 +58,7 @@ def getArticleList(lastAccess):
         for e in elements:
             info = getArticleInfo(e)
             if lastAccess != None:
-                if info['href'] == lastAccess['href'] or info['title'] == lastAccess['title']:
+                if info['title'] == lastAccess['title']:
                     loop = False
                     break
             articles.append(info)
@@ -129,7 +129,7 @@ def main():
     lastAccess = getLastAccess(lastAccessFile)
 
     articles = getArticleList(lastAccess)
-    article = pickArticle(articles)
+    article = pickArticle(articles, lastAccess)
     if article != None:
         logger.info('Found article "%s".', article['title'])
         page = loadArticle(article['href'])
@@ -142,9 +142,8 @@ def main():
             imgFile = contactDir + '/' + fn
             logger.info('Save "%s" to "%s".', fn, contact)
             page.savePageAsImageFile(imgFile)
-
-    json_file.saveFile(lastAccessFile, article)
-
+        last = {'title': article['title']}
+        json_file.saveFile(lastAccessFile, last)
     driver.close()
 
 # webpage: 路透中文网
