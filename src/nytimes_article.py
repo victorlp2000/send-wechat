@@ -21,7 +21,3 @@ class ArticleNYTimes(article.Article):
             ]
         article.Article.disableElements(self, selectors)
         article.Article.disableIds(self, ids)
-
-    def savePageImageToFolder(self, toFolder):
-        fnf = '%Y%m%d-%H%M%S-nyt.png'
-        article.Article.savePageAsImageFile(self, toFolder + '/' + fnf)

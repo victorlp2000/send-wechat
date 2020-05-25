@@ -10,36 +10,24 @@
 # By: Weiping Liu
 
 import os
+from datetime import datetime
 from urllib.parse import urlparse
+import logging
+
 from selenium import webdriver
 
 from reuters_article import ArticleReuters
 import json_file
+import cmd_argv
 
 driver = webdriver.Firefox()
 
 workingDir = os.path.abspath('.')
 
-def getContactName(contactFile):
-    contact = None
-    if contactFile != None and os.path.exists(contactFile):
-        contact = json_file.readFile(contactFile)
-    if contact != None:
-        contactName = contact['name']
-    else:
-        contactName = 'File Transfer'
-    print ('contact name:', contactName)
-    return contactName
-
 driver.get('https://cn.reuters.com/article/health-coronavirus-markets-outlook-0522-idCNKBS22Y14S?il=0')
 
-def main(contactFile):
-    contact = getContactName(contactFile)
-    imgDir = workingDir + '/outbox/' + contact
-
-    if not os.path.exists(imgDir):
-        os.mkdir(imgDir)
-
+def main():
+    contacts = cmd_argv.getContacts()
     while True:
         print ("\nSave current page as image? (y/n)")
         select = input('response:')
@@ -48,13 +36,26 @@ def main(contactFile):
                 page = ArticleReuters(driver)
                 page.setPageSize(400, 600)
                 page.disableSpecificElements()
-                page.savePageImageToFolder(imgDir)
+                fn = datetime.now().strftime('%Y%m%d-%H%M%S-reu.png')
+                outboxDir = workingDir + '/outbox'
+                for contact in contacts:
+                    imgFile = outboxDir + '/' + contact + '/' + fn
+                    logger.info('Save "%s" to "%s".', fn, contact)
+                    page.savePageAsImageFile(imgFile)
             else:
                 print ('no parser for the page.')
 
 if __name__ == '__main__':
-    import sys
-    arg = None
-    if len(sys.argv) > 1:
-        arg = sys.argv[1]
-    main(arg)
+    logger = logging.getLogger('scan_nytimes')
+    logger.setLevel(logging.INFO)
+    # create console handler and set level to debug
+    ch = logging.StreamHandler()
+    # ch.setLevel(logging.DEBUG)
+    # create formatter
+    formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    # add formatter to ch
+    ch.setFormatter(formatter)
+    # add ch to logger
+    logger.addHandler(ch)
+
+    main()

@@ -19,7 +19,3 @@ class ArticleReuters(article.Article):
             'div.StandardArticleBody_dp-slot-inline'
             ]
         article.Article.disableElements(self, selectors)
-
-    def savePageImageToFolder(self, toFolder):
-        fnf = '%Y%m%d-%H%M%S-reu.png'
-        article.Article.savePageAsImageFile(self, toFolder + '/' + fnf)

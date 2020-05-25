@@ -15,6 +15,7 @@ import sys
 import logging
 
 import json_file
+import cmd_argv
 from nytimes_article import ArticleNYTimes
 
 from selenium.webdriver.common.keys import Keys
@@ -86,15 +87,6 @@ def pickArticle(articles):
         return article
     return None
 
-def getContacts():
-    # default contacts
-    contacts = ['File Transfer']
-    if len(sys.argv) > 1:
-        tmp = json_file.readFile(sys.argv[1])
-        if type(tmp) is list:
-            contacts = tmp
-    return contacts
-
 def getLastAccess(lastAccessFile):
     last = json_file.readFile(lastAccessFile)
     return last
@@ -107,7 +99,7 @@ def loadArticle(url):
     return page
 
 def main():
-    contacts = getContacts()
+    contacts = cmd_argv.getContacts()
     lastAccess = getLastAccess(lastAccessFile)
     fnFormat = '%Y%m%d-%H%M%S-nyt.png'
     outboxDir = workingDir + outbox
@@ -120,17 +112,17 @@ def main():
     if article != None:
         logger.info('Found article "%s".', article['title'])
         page = loadArticle(article['href'])
-
+        fn = datetime.now().strftime('%Y%m%d-%H%M%S-nyt.png')
         for contact in contacts:
-            imgDir = outboxDir + '/' + contact
-            logger.info('Save page image to "%s".', imgDir)
-            page.savePageImageToFolder(imgDir)
+            imgFile = outboxDir + '/' + contact + '/' + fn
+            logger.info('Save "%s" to "%s".', fn, contact)
+            page.savePageAsImageFile(imgFile)
 
     json_file.saveFile(lastAccessFile, article)
 
     driver.close()
 
-# webpage: 路透中文网
+# webpage: 纽约时报中文网 - 简报
 baseUrl = "https://cn.nytimes.com/"
 driver.get(baseUrl + '/morning-brief')
 

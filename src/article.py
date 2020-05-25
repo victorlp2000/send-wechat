@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import time
-from datetime import datetime
 
 class Article(object):
     #
@@ -36,9 +35,8 @@ class Article(object):
             divs = self.driver.find_elements_by_id(id)
             for div in divs:
                 self.driver.execute_script("arguments[0].style.display = 'none';", div)
-                
-    def savePageAsImageFile(self, fnf):
+
+    def savePageAsImageFile(self, fn):
         # save page to png file
-        fn = datetime.now().strftime(fnf)
         body = self.driver.find_element_by_tag_name('body')
         png = body.screenshot(fn)
