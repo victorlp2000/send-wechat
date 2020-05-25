@@ -17,6 +17,7 @@ import logging
 from selenium import webdriver
 
 from reuters_article import ArticleReuters
+from nytimes_article import ArticleNYTimes
 import json_file
 import cmd_argv
 
@@ -34,9 +35,17 @@ def main():
         if select == 'y' or select == 'Y':
             if driver.current_url.startswith('https://cn.reuters.com/article/'):
                 page = ArticleReuters(driver)
+                fn = datetime.now().strftime('%Y%m%d-%H%M%S-reu.png')
+            elif driver.current_url.startswith('https://cn.nytimes.com/'):
+                page = ArticleNYTimes(driver)
+                fn = datetime.now().strftime('%Y%m%d-%H%M%S-nyt.png')
+            else:
+                page = None
+                print ('no parser for the page.')
+
+            if page != None:
                 page.setPageSize(400, 600)
                 page.disableSpecificElements()
-                fn = datetime.now().strftime('%Y%m%d-%H%M%S-reu.png')
                 outboxDir = workingDir + '/outbox'
                 for contact in contacts:
                     contactDir = outboxDir + '/' + contact
@@ -45,8 +54,6 @@ def main():
                     imgFile = contactDir + '/' + fn
                     logger.info('Save "%s" to "%s".', fn, contact)
                     page.savePageAsImageFile(imgFile)
-            else:
-                print ('no parser for the page.')
 
 if __name__ == '__main__':
     logger = logging.getLogger('scan_nytimes')

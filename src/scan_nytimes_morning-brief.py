@@ -77,14 +77,19 @@ def getArticleInfo(element):
         logger.warning('!! did not find link')
     return None
 
-# pickArticle(articles)
+# pickArticle(articles, lastAccess)
 #   filter link title to pick expected article
 #   return article = {info, title} or None
 #
-def pickArticle(articles):
-    # start process articles from older ones
-    for article in reversed(articles):
-        return article
+def pickArticle(articles, lastAccess):
+    if lastAccess == None:
+        # start process articles from new
+        for article in articles:
+            return article
+    else:
+        # start process articles from older ones
+        for article in reversed(articles):
+            return article
     return None
 
 def getLastAccess(lastAccessFile):
@@ -103,7 +108,7 @@ def main():
     lastAccess = getLastAccess(lastAccessFile)
 
     articles = getArticleList(lastAccess)
-    article = pickArticle(articles)
+    article = pickArticle(articles, lastAccess)
     if article != None:
         logger.info('Found article "%s".', article['title'])
         page = loadArticle(article['href'])
