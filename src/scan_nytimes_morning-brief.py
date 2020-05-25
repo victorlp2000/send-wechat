@@ -101,11 +101,6 @@ def loadArticle(url):
 def main():
     contacts = cmd_argv.getContacts()
     lastAccess = getLastAccess(lastAccessFile)
-    fnFormat = '%Y%m%d-%H%M%S-nyt.png'
-    outboxDir = workingDir + outbox
-
-    # set window size minimum
-    driver.set_window_size(200, 600)
 
     articles = getArticleList(lastAccess)
     article = pickArticle(articles)
@@ -113,8 +108,12 @@ def main():
         logger.info('Found article "%s".', article['title'])
         page = loadArticle(article['href'])
         fn = datetime.now().strftime('%Y%m%d-%H%M%S-nyt.png')
+        outboxDir = workingDir + '/outbox'
         for contact in contacts:
-            imgFile = outboxDir + '/' + contact + '/' + fn
+            contactDir = outboxDir + '/' + contact
+            if not os.path.isdir(contactDir):
+                continue
+            imgFile = contactDir + '/' + fn
             logger.info('Save "%s" to "%s".', fn, contact)
             page.savePageAsImageFile(imgFile)
 
@@ -123,12 +122,13 @@ def main():
     driver.close()
 
 # webpage: 纽约时报中文网 - 简报
+# set window size minimum
+driver.set_window_size(400, 600)
 baseUrl = "https://cn.nytimes.com/"
 driver.get(baseUrl + '/morning-brief')
 
 workingDir = os.path.abspath('.')
 lastAccessFile = workingDir + '/last-access-mytimes.json'
-outbox = '/outbox'
 
 if __name__ == "__main__":
     # usage:

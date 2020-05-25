@@ -39,7 +39,10 @@ def main():
                 fn = datetime.now().strftime('%Y%m%d-%H%M%S-reu.png')
                 outboxDir = workingDir + '/outbox'
                 for contact in contacts:
-                    imgFile = outboxDir + '/' + contact + '/' + fn
+                    contactDir = outboxDir + '/' + contact
+                    if not os.path.isdir(contactDir):
+                        continue
+                    imgFile = contactDir + '/' + fn
                     logger.info('Save "%s" to "%s".', fn, contact)
                     page.savePageAsImageFile(imgFile)
             else:

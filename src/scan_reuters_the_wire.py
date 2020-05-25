@@ -91,6 +91,8 @@ def getArticleInfo(element):
             'href': link[0].get_attribute('href'),
             'title': link[0].text
         }
+    else:
+        logger.warning('!! did not find link')
     return None
 
 # pickArticle(articles)
@@ -118,20 +120,19 @@ def loadArticle(url):
 def main():
     contacts = cmd_argv.getContacts()
     lastAccess = getLastAccess(lastAccessFile)
-    fnFormat = '%Y%m%d-%H%M%S-reu.png'
-    outboxDir = workingDir + outbox
-
-    # set window size minimum
-    driver.set_window_size(200, 600)
 
     articles = getArticleList(lastAccess)
     article = pickArticle(articles)
     if article != None:
-        logger.info('Found article %s.', article['title'])
+        logger.info('Found article "%s".', article['title'])
         page = loadArticle(article['href'])
         fn = datetime.now().strftime('%Y%m%d-%H%M%S-reu.png')
+        outboxDir = workingDir + '/outbox'
         for contact in contacts:
-            imgFile = outboxDir + '/' + contact + '/' + fn
+            contactDir = outboxDir + '/' + contact
+            if not os.path.isdir(contactDir):
+                continue
+            imgFile = contactDir + '/' + fn
             logger.info('Save "%s" to "%s".', fn, contact)
             page.savePageAsImageFile(imgFile)
 
@@ -140,12 +141,12 @@ def main():
     driver.close()
 
 # webpage: 路透中文网
+driver.set_window_size(400, 600)
 baseUrl = "https://cn.reuters.com"
 driver.get(baseUrl + '/theWire')
 
 workingDir = os.path.abspath('.')
 lastAccessFile = workingDir + '/last-access-reuters.json'
-outbox = '/outbox'
 
 if __name__ == "__main__":
     # usage:
