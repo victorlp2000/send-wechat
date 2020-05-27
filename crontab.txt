@@ -1,0 +1,6 @@
+*/10 * * * * . $HOME/.profile; export DISPLAY=:0; cd /home/vliu/send-wechat && python src/scan_reuters_the_wire.py contacts.json >/tmp/wechat-reuters.log 2>&1
+*/10 * * * * . $HOME/.profile; export DISPLAY=:0; cd /home/vliu/send-wechat && python src/scan_nytimes_morning-brief.py contacts.json >/tmp/wechat-nytimes.log 2>&1
+*/10 * * * * . $HOME/.profile; export DISPLAY=:0; cd /home/vliu/send-wechat && python src/scan_nytimes_opinion.py contacts.json >/tmp/wechat-nytimes-opinion.log 2>&1
+*/10 * * * * . $HOME/.profile; export DISPLAY=:0; cd /home/vliu/send-wechat && python src/scan_bbc_most_read.py contacts.json >/tmp/wechat-nytimes-opinion.log 2>&1
+
+
