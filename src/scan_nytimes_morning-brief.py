@@ -112,7 +112,7 @@ def main():
     if article != None:
         logger.info('Found article "%s".', article['title'])
         page = loadArticle(article['href'])
-        fn = datetime.now().strftime('%Y%m%d-%H%M%S-nyt.png')
+        fn = datetime.now().strftime('%Y%m%d-%H%M%S_nyt-brief.png')
         outboxDir = workingDir + '/outbox'
         for contact in contacts:
             contactDir = outboxDir + '/' + contact
@@ -132,7 +132,7 @@ baseUrl = "https://cn.nytimes.com/"
 driver.get(baseUrl + '/morning-brief')
 
 workingDir = os.path.abspath('.')
-lastAccessFile = workingDir + '/last-access-mytimes.json'
+lastAccessFile = workingDir + '/last_nyt-brief.json'
 
 if __name__ == "__main__":
     # usage:

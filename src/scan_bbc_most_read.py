@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# this utility scans webpage at https://cn.nytimes.com/opinion
+# this utility scans webpage at https://cn.reuters.com/theWire
 # to get specific of article and then save as image
 
 # Created:  May 24, 2020
@@ -16,7 +16,7 @@ import logging
 
 import json_file
 import cmd_argv
-from nytimes_article import ArticleNYTimes
+from bbc_article import ArticleBBC
 
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver import ActionChains
@@ -26,29 +26,24 @@ driver = Firefox(executable_path="/usr/local/bin/geckodriver")
 from selenium.webdriver.support.ui import WebDriverWait
 
 # getArticleList(lastAccess)
-#   lastAccess = {href:"...", title:"..."}
+#   lastAccess = {title:"..."}
 #   get a list of elements, until max number or reach one in the log
 #   return array of article-info
 def getArticleList(lastAccess):
     articles = []   # for return
-    sections = driver.find_elements_by_css_selector('div.cf.layoutAB')
+    selector = 'section.MostReadSection-sc-58u5qv-1.ilJrAv'
+    sections = driver.find_elements_by_css_selector(selector)
     if len(sections) != 1:
-        logger.warninig('!! got more than one "div.cf.layoutAB"')
+        logger.warning('!! got more than one selector "%s"', selector)
         return articles
-    first = sections[0].find_elements_by_css_selector('h3.sectionLeadHeader')
-    if len(first) != 1:
-        logger.warninig('!! got more than one "h3.sectionLeadHeader"')
+    selector = 'ol.GridComponent-nf79gm-0.gjgzxV.OneColumnGrid-sc-1ofyujo-0.TwoColumnGrid-sc-1ofyujo-1.boiGsE'
+    ol = sections[0].find_elements_by_css_selector(selector)
+    if len(ol) != 1:
+        logger.warninig('!! got more than one selector "%s"', selector)
         return articles
-
-    if appendArticle(articles, first[0], lastAccess):
-        return articles
-
-    list = sections[0].find_elements_by_css_selector('ul.autoList')
-    if len(list) != 1:
-        logger.warninig('!! got more than one "ul.autoList"')
-        return articles
-    elements = list[0].find_elements_by_tag_name('li')
-    for e in elements:
+    list = ol[0].find_elements_by_tag_name('li')
+    logger.debug('found %d items.', len(list))
+    for e in list:
         if appendArticle(articles, e, lastAccess):
             break
     return articles
@@ -56,11 +51,14 @@ def getArticleList(lastAccess):
 # return True if the item last accessed
 def appendArticle(articles, element, lastAccess):
     info = getArticleInfo(element)
+    if info == None:
+        logger.warning('! did not find article info.')
+        return False
     if lastAccess != None and info != None:
         if info['title'] == lastAccess['title']:
+            logger.debug('last accessed article')
             return True
-    if (info != None):
-        articles.append(info)
+    articles.append(info)
     return False
 
 # getArticleInfo(element)
@@ -71,24 +69,19 @@ def getArticleInfo(element):
     if len(links) != 0:
         return {
             'href': links[0].get_attribute('href'),
-            'title': links[0].get_attribute('title')
+            'title': links[0].text
         }
     else:
         logger.warning('!! did not find link')
     return None
 
-# pickArticle(articles)
+# pickArticle(articles, lastAccess)
 #   filter link title to pick expected article
 #   return article = {info, title} or None
-#   if there is no last-access, pick one from top
+#
 def pickArticle(articles, lastAccess):
-    if lastAccess == None:
-        for article in articles:
-            return article
-    else:
-        # start process articles from older ones
-        for article in reversed(articles):
-            return article
+    for article in articles:
+        return article
     return None
 
 def getLastAccess(lastAccessFile):
@@ -97,7 +90,7 @@ def getLastAccess(lastAccessFile):
 
 def loadArticle(url):
     driver.get(url)
-    page = ArticleNYTimes(driver)
+    page = ArticleBBC(driver)
     page.setPageSize(400, 600)
     page.disableSpecificElements()
     return page
@@ -111,7 +104,7 @@ def main():
     if article != None:
         logger.info('Found article "%s".', article['title'])
         page = loadArticle(article['href'])
-        fn = datetime.now().strftime('%Y%m%d-%H%M%S_nyt-opinion.png')
+        fn = datetime.now().strftime('%Y%m%d-%H%M%S_bbc-most-read.png')
         outboxDir = workingDir + '/outbox'
         for contact in contacts:
             contactDir = outboxDir + '/' + contact
@@ -127,18 +120,17 @@ def main():
 # webpage: 纽约时报中文网 - 简报
 # set window size minimum
 driver.set_window_size(400, 600)
-baseUrl = "https://cn.nytimes.com"
-driver.get(baseUrl + '/opinion')
+baseUrl = "https://www.bbc.com"
+driver.get(baseUrl + '/zhongwen/simp')
 
 workingDir = os.path.abspath('.')
-lastAccessFile = workingDir + '/last_nyt-opinion.json'
+lastAccessFile = workingDir + '/last_bbc-most-read.json'
 
 if __name__ == "__main__":
     # usage:
     #   $ python scan_reuters_the_wire [contactsFilename]
-
-    logger = logging.getLogger('scan_nytimes')
-    logger.setLevel(logging.INFO)
+    logger = logging.getLogger('scan_bbc')
+    logger.setLevel(logging.DEBUG)
     # create console handler and set level to debug
     ch = logging.StreamHandler()
     # ch.setLevel(logging.DEBUG)

@@ -133,7 +133,7 @@ def main():
     if article != None:
         logger.info('Found article "%s".', article['title'])
         page = loadArticle(article['href'])
-        fn = datetime.now().strftime('%Y%m%d-%H%M%S-reu.png')
+        fn = datetime.now().strftime('%Y%m%d-%H%M%S_reu-wire.png')
         outboxDir = workingDir + '/outbox'
         for contact in contacts:
             contactDir = outboxDir + '/' + contact
@@ -152,7 +152,7 @@ baseUrl = "https://cn.reuters.com"
 driver.get(baseUrl + '/theWire')
 
 workingDir = os.path.abspath('.')
-lastAccessFile = workingDir + '/last-access-reuters.json'
+lastAccessFile = workingDir + '/last_reu-wire.json'
 
 if __name__ == "__main__":
     # usage:
