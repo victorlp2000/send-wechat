@@ -13,9 +13,13 @@ def hasHandle(fpath):
     return False
 
 # return if the file has no access
-def waitFile(fpath):
+def waitFile(fpath, maxSeconds=0):
     while hasHandle(fpath):
         time.sleep(1)
+        if maxSeconds == 0:
+            break
+        maxSeconds -= 1
+    return maxSeconds       # 0 for timeout
 
 if __name__ == '__main__':
     import sys

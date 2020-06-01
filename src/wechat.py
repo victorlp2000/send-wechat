@@ -74,7 +74,7 @@ def uploadFile(filename):
         if len(status) == 0:
             uploading = False
         time.sleep(1)
-    # file_in_use.waitFile(filename)
+    file_in_use.waitFile(filename, 5)   # double check
     return
 
 def sendFilesToFriends(workingDir, friends):
