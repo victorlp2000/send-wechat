@@ -142,7 +142,7 @@ def main(workingDir):
         msg = time.strftime('%Y-%m-%d %H:%M ') + str(folders)
         sendReport(to, msg)
 
-        time.sleep(300)  # wait seconds
+        time.sleep(1800)  # wait seconds
 
 if (__name__ == '__main__'):
     logger = logging.getLogger('wechat')
