@@ -18,6 +18,7 @@ from selenium import webdriver
 
 from reuters_article import ArticleReuters
 from nytimes_article import ArticleNYTimes
+from bbc_article import ArticleBBC
 import json_file
 import cmd_argv
 
@@ -25,7 +26,7 @@ driver = webdriver.Firefox()
 
 workingDir = os.path.abspath('.')
 
-driver.get('https://cn.reuters.com/article/health-coronavirus-markets-outlook-0522-idCNKBS22Y14S?il=0')
+driver.get('https://www.bbc.com/zhongwen/simp/chinese-news-52859095')
 
 def main():
     contacts = cmd_argv.getContacts()
@@ -39,6 +40,9 @@ def main():
             elif driver.current_url.startswith('https://cn.nytimes.com/'):
                 page = ArticleNYTimes(driver)
                 fn = datetime.now().strftime('%Y%m%d-%H%M%S-nyt.png')
+            elif driver.current_url.startswith('https://www.bbc.com/zhongwen/'):
+                page = ArticleBBC(driver)
+                fn = datetime.now().strftime('%Y%m%d-%H%M%S-bbc.png')
             else:
                 page = None
                 print ('no parser for the page.')

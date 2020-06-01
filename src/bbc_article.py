@@ -12,6 +12,9 @@ class ArticleBBC(article.Article):
             'div.share__back-to-top.ghost-column',
             'div.column--secondary',
             'div.navigation--footer',
+            'div.story-more',
+            'div.tags-container',
+            'div.share.share--lightweight.show.ghost-column'
         ]
         ids = [
             'bbccom_leaderboard_1_2_3_4',
