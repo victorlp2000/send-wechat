@@ -82,14 +82,9 @@ def getArticleInfo(element):
 #   return article = {info, title} or None
 #
 def pickArticle(articles, lastAccess):
-    if lastAccess == None:
-        # start process articles from new
-        for article in articles:
-            return article
-    else:
-        # start process articles from older ones
-        for article in reversed(articles):
-            return article
+    # start process articles from new
+    for article in articles:
+        return article
     return None
 
 def getLastAccess(lastAccessFile):

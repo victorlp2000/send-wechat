@@ -101,16 +101,10 @@ def getArticleInfo(element):
 #
 def pickArticle(articles, lastAccess):
     key = u'焦点：'
-    if lastAccess == None:
-        # start process articles from older ones
-        for article in articles:
-            if article['title'].startswith(key):
-                return article
-    else:
-        # start process articles from older ones
-        for article in reversed(articles):
-            if article['title'].startswith(key):
-                return article
+    # start process articles from older ones
+    for article in articles:
+        if article['title'].startswith(key):
+            return article
     return None
 
 def getLastAccess(lastAccessFile):
