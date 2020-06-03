@@ -186,7 +186,7 @@ def main(workingDir):
     time.sleep(1)  # wait fully loaded,
                     # need to find a flag when it is ready
     timeoutOutbox = 1200
-    timeout = 0
+    timeout = timeoutOutbox
     while True:
         timeout += 1
         if timeout >= timeoutOutbox:
