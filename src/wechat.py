@@ -138,18 +138,27 @@ def checkOutbox(workingDir):
         sendReport(to, msg)
 
 def getLastMsg(friend):
-    friend = getFriend(friend)
-    if friend == None:
-        return ''
+    # check if the current friend is the one requested
+    chatArea = driver.find_element_by_id('chatArea')
+    name = chatArea.find_element_by_tag_name('a')
+    # if the current friend is not requested, search to find
+    if name.text != friend:
+        friend = getFriend(friend)
+        if friend == None:
+            return ''
     selector = 'div.box_bd.chat_bd.scrollbar-dynamic.scroll-content'
-    view = driver.find_element_by_css_selector(selector)
-    # find all 'div' then take ones with ng-repeat="message in chatContent"
+    try:
+        view = driver.find_element_by_css_selector(selector)
+    except:
+        logger.info('!! did not find chat window')
+        return ''
+    # find the last message from the chat window
     divs = view.find_elements_by_css_selector('div.ng-scope')
     items = []
     for div in reversed(divs):
         if div.get_attribute('ng-repeat') == 'message in chatContent':
             items.append(div)
-            break
+            break   # only need the last one
     if len(items) == 0:
         return ''
 
