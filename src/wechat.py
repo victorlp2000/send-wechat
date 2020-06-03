@@ -11,9 +11,6 @@ import file_in_use
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import WebDriverException
 
-# after functional key or mouse click, need to wait until page finish action
-WAIT_KEY_ACTION_TIME = 0.1
-
 browser = 'Firefox'
 
 from selenium.webdriver import Firefox
@@ -35,7 +32,6 @@ def loginWechat():
 
 # return True if the friend is found
 def getFriend(nickname):
-    logger.info('switch to "%s"...', nickname)
     retry = 3
     while retry > 0:
         # enter search, check chat header
@@ -122,27 +118,82 @@ def getOutboxFolders(workingDir):
         if not os.path.isdir(folderPath):
             continue
         dirs = os.listdir(folderPath)
+        files = False
         for f in dirs:
             filePath = folderPath + '/' + f
             if os.path.isfile(filePath):
-                folders.append(folderName)
+                files = True
+        if files:
+            folders.append(folderName)
     logger.info('%d folders in outbox', len(folders))
     return folders
 
-def main(workingDir):
-    loginWechat()
-    time.sleep(15)  # wait fully loaded,
-                    # need to find a flag when it is ready
-    while True:
-        folders = getOutboxFolders(workingDir)
-        if len(folders) > 0:
-            n = sendFilesToFriends(workingDir, folders)
-
+def checkOutbox(workingDir):
+    # send file to friend if there is file in outbox
+    folders = getOutboxFolders(workingDir)
+    if len(folders) > 0:
+        n = sendFilesToFriends(workingDir, folders)
         to = 'File Transfer'
         msg = time.strftime('%Y-%m-%d %H:%M ') + str(folders)
         sendReport(to, msg)
 
-        time.sleep(1800)  # wait seconds
+def getLastMsg(friend):
+    friend = getFriend(friend)
+    if friend == None:
+        return ''
+    selector = 'div.box_bd.chat_bd.scrollbar-dynamic.scroll-content'
+    view = driver.find_element_by_css_selector(selector)
+    # find all 'div' then take ones with ng-repeat="message in chatContent"
+    divs = view.find_elements_by_css_selector('div.ng-scope')
+    items = []
+    for div in reversed(divs):
+        if div.get_attribute('ng-repeat') == 'message in chatContent':
+            items.append(div)
+            break
+    if len(items) == 0:
+        return ''
+
+    selector = 'pre.js_message_plain.ng-binding'
+    lastItem = items[0].find_elements_by_css_selector(selector)
+    if len(lastItem) > 0:
+        return lastItem[0].text
+    return ''
+
+def inputFace(n):
+    editArea = driver.find_element_by_id('editArea')
+    editArea.click()
+
+    menu = driver.find_element_by_css_selector('a.web_wechat_face')
+    menu.click()
+    faces = driver.find_element_by_css_selector('div.qq_face')
+    links = faces.find_elements_by_tag_name('a')
+    if n+1 <= len(links):
+        links[n].click()
+        editArea.send_keys(Keys.ENTER)
+        return True
+    return False
+
+def checkCmd():
+    # response if receive any cmd from "File Transfer":
+    friend = "File Transfer"
+    cmd = getLastMsg(friend)
+    if cmd == '?' or cmd == u'？':
+        inputFace(0)
+        # sendReport(friend, ":)")
+
+def main(workingDir):
+    loginWechat()
+    time.sleep(1)  # wait fully loaded,
+                    # need to find a flag when it is ready
+    timeoutOutbox = 1200
+    timeout = 0
+    while True:
+        timeout += 1
+        if timeout >= timeoutOutbox:
+            timeout = 0
+            checkOutbox(workingDir)
+        checkCmd()
+        time.sleep(1)
 
 if (__name__ == '__main__'):
     logger = logging.getLogger('wechat')
