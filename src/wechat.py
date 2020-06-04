@@ -33,26 +33,30 @@ def loginWechat():
 # return True if the friend is found
 def getFriend(nickname):
     retry = 3
-    while retry > 0:
-        # enter search, check chat header
-        search = driver.find_element_by_id('search_bar')
-        textInput = search.find_element_by_tag_name('input')
+    try:
+        while retry > 0:
+            # enter search, check chat header
+            search = driver.find_element_by_id('search_bar')
+            textInput = search.find_element_by_tag_name('input')
+            textInput.clear()
+            textInput.send_keys(nickname)
+            textInput.send_keys(Keys.ENTER)
+            delay = 5
+            while delay > 0:
+                chatArea = driver.find_element_by_id('chatArea')
+                name = chatArea.find_element_by_tag_name('a')
+                if name.text == nickname:
+                    textInput.clear()
+                    return nickname
+                time.sleep(1)
+                delay -= 1
+            retry -= 1
         textInput.clear()
-        textInput.send_keys(nickname)
-        textInput.send_keys(Keys.ENTER)
-        delay = 5
-        while delay > 0:
-            chatArea = driver.find_element_by_id('chatArea')
-            name = chatArea.find_element_by_tag_name('a')
-            if name.text == nickname:
-                textInput.clear()
-                return nickname
-            time.sleep(1)
-            delay -= 1
-        retry -= 1
-    textInput.clear()
-    logger.warning('!! did not find friend: %s', nickname)
-    return None
+        logger.warning('!! did not find friend: %s', nickname)
+        return None
+    except:
+        logger.warning('!! got exception in getFriend()')
+        return None
 
 def uploadFile(filename):
     logger.info('uploading file...')
@@ -138,35 +142,35 @@ def checkOutbox(workingDir):
         sendReport(to, msg)
 
 def getLastMsg(friend):
-    # check if the current friend is the one requested
-    chatArea = driver.find_element_by_id('chatArea')
-    name = chatArea.find_element_by_tag_name('a')
-    # if the current friend is not requested, search to find
-    if name.text != friend:
-        friend = getFriend(friend)
-        if friend == None:
-            return ''
-    selector = 'div.box_bd.chat_bd.scrollbar-dynamic.scroll-content'
     try:
+        # check if the current friend is the one requested
+        chatArea = driver.find_element_by_id('chatArea')
+        name = chatArea.find_element_by_tag_name('a')
+        # if the current friend is not requested, search to find
+        if name.text != friend:
+            friend = getFriend(friend)
+            if friend == None:
+                return ''
+        selector = 'div.box_bd.chat_bd.scrollbar-dynamic.scroll-content'
         view = driver.find_element_by_css_selector(selector)
-    except:
-        logger.info('!! did not find chat window')
-        return ''
-    # find the last message from the chat window
-    divs = view.find_elements_by_css_selector('div.ng-scope')
-    items = []
-    for div in reversed(divs):
-        if div.get_attribute('ng-repeat') == 'message in chatContent':
-            items.append(div)
-            break   # only need the last one
-    if len(items) == 0:
-        return ''
+        # find the last message from the chat window
+        divs = view.find_elements_by_css_selector('div.ng-scope')
+        items = []
+        for div in reversed(divs):
+            if div.get_attribute('ng-repeat') == 'message in chatContent':
+                items.append(div)
+                break   # only need the last one
+        if len(items) == 0:
+            return ''
 
-    selector = 'pre.js_message_plain.ng-binding'
-    lastItem = items[0].find_elements_by_css_selector(selector)
-    if len(lastItem) > 0:
-        return lastItem[0].text
-    return ''
+        selector = 'pre.js_message_plain.ng-binding'
+        lastItem = items[0].find_elements_by_css_selector(selector)
+        if len(lastItem) > 0:
+            return lastItem[0].text
+        return ''
+    except:
+        logger.warning('!! did not find chat window')
+        return ''
 
 def inputFace(n):
     editArea = driver.find_element_by_id('editArea')
