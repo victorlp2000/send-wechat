@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import os
+import os, traceback
 import time
 
 import logging
@@ -30,8 +30,54 @@ def loginWechat():
     logger.info('logged in.')
     return True
 
+def getFriendInNavView(friend):
+    try:
+        # left-side navigation menu
+        navView = driver.find_element_by_id('J_NavChatScrollBody')
+        # <div ng-repeat="chatContact in chatList track by chatContact.UserName" class="ng-scope"...
+        divs = navView.find_elements_by_css_selector('div.ng-scope')
+        menuItem = 'chatContact in chatList track by chatContact.UserName'
+        logger.debug('items: %d', len(divs))
+        for div in divs:
+            # ignore if it is not menu item
+            if div.get_attribute('ng-repeat') != menuItem:
+                continue
+            nickname = div.find_element_by_css_selector('h3.nickname')
+            logger.debug('nickname - %s', nickname.text)
+            if nickname.text == friend:
+                return div  # found the friend
+        return None
+    except:
+        logger.warning('!! error in search friend in nav view')
+        traceback.print_exc()
+        return None
+
+def getLastMsg(friend):
+    div = getFriendInNavView(friend)
+    if div is None:
+        logger.info('the friend is not in nav view, searching...')
+        # search friend
+        if searchFriend(friend) is None:
+            logger.info('did not find friend "%s"', friend)
+            return ''
+        div = getFriendInNavView(friend) # try again after search
+    if div is None:
+        logger.info('failed activate friend')
+    try:
+        msg = div.find_element_by_css_selector('p.msg.ng-scope')
+        return msg.text
+    except:
+        # may not have any msg tag
+        logger.info('did not find msg tag')
+        return ''
+
+def getCurrentFriend():
+    chatArea = driver.find_element_by_id('chatArea')
+    name = chatArea.find_element_by_tag_name('a')
+    return name.text
+
 # return True if the friend is found
-def getFriend(nickname):
+def searchFriend(nickname):
     retry = 3
     try:
         while retry > 0:
@@ -43,9 +89,7 @@ def getFriend(nickname):
             textInput.send_keys(Keys.ENTER)
             delay = 5
             while delay > 0:
-                chatArea = driver.find_element_by_id('chatArea')
-                name = chatArea.find_element_by_tag_name('a')
-                if name.text == nickname:
+                if getCurrentFriend() == nickname:
                     textInput.clear()
                     return nickname
                 time.sleep(1)
@@ -55,8 +99,15 @@ def getFriend(nickname):
         logger.warning('!! did not find friend: %s', nickname)
         return None
     except:
-        logger.warning('!! got exception in getFriend()')
+        logger.warning('!! got exception in searchFriend()')
         return None
+
+def activateFriend(friend):
+    if getCurrentFriend() != friend:
+        searchFriend(friend)
+        if getCurrentFriend() != friend:
+            return False
+    return True
 
 def uploadFile(filename):
     logger.info('uploading file...')
@@ -79,8 +130,7 @@ def uploadFile(filename):
 
 def sendFilesToFriends(workingDir, friends):
     for name in friends:
-        friend = getFriend(name)
-        if friend != None:
+        if activateFriend(name) is True:
             sendFilesToFriend(workingDir, name)
 
 
@@ -98,8 +148,7 @@ def sendFilesToFriend(workingDir, name):
     return count
 
 def sendReport(friend, msg):
-    friend = getFriend(friend)
-    if friend == None:
+    if activateFriend(friend) == False:
         return
     # enter msg to textarea
     editArea = driver.find_element_by_id('editArea')
@@ -141,37 +190,6 @@ def checkOutbox(workingDir):
         msg = time.strftime('%Y-%m-%d %H:%M ') + str(folders)
         sendReport(to, msg)
 
-def getLastMsg(friend):
-    try:
-        # check if the current friend is the one requested
-        chatArea = driver.find_element_by_id('chatArea')
-        name = chatArea.find_element_by_tag_name('a')
-        # if the current friend is not requested, search to find
-        if name.text != friend:
-            friend = getFriend(friend)
-            if friend == None:
-                return ''
-        selector = 'div.box_bd.chat_bd.scrollbar-dynamic.scroll-content'
-        view = driver.find_element_by_css_selector(selector)
-        # find the last message from the chat window
-        divs = view.find_elements_by_css_selector('div.ng-scope')
-        items = []
-        for div in reversed(divs):
-            if div.get_attribute('ng-repeat') == 'message in chatContent':
-                items.append(div)
-                break   # only need the last one
-        if len(items) == 0:
-            return ''
-
-        selector = 'pre.js_message_plain.ng-binding'
-        lastItem = items[0].find_elements_by_css_selector(selector)
-        if len(lastItem) > 0:
-            return lastItem[0].text
-        return ''
-    except:
-        logger.warning('!! did not find chat window')
-        return ''
-
 def inputFace(n):
     editArea = driver.find_element_by_id('editArea')
     editArea.click()
@@ -191,6 +209,9 @@ def checkCmd():
     friend = "File Transfer"
     cmd = getLastMsg(friend)
     if cmd == '?' or cmd == u'？':
+        if activateFriend(friend) is False:
+            logger.info('failed activate friend "%s"', friend)
+            return
         inputFace(0)
         # sendReport(friend, ":)")
 
