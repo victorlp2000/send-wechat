@@ -9,8 +9,8 @@ import logging
 import shutil
 from datetime import datetime
 
-from nyt.nyt_lead_article import getLeadArticleInfo
-from nyt.nyt_article import getPageImage
+from bbc.bbc_top_story import getTopStoryInfo
+from bbc.bbc_article import getPageImage
 from util.copy_to_contacts import copyToContacts
 from helper.browser_driver import WebDriver
 from helper.cmd_argv import getContacts
@@ -20,12 +20,12 @@ from helper.my_logger import getMyLogger
 
 class Settings(object):
     browser = 'Chrome'
-    zoom = 100
-    pageWidth = 400     # about 20 c-chars in a line
-    headless = True     # need to be True for Chrome taking full page image
+    zoom = 100      # about 20 c-chars in a line
+    pageWidth = 360
+    headless = True     # need to be True, or Chrome does not take full page image
     configDir = None
 
-file = 'nyt-morning-brief'
+file = 'bbc-top-story'
 
 def main():
     logger.info('start %s', __file__)
@@ -33,8 +33,8 @@ def main():
     contacts = getContacts()
     lastAccess = LastAccess('last_' + file + '.json')
 
-    url = 'https://cn.nytimes.com/morning-brief'
-    info = getLeadArticleInfo(driver, url)
+    url = "https://www.bbc.com/zhongwen/simp"
+    info = getTopStoryInfo(driver, url)
 
     if info and isNewArticle(info, lastAccess.load()):
         fn = '/tmp/' + file + '.jpg'

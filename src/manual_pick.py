@@ -1,11 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# this utility scans webpage at https://cn.reuters.com/theWire
-# to get specific of article and clean the content, then save as image
-
-# written for learning Selenium tools
-
 # Created:  May 18, 2020
 # By: Weiping Liu
 
@@ -14,58 +9,84 @@ from datetime import datetime
 from urllib.parse import urlparse
 import logging
 
-from selenium import webdriver
+from helper.browser_driver import WebDriver
+from reuters.reuters_article import cleanPage as cleanReutersArticle
+from nyt.nyt_article import cleanPage as cleanNYTimesArticle
+from bbc.bbc_article import cleanPage as cleanBBCArticle
+from util.copy_to_contacts import copyToContacts
+from helper.cmd_argv import getContacts
+from helper.my_logger import getMyLogger
 
-from reuters_article import ArticleReuters
-from nytimes_article import ArticleNYTimes
-import json_file
-import cmd_argv
+def menu():
+    print('ENTER to TAB window')
+    print(' 0. exit')
+    print(' 1. cleanup page content')
+    print(' 2. save page image to outbox')
 
-driver = webdriver.Firefox()
+def getChoice(browser, tab=0):
+    while True:
+        tabs = len(browser.window_handles)
+        browser.switch_to_window(browser.window_handles[tab])
+        menu()
+        choice = input('input choice: ')
+        if choice == '':
+            tab += 1
+            if tab >= tabs:
+                tab = 0
+        else:
+            return choice
 
-workingDir = os.path.abspath('.')
-
-driver.get('https://cn.reuters.com/article/health-coronavirus-markets-outlook-0522-idCNKBS22Y14S?il=0')
+class Settings(object):
+    browser = 'Firefox'     # to get full page image, have to use Firefox now
+    zoom = 120
+    pageWidth = 400
+    headless = False
+    configDir = './FirefoxConfig'
 
 def main():
-    contacts = cmd_argv.getContacts()
+    logger.info('start %s', __file__)
+    driver = WebDriver(Settings)
+    contacts = getContacts()
+    imageFile = '/tmp/manual-pick.jpg'
+    fn = None
+
+    if os.path.isfile(imageFile):
+        os.remove(imageFile)
+
     while True:
-        print ("\nSave current page as image? (y/n)")
-        select = input('response:')
-        if select == 'y' or select == 'Y':
-            if driver.current_url.startswith('https://cn.reuters.com/article/'):
-                page = ArticleReuters(driver)
-                fn = datetime.now().strftime('%Y%m%d-%H%M%S-reu.png')
-            elif driver.current_url.startswith('https://cn.nytimes.com/'):
-                page = ArticleNYTimes(driver)
-                fn = datetime.now().strftime('%Y%m%d-%H%M%S-nyt.png')
+        select = getChoice(driver.driver)
+        if select == '1':
+            driver.setZoom(driver.zoom)
+            driver.setWindowSize(driver.pageWidth)
+            driver.scrollToBottom()
+            driver.scrollToTop()
+
+            url = driver.getCurrentUrl()
+            if url.startswith('https://cn.reuters.com/article/'):
+                cleanReutersArticle(driver)
+                fn = datetime.now().strftime('%Y%m%d-%H%M%S-reu.jpg')
+            elif url.startswith('https://cn.nytimes.com/'):
+                cleanNYTimesArticle(driver)
+                fn = datetime.now().strftime('%Y%m%d-%H%M%S-nyt.jpg')
+            elif url.startswith('https://www.bbc.com/zhongwen/simp/'):
+                cleanBBCArticle(driver)
+                fn = datetime.now().strftime('%Y%m%d-%H%M%S-nyt.jpg')
             else:
-                page = None
                 print ('no parser for the page.')
 
-            if page != None:
-                page.setPageSize(400, 600)
-                page.disableSpecificElements()
-                outboxDir = workingDir + '/outbox'
-                for contact in contacts:
-                    contactDir = outboxDir + '/' + contact
-                    if not os.path.isdir(contactDir):
-                        continue
-                    imgFile = contactDir + '/' + fn
-                    logger.info('Save "%s" to "%s".', fn, contact)
-                    page.savePageAsImageFile(imgFile)
+        elif select == '2':
+            if fn == None:
+                logger.warning('select 1 to get page cleaned.')
+                continue
+            logger.info('save page: %s', url)
+            if driver.saveFullPageToJpg(imageFile) != None:
+                copyToContacts(imageFile, fn, contacts)
+        elif select == '0':
+            logger.info('exit\n')
+            break
+    driver.close()
 
 if __name__ == '__main__':
-    logger = logging.getLogger('scan_nytimes')
-    logger.setLevel(logging.INFO)
-    # create console handler and set level to debug
-    ch = logging.StreamHandler()
-    # ch.setLevel(logging.DEBUG)
-    # create formatter
-    formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-    # add formatter to ch
-    ch.setFormatter(formatter)
-    # add ch to logger
-    logger.addHandler(ch)
-
+    fn = os.path.basename(__file__)
+    logger = getMyLogger(None, fn)
     main()

@@ -1,3 +1,9 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+# Created:  June 9, 2020
+# By: Weiping Liu
+
 import psutil
 import time
 
@@ -13,9 +19,13 @@ def hasHandle(fpath):
     return False
 
 # return if the file has no access
-def waitFile(fpath):
+def waitFile(fpath, timeoutSeconds=0):
     while hasHandle(fpath):
         time.sleep(1)
+        if timeoutSeconds == 0:
+            break
+        timeoutSeconds -= 1
+    return timeoutSeconds       # 0 for timeout
 
 if __name__ == '__main__':
     import sys

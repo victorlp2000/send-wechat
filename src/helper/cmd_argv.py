@@ -1,6 +1,12 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+# Created:  June 9, 2020
+# By: Weiping Liu
+
 import sys
 
-import json_file
+from util import json_file
 
 def getContacts():
     # default contacts
