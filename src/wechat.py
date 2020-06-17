@@ -236,14 +236,14 @@ def main():
     loginWechat(driver)
     time.sleep(1)  # wait fully loaded,
                     # need to find a flag when it is ready
-    timeoutOutbox = 10
+    timeoutOutbox = 60 * 10
     timeout = 0
     while True:
         timeout -= 1
         if timeout <= 0:
-            checkOutbox(driver)
+            checkOutbox(driver) # check image every timeout
             timeout = timeoutOutbox
-        checkCmd(driver)
+        checkCmd(driver)    # check cmd every 1 second
         time.sleep(1)
     driver.close()
 

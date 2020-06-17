@@ -16,7 +16,7 @@ def getPageImage(driver, url, fn):
     driver.loadPage(url)
 
     driver.scrollToBottom()     # make all content visible, then do clean
-    time.sleep(2)               # elements may not show if not visible
+    time.sleep(3)               # elements may not show if not visible
     cleanPage(driver)
 
     return driver.saveFullPageToJpg(fn)

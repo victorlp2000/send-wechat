@@ -14,6 +14,7 @@ def getPageImage(driver, url, fn):
     logger.info('loading "%s"', url)
     driver.setWindowSize(driver.pageWidth)
     driver.loadPage(url)
+    time.sleep(3)   # for loading completely
     cleanPage(driver)
     return driver.saveFullPageToJpg(fn)
 
