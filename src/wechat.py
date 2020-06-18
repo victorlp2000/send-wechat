@@ -142,7 +142,7 @@ def sendFilesToFriends(driver, friends):
             if not os.path.isfile(filePath):
                 continue
             if uploadFile(driver, filePath):
-                # move to sent folder
+                # remove from the outbox folder
                 os.remove(filePath)
                 count += 1
         logger.info('sent %d file(s)', count)
@@ -185,7 +185,7 @@ def getOutboxFolders(workingDir):
     return folders
 
 def checkOutbox(driver):
-    logger.debug('checking outbox...')
+    logger.info('checking outbox...')
     # send file to friend if there is file in outbox
     folders = getOutboxFolders(driver.workingDir)
     if len(folders) > 0:
@@ -244,7 +244,7 @@ def main():
             checkOutbox(driver) # check image every timeout
             timeout = timeoutOutbox
         checkCmd(driver)    # check cmd every 1 second
-        time.sleep(1)
+        time.sleep(5)
     driver.close()
 
 if (__name__ == '__main__'):
