@@ -8,7 +8,7 @@ import logging
 from logging.handlers import RotatingFileHandler
 
 def getMyLogger(name=None, fn=None):
-    logger = logging.getLogger()
+    logger = logging.getLogger('mylog')
     if fn != None:
         logger.setLevel(logging.INFO)
         formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")

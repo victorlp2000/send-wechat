@@ -47,6 +47,7 @@ class Settings(object):
 def main():
     logger.info('start %s', __file__)
     driver = WebDriver(Settings)
+    driver.loadPage('file://' + os.path.abspath('./manual-bookmarks.html'))
     contacts = getContacts()
     imageFile = '/tmp/manual-pick.jpg'
     fn = None

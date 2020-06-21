@@ -159,18 +159,26 @@ class WebDriver(object):
                 ele.execute_script("arguments[0].style.display = 'none';", div)
 
     def saveFullPageToPng(self, fn):
-        self.setZoom(self.zoom)
         pageLength = self.scrollToBottom()
         time.sleep(2)
         self.scrollToTop()
         if self.browser == 'Chrome':
             logger.debug('save Chrome page to %s', fn)
-            pageLength *= self.zoom / 100
+            pageLength = self.scrollToBottom()
+            time.sleep(2)
+            if self.zoom != -1:
+                self.setZoom(self.zoom)
+                pageLength *= self.zoom / 100
             self.setWindowSize(self.pageWidth, pageLength)
-            # for headless browser
+            self.scrollToTop()
             self.driver.save_screenshot(fn)
         elif self.browser == 'Firefox':
             logger.debug('save Firefox page to %s', fn)
+            if self.zoom != -1:
+                self.setZoom(self.zoom)
+            pageLength = self.scrollToBottom()
+            time.sleep(2)
+            self.scrollToTop()
             self.setWindowSize(self.pageWidth, pageLength)
             body = self.driver.find_element_by_tag_name('body')
             png = body.screenshot_as_png

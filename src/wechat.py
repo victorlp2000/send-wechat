@@ -33,17 +33,20 @@ def getFriendInNavView(driver, friend):
     # <div ng-repeat="chatContact in chatList track by chatContact.UserName" class="ng-scope"...
     divs = navView.find_elements_by_css_selector('div.ng-scope')
     menuItem = 'chatContact in chatList track by chatContact.UserName'
-    logger.debug('items in nav menu: %d', len(divs))
+    names = []
     for div in divs:
         # ignore if it is not menu item
         if div.get_attribute('ng-repeat') != menuItem:
             continue
         nickname = div.find_element_by_css_selector('h3.nickname')
-        logger.debug('nickname - %s', nickname.text)
+        names.append(nickname.text)
         if nickname.text == friend:
             logger.debug('found fiend: "%s"', friend)
             return div  # found the friend
     logger.info('did not find "%s" in nav menu', friend)
+    logger.info(names)
+    for div in divs:
+        logger.info(' ')
     return None
 
 def getLastMsg(driver, friend):
@@ -75,26 +78,29 @@ def getCurrentFriend(driver):
 
 # return True if the friend is found
 def searchFriend(driver, nickname):
-    retry = 3
-    while retry > 0:
-        retry -= 1
+    try:
         # enter search, check chat header
         search = driver.findElementById('search_bar')
         if search == None:
-            continue
+            return None
         textInput = search.find_element_by_tag_name('input')
         textInput.clear()
         textInput.send_keys(nickname)
+        time.sleep(2)
         textInput.send_keys(Keys.ENTER)
+        time.sleep(2)   # wait response after entering text
         delay = 5
         while delay > 0:
             if getCurrentFriend(driver) == nickname:
                 textInput.clear()
                 return nickname
-            time.sleep(1)
+            time.sleep(2)
             delay -= 1
-    textInput.clear()
-    logger.warning('!! did not find friend: %s', nickname)
+        textInput.clear()
+        logger.warning('!! did not find friend: %s', nickname)
+    except:
+        logger.error('!! error in searching friend "%s"', nickname)
+        # traceback()
     return None
 
 def activateFriend(driver, friend):
@@ -124,17 +130,18 @@ def uploadFile(driver, filename):
         if len(status) == 0:
             uploading = False
         time.sleep(1)
-    ns = waitFile(filename, 15)
+    ns = waitFile(filename, 30)
     logger.info('file in use timeout: %d!', ns)
     return True
 
 def sendFilesToFriends(driver, friends):
+    logger.debug('sendFilesToFriends...')
+    count = 0   # number of files sent
     for name in friends:
         logger.info('send file(s) to "%s"', name)
         if activateFriend(driver, name) is False:
             logger.info('ignored to "%s"', name)
             continue
-        count = 0   # number of files sent
         folderPath = driver.workingDir + '/outbox/' + name
         files = os.listdir(folderPath)
         for f in files:
@@ -146,7 +153,7 @@ def sendFilesToFriends(driver, friends):
                 os.remove(filePath)
                 count += 1
         logger.info('sent %d file(s)', count)
-    return
+    return count
 
 def sendReport(driver, friend, msg):
     if activateFriend(driver, friend) == False:
@@ -165,6 +172,7 @@ def sendReport(driver, friend, msg):
 # return the folder name if there is any file in side
 # !! note the folder name encoding
 def getOutboxFolders(workingDir):
+    logger.debug('getOutboxFolders...')
     outboxPath = workingDir + '/outbox'
     folders = []
     outbox = os.listdir(outboxPath)
@@ -189,10 +197,10 @@ def checkOutbox(driver):
     # send file to friend if there is file in outbox
     folders = getOutboxFolders(driver.workingDir)
     if len(folders) > 0:
-        sendFilesToFriends(driver, folders)
-        to = 'File Transfer'
-        msg = time.strftime('%Y-%m-%d %H:%M ') + str(folders)
-        sendReport(driver, to, msg)
+        if sendFilesToFriends(driver, folders) > 0:
+            to = 'File Transfer'
+            msg = time.strftime('%Y-%m-%d %H:%M ') + str(folders)
+            sendReport(driver, to, msg)
 
 def inputFace(driver, n):
     editArea = driver.findElementById('editArea')
@@ -215,6 +223,7 @@ def inputFace(driver, n):
     return False
 
 def checkCmd(driver):
+    logger.debug('checkCmd...')
     # response if receive any cmd from "File Transfer":
     friend = "File Transfer"
     cmd = getLastMsg(driver, friend)
@@ -234,9 +243,9 @@ def main():
     driver = WebDriver(Settings)
     driver.setWindowSize(driver.pageWidth, 800)
     loginWechat(driver)
-    time.sleep(1)  # wait fully loaded,
+    time.sleep(15)  # wait fully loaded,
                     # need to find a flag when it is ready
-    timeoutOutbox = 60 * 10
+    timeoutOutbox = 12 * 5
     timeout = 0
     while True:
         timeout -= 1

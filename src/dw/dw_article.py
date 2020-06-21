@@ -5,13 +5,14 @@
 # By: Weiping Liu
 
 import os, time
+import urllib.parse
 
 from helper.my_logger import getMyLogger
 
 logger = getMyLogger(__name__)
 
 def getPageImage(driver, url, fn):
-    logger.info('loading "%s"', url)
+    logger.info('loading "%s"', urllib.parse.unquote(url))
     driver.setWindowSize(driver.pageWidth)
     driver.loadPage(url)
     driver.scrollToBottom()
@@ -75,6 +76,9 @@ def cleanPage(driver):
         setStyleWidth(browser, imgs, w)
         ps = picBox[0].find_elements_by_tag_name('p')
         setStyleWidth(browser, ps, w)
+
+    picBox = browser.find_elements_by_css_selector('div.picBox.full')
+    setStyleWidth(browser, picBox, pWidth)
 
     # div.col3.right is a video, make it smaller
     right = browser.find_elements_by_css_selector('div.col3.right')

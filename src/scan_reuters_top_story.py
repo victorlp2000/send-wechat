@@ -14,8 +14,7 @@ from reuters.reuters_article import getPageImage
 from util.copy_to_contacts import copyToContacts
 from helper.browser_driver import WebDriver
 from helper.cmd_argv import getContacts
-from helper.last_access import LastAccess
-from helper.check_new_article import isNewArticle
+from helper.accessed import Accessed
 from helper.my_logger import getMyLogger
 
 class Settings(object):
@@ -31,12 +30,12 @@ def main():
     logger.info('start %s', __file__)
     driver = WebDriver(Settings)
     contacts = getContacts()
-    lastAccess = LastAccess('last_' + file + '.json')
+    accessed = Accessed('accessed_reuters.json')
 
     url = "https://cn.reuters.com/"
     info = getTopStoryInfo(driver, url)
 
-    if info and isNewArticle(info, lastAccess.load()):
+    if info and not accessed.exists(info):
         fn = '/tmp/' + file + '.jpg'
         imageFile = getPageImage(driver, info['link'], fn)
         # save page to contact outbox
@@ -44,7 +43,7 @@ def main():
             fn = datetime.now().strftime('%Y%m%d-%H%M%S_' + file + '.jpg')
             copyToContacts(imageFile, fn, contacts)
             os.remove(imageFile)
-            lastAccess.save(info)
+            accessed.save(info)
     logger.info('exit.\n')
     driver.close()
 

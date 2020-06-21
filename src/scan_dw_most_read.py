@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# Created at:  June 11, 2020
+# Created at:  May 24, 2020
 # By: Weiping Liu
 
 import time, os
@@ -9,34 +9,33 @@ import logging
 import shutil
 from datetime import datetime
 
-from nyt.nyt_lead_article import getLeadArticleInfo
-from nyt.nyt_article import getPageImage
+from dw.dw_article import getPageImage
+from dw.dw_most_read import getMostReadArticleInfo
 from util.copy_to_contacts import copyToContacts
 from helper.browser_driver import WebDriver
 from helper.cmd_argv import getContacts
-from helper.last_access import LastAccess
-from helper.check_new_article import isNewArticle
+from helper.accessed import Accessed
 from helper.my_logger import getMyLogger
 
 class Settings(object):
-    browser = 'Chrome'
+    browser = 'Firefox'
     zoom = 100
-    pageWidth = 400     # about 20 c-chars in a line
-    headless = True     # need to be True for Chrome taking full page image
+    pageWidth = 400     # 20 c-chars in a line
+    headless = True    # need to be True, or Chrome does not take full page image
     configDir = None
 
-file = 'nyt-morning-brief'
+file = 'dw-most-read'
 
 def main():
     logger.info('start %s', __file__)
     driver = WebDriver(Settings)
     contacts = getContacts()
-    lastAccess = LastAccess('last_' + file + '.json')
+    accessed = Accessed('accessed_dw.json')
 
-    url = 'https://cn.nytimes.com/morning-brief'
-    info = getLeadArticleInfo(driver, url)
+    url = "https://www.dw.com/zh/在线报导/s-9058"
+    info = getMostReadArticleInfo(driver, url)
 
-    if info and isNewArticle(info, lastAccess.load()):
+    if info and not accessed.exists(info):
         fn = '/tmp/' + file + '.jpg'
         imageFile = getPageImage(driver, info['link'], fn)
         # save page to contact outbox
@@ -44,7 +43,7 @@ def main():
             fn = datetime.now().strftime('%Y%m%d-%H%M%S_' + file + '.jpg')
             copyToContacts(imageFile, fn, contacts)
             os.remove(imageFile)
-            lastAccess.save(info)
+            accessed.save(info)
     logger.info('exit.\n')
     driver.close()
 

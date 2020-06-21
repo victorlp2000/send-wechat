@@ -19,7 +19,9 @@ def readFile(filename):
 # need to be converted into utf8
 def saveFile(filename, dictObj):
     with open(filename, 'w') as outfile:
-        str = json.dumps(dictObj, ensure_ascii=False)
+        str = json.dumps(dictObj,
+                         indent=2,
+                         ensure_ascii=False)
         outfile.write(str)
 
 if __name__ == '__main__':
