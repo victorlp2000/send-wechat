@@ -16,9 +16,9 @@ logger = getMyLogger(__name__)
 class WebDriver(object):
     def __init__(self, settings=None):
         # default settings
-        self.browser = 'Chrome'
+        self.browser = 'Firefox'
         self.headless = True
-        self.zoom = 100
+        self.zoom = None
         self.pageWidth = 400
         self.configDir = None
         self.workingDir = os.path.abspath('.')
@@ -158,6 +158,10 @@ class WebDriver(object):
             for div in divs:
                 ele.execute_script("arguments[0].style.display = 'none';", div)
 
+    def noneDisplayElements(self, elements=[]):
+        for e in elements:
+            self.driver.execute_script("arguments[0].style.display = 'none';", e)
+
     def saveFullPageToPng(self, fn):
         pageLength = self.scrollToBottom()
         time.sleep(2)
@@ -166,7 +170,7 @@ class WebDriver(object):
             logger.debug('save Chrome page to %s', fn)
             pageLength = self.scrollToBottom()
             time.sleep(2)
-            if self.zoom != -1:
+            if self.zoom != None:
                 self.setZoom(self.zoom)
                 pageLength *= self.zoom / 100
             self.setWindowSize(self.pageWidth, pageLength)
@@ -174,7 +178,7 @@ class WebDriver(object):
             self.driver.save_screenshot(fn)
         elif self.browser == 'Firefox':
             logger.debug('save Firefox page to %s', fn)
-            if self.zoom != -1:
+            if self.zoom != None:
                 self.setZoom(self.zoom)
             pageLength = self.scrollToBottom()
             time.sleep(2)

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# Created at:  June 11, 2020
+# Created at:  June 21, 2020
 # By: Weiping Liu
 
 import time, os
@@ -9,8 +9,8 @@ import logging
 import shutil
 from datetime import datetime
 
-from bbc.bbc_top_story import getTopStoryInfo
-from bbc.bbc_article import getPageImage
+from ft.ft_top_story import getTopStoryInfo
+from ft.ft_article import getPageImage
 from util.copy_to_contacts import copyToContacts
 from helper.browser_driver import WebDriver
 from helper.cmd_argv import getContacts
@@ -24,15 +24,15 @@ class Settings(object):
     headless = True     # need to be True, or Chrome does not take full page image
     configDir = None
 
-file = 'bbc-top-story'
+file = 'ft-top-story'
 
 def main():
     logger.info('start %s', __file__)
     driver = WebDriver(Settings)
     contacts = getContacts()
-    accessed = Accessed('accessed_bbc.json')
+    accessed = Accessed('accessed_ft.json')
 
-    url = "https://www.bbc.com/zhongwen/simp"
+    url = "https://m.ftchinese.com/"
     info = getTopStoryInfo(driver, url)
 
     if info and not accessed.exists(info):

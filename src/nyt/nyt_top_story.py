@@ -16,9 +16,7 @@ def getLeadArticleInfo(driver, url):
     logger.info('loading: %s', url)
     driver.loadPage(url) # open the home page
     time.sleep(1)
-    # <div id="sectionLeadPackage">
-    #   ...
-    # </div>
+
     div = driver.findElementById('leadNews')
     if div == None:
         return None

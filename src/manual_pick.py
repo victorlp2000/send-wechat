@@ -14,6 +14,7 @@ from reuters.reuters_article import cleanPage as cleanReutersArticle
 from nyt.nyt_article import cleanPage as cleanNYTimesArticle
 from bbc.bbc_article import cleanPage as cleanBBCArticle
 from dw.dw_article import cleanPage as cleanDWArticle
+from ft.ft_article import cleanPage as cleanFTArticle
 from util.copy_to_contacts import copyToContacts
 from helper.cmd_argv import getContacts
 from helper.my_logger import getMyLogger
@@ -76,6 +77,9 @@ def main():
             elif url.startswith('https://www.dw.com/zh/'):
                 cleanDWArticle(driver)
                 fn = datetime.now().strftime('%Y%m%d-%H%M%S-dw.jpg')
+            elif url.startswith('https://m.ftchinese.com/'):
+                cleanFTArticle(driver)
+                fn = datetime.now().strftime('%Y%m%d-%H%M%S-ft.jpg')
             else:
                 print ('no parser for the page.')
 

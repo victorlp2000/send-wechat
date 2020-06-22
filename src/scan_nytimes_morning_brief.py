@@ -18,7 +18,7 @@ from helper.accessed import Accessed
 from helper.my_logger import getMyLogger
 
 class Settings(object):
-    browser = 'Chrome'
+    browser = 'Firefox'
     zoom = 100
     pageWidth = 400     # about 20 c-chars in a line
     headless = True     # need to be True for Chrome taking full page image
@@ -43,6 +43,7 @@ def main():
             fn = datetime.now().strftime('%Y%m%d-%H%M%S_' + file + '.jpg')
             copyToContacts(imageFile, fn, contacts)
             os.remove(imageFile)
+            info['exec'] = __file__
             accessed.save(info)
     logger.info('exit.\n')
     driver.close()

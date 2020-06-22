@@ -43,6 +43,7 @@ def main():
             fn = datetime.now().strftime('%Y%m%d-%H%M%S_' + file + '.jpg')
             copyToContacts(imageFile, fn, contacts)
             os.remove(imageFile)
+            info['exec'] = __file__
             accessed.save(info)
     logger.info('exit.\n')
     driver.close()

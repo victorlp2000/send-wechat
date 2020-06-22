@@ -9,8 +9,8 @@ import logging
 import shutil
 from datetime import datetime
 
-from bbc.bbc_top_story import getTopStoryInfo
-from bbc.bbc_article import getPageImage
+from nyt.nyt_lead_article import getLeadArticleInfo
+from nyt.nyt_article import getPageImage
 from util.copy_to_contacts import copyToContacts
 from helper.browser_driver import WebDriver
 from helper.cmd_argv import getContacts
@@ -19,21 +19,21 @@ from helper.my_logger import getMyLogger
 
 class Settings(object):
     browser = 'Firefox'
-    zoom = 100      # about 20 c-chars in a line
-    pageWidth = 360
-    headless = True     # need to be True, or Chrome does not take full page image
+    zoom = 100
+    pageWidth = 400     # about 20 c-chars in a line
+    headless = True     # need to be True for Chrome taking full page image
     configDir = None
 
-file = 'bbc-top-story'
+file = 'nyt-opinion'
 
 def main():
     logger.info('start %s', __file__)
     driver = WebDriver(Settings)
     contacts = getContacts()
-    accessed = Accessed('accessed_bbc.json')
+    accessed = Accessed('accessed_nytimes.json')
 
-    url = "https://www.bbc.com/zhongwen/simp"
-    info = getTopStoryInfo(driver, url)
+    url = 'https://cn.nytimes.com/opinion'
+    info = getLeadArticleInfo(driver, url)
 
     if info and not accessed.exists(info):
         fn = '/tmp/' + file + '.jpg'
