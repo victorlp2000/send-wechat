@@ -17,7 +17,7 @@ class WebDriver(object):
     def __init__(self, settings=None):
         # default settings
         self.browser = 'Firefox'
-        self.headless = True
+        self.headless = False
         self.zoom = None
         self.pageWidth = 400
         self.configDir = None

@@ -3,6 +3,7 @@
 
 import os, traceback
 import time
+from PIL import Image
 
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import WebDriverException
@@ -11,6 +12,23 @@ from util.file_in_use import waitFile
 from helper.browser_driver import WebDriver
 from helper.my_logger import getMyLogger
 
+def getQRCode(driver):
+    qrcode = driver.getBrowser().find_element_by_css_selector('div.qrcode')
+    # once accepted, class become 'qrcode hide'
+    if qrcode.get_attribute('class') == 'qrcode':
+        img = qrcode.find_element_by_tag_name('img')
+        png = img.screenshot_as_png
+        return png
+    return None
+
+def showQRCode(qr):
+    fn = '/tmp/qrcode.png'
+    with open(fn, "wb") as file:
+        file.write(qr)
+
+    png = Image.open(fn)
+    png.show()
+
 def loginWechat(driver):
     # webpage: WeChat微信网页版
     loginUrl = "https://wx.qq.com/"
@@ -18,9 +36,15 @@ def loginWechat(driver):
 
     logger.info('start %s', loginUrl)
     driver.loadPage(loginUrl)
+    qr0 = getQRCode(driver)
     while (driver.getCurrentUrl() != url):
-        time.sleep(5)
+        if driver.headless:
+            qr = getQRCode(driver)
+            if qr != None and len(qr0) != len(qr):
+                qr0 = qr    # qr image updated
+                showQRCode(qr)
         logger.info('wait login to WeChat from phone...')
+        time.sleep(3)
     logger.info('logged in.')
     return True
 
@@ -28,7 +52,7 @@ def getFriendInNavView(driver, friend):
     # left-side navigation menu
     navView = driver.findElementById('J_NavChatScrollBody')
     if navView == None:
-        logger.warning('did not find nav menu')
+        logger.warning('browser was crashed')
         return None
     # <div ng-repeat="chatContact in chatList track by chatContact.UserName" class="ng-scope"...
     divs = navView.find_elements_by_css_selector('div.ng-scope')
@@ -227,7 +251,8 @@ def checkCmd(driver):
     # response if receive any cmd from "File Transfer":
     friend = "File Transfer"
     cmd = getLastMsg(driver, friend)
-    if cmd == '?' or cmd == u'？':
+    if cmd.startswith('?') or cmd.startswith(u'？'):
+        logger.info('received cmd: %s', cmd)
         if activateFriend(driver, friend) is False:
             return
         inputFace(driver, 0)
@@ -236,7 +261,7 @@ def checkCmd(driver):
 class Settings(object):
     browser = 'Firefox'
     pageWidth = 800
-    headless = False
+    headless = True
 
 def main():
     logger.info('start ... %s', __file__)
