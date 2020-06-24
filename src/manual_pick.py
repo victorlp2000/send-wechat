@@ -97,5 +97,5 @@ def main():
 
 if __name__ == '__main__':
     fn = os.path.basename(__file__)
-    logger = getMyLogger(None, fn)
+    logger = getMyLogger(None, fn, logging.DEBUG)
     main()

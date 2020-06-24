@@ -7,11 +7,15 @@
 import logging
 from logging.handlers import RotatingFileHandler
 
-def getMyLogger(name=None, fn=None):
+def getMyLogger(name=None, fn=None, level=None):
     logger = logging.getLogger('mylog')
     if fn != None:
-        logger.setLevel(logging.INFO)
-        formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+        if level != None:
+            logger.setLevel(level)
+        else:
+            logger.setLevel(logging.INFO)
+        formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+                                    "%Y-%m-%d %H:%M")
         # create console handler and set level to debug
         handler = logging.StreamHandler()
         handler.setFormatter(formatter)

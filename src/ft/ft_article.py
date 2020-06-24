@@ -12,10 +12,17 @@ from helper.my_logger import getMyLogger
 logger = getMyLogger(__name__)
 
 def getPageImage(driver, url, fn):
-    fullPage = url + '?adchannelID=&full=y'
-    logger.info('loading "%s"', urllib.parse.unquote(fullPage))
+    logger.info('loading "%s"', urllib.parse.unquote(url))
     driver.setWindowSize(driver.pageWidth)
     driver.loadPage(url)
+    try:
+        # if there is <a href="/story/001088254?adchannelID=&amp;full=y">全文</a>
+        full = driver.getBrowser().find_element_by_link_text(u'全文')
+        fullLink = full.get_attribute('href')
+        logger.info('loading full "%s"', urllib.parse.unquote(fullLink))
+        driver.loadPage(fullLink)
+    except:
+        pass
     driver.scrollToBottom()
     time.sleep(3)   # for loading completely
     cleanPage(driver)

@@ -25,6 +25,7 @@ def cleanPage(driver):
     logger.info('cleaning content...')
     selectors = [
         # 广告
+        'div.DPSlot_container.StandardArticleBody_dp-slot-inline.StandardArticleBody_inline-canvas',
         'div.DPSlot_container.StandardArticleBody_dp-slot-inline',
         'div.StandardArticleBody_dp-slot-inline',
         # 下一篇文章, 更多文章

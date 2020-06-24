@@ -13,6 +13,16 @@ from util.png2jpg import convertToJpeg
 
 logger = getMyLogger(__name__)
 
+def isSameStrArray(s1, s2):
+    if s1 == None and s2 == None:
+        return True
+    if s1 == None or s2 == None:
+        return False
+    for i in range(len(s1)):
+        if s1[i] != s2[i]:
+            return False
+    return True
+
 class WebDriver(object):
     def __init__(self, settings=None):
         # default settings
@@ -145,8 +155,19 @@ class WebDriver(object):
             ele = element
         # set display:none for specified tag blocks
         for selector in css_selectors:
+            tag = selector[:selector.find('.')]
+            sClass = selector[(selector.find('.') + 1):]
+            sClass = sClass.split('.')
+            sClass.sort()
             divs = ele.find_elements_by_css_selector(selector)
             for div in divs:
+                eClass = div.get_attribute('class')
+                eClass = eClass.split()
+                eClass.sort()
+                if len(eClass) != len(sClass) or not isSameStrArray(eClass, sClass):
+                    logger.debug('ignore: %s\n   "%s" <>\n   "%s"', tag, sClass, eClass)
+                    continue
+                logger.debug('set:\n   "%s"', selector)
                 ele.execute_script("arguments[0].style.display = 'none';", div)
 
     def noneDisplayByIds(self, ids, element=None):
