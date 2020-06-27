@@ -25,7 +25,7 @@ def getMyLogger(name=None, fn=None, level=None):
             logfn = './logs/' + fn[:-3] + '.log'
         else:
             logfn = './logs/' + fn + '.log'
-        handler = RotatingFileHandler(logfn, maxBytes=10000, backupCount=1)
+        handler = RotatingFileHandler(logfn, maxBytes=4000, backupCount=1)
         handler.setFormatter(formatter)
         logger.addHandler(handler)
 

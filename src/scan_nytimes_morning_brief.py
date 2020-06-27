@@ -12,6 +12,7 @@ from datetime import datetime
 from nyt.nyt_lead_article import getLeadArticleInfo
 from nyt.nyt_article import getPageImage
 from util.copy_to_contacts import copyToContacts
+from util.pid_man import PidMan
 from helper.browser_driver import WebDriver
 from helper.cmd_argv import getContacts
 from helper.accessed import Accessed
@@ -29,6 +30,8 @@ file = 'nyt-morning-brief'
 def main():
     logger.info('start %s', __file__)
     driver = WebDriver(Settings)
+    pidMan = PidMan()
+    pidMan.save(driver.getPIDs())
     contacts = getContacts()
     accessed = Accessed('accessed_nytimes.json')
 
@@ -46,6 +49,7 @@ def main():
             info['exec'] = __file__
             accessed.save(info)
     logger.info('exit.\n')
+    pidMan.clean()
     driver.close()
 
 if __name__ == "__main__":

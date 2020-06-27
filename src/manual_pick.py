@@ -43,7 +43,6 @@ class Settings(object):
     zoom = 120
     pageWidth = 400
     headless = False
-    configDir = './FirefoxConfig'
 
 def main():
     logger.info('start %s', __file__)

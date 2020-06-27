@@ -42,10 +42,16 @@ class WebDriver(object):
             self.zoom = settings.zoom
         if 'pageWidth' in setDir:
             self.pageWidth = settings.pageWidth
-        if 'configDir' in setDir:
-            self.configDir = settings.configDir
-        if 'workingDir' in setDir:
-            self.workingDir = os.path.abspath(settings.workingDir)
+        if 'configDir' in setDir and settings.configDir != None:
+            if os.path.isdir(settings.configDir):
+                self.configDir = settings.configDir
+            else:
+                logger.warning('configDir: "%s" does not exist', settings.configDir)
+        if 'workingDir' in setDir and settings.workingDir != None:
+            if os.path.isdir(settings.workingDir):
+                self.workingDir = os.path.abspath(settings.workingDir)
+            else:
+                logger.warning('workingDir: "%s" does not exist', settings.workingDir)
 
         self.driver = None
 
@@ -76,6 +82,20 @@ class WebDriver(object):
         else:
             print('did not specify browser')
 
+    def getPIDs(self):
+        import psutil
+        pids = []
+        if self.browser == 'Firefox':
+            pid = self.driver.capabilities['moz:processID']
+        elif self.browser == 'Chrome':
+            pid = self.driver.service.process.pid
+
+        pids.append(pid)
+        ps = psutil.Process(pid)
+        for p in ps.children(recursive=True):
+            pids.append(p.pid)
+        return pids
+
     def getBrowser(self):
         return self.driver
 
@@ -86,7 +106,7 @@ class WebDriver(object):
         return self.driver.current_url
 
     def close(self):
-        self.driver.close()
+        self.driver.quit()
 
     def getWindowSize(self):
         return self.driver.get_window_size()
@@ -184,12 +204,11 @@ class WebDriver(object):
             self.driver.execute_script("arguments[0].style.display = 'none';", e)
 
     def saveFullPageToPng(self, fn):
-        pageLength = self.scrollToBottom()
+        self.setWindowSize(self.pageWidth)
         time.sleep(2)
-        self.scrollToTop()
         if self.browser == 'Chrome':
             logger.debug('save Chrome page to %s', fn)
-            pageLength = self.scrollToBottom()
+            pageLength = self.scrollToBottom()  # get length
             time.sleep(2)
             if self.zoom != None:
                 self.setZoom(self.zoom)
@@ -203,9 +222,10 @@ class WebDriver(object):
                 self.setZoom(self.zoom)
             pageLength = self.scrollToBottom()
             time.sleep(2)
-            self.scrollToTop()
             self.setWindowSize(self.pageWidth, pageLength)
+            self.scrollToTop()
             body = self.driver.find_element_by_tag_name('body')
+            png = body.screenshot_as_png    # some image does not been load if do once
             png = body.screenshot_as_png
             with open(fn, "wb") as file:
                 file.write(png)
