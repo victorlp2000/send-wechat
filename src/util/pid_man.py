@@ -22,8 +22,11 @@ class PidMan(object):
             self.clean()
 
         # generate filename
-        t = time.time()
-        self.fn = self.folder + '/' + str(t) + '.pid'
+        # t = time.time()
+        # self.fn = self.folder + '/' + str(t) + '.pid'
+        t = time.strftime("%Y%m%d-%H%M%S", time.localtime())
+        self.fn = self.folder + '/' + t + '.pid'
+
         # json_file.saveFile(self.fn, pids)
         f = open(self.fn, 'w')
         f.write(s)

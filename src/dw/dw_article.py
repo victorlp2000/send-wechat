@@ -45,7 +45,8 @@ def cleanPage(driver):
     pWidth = driver.pageWidth-20
 
     # in footerSection, keep copyright, remove others
-    footer = browser.find_element_by_id('footerBody')
+    footer = browser.find_element_by_id('footerSection')
+    setStyleWidth(browser, [footer], pWidth)
     uls = footer.find_elements_by_tag_name('ul')
     for ul in uls:
         browser.execute_script("arguments[0].style.display = 'none';", ul)
@@ -60,6 +61,11 @@ def cleanPage(driver):
 
     ps = content.find_elements_by_tag_name('p')
     setStyleWidth(browser, ps, pWidth)
+
+    h4s = content.find_elements_by_tag_name('h4')
+    for h4 in h4s:
+        if h4.text == 'DW.COM':
+            browser.execute_script("arguments[0].style.display = 'none';", h4)
 
     # if there is picBox, make it 2/3 width of page width
     # <div class="picBox medium">
