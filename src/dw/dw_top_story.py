@@ -14,8 +14,9 @@ def getTopStoryInfo(driver, url):
     logger.info('loading: %s', url)
     driver.loadPage(url) # open the home page
     time.sleep(2)
-    selector = 'div.teaserContentWrap'
-    divs = driver.getBrowser().find_elements_by_css_selector(selector)
+    browser = driver.getBrowser()
+    selector = 'div.basicteaser__wrap'
+    divs = browser.find_elements_by_css_selector(selector)
     if len(divs) == 0:
         logger.warning('did not find aticle div: "%s"', selector)
         return None
@@ -29,9 +30,7 @@ def getTopStoryInfo(driver, url):
     return info
 
 def getArticleInfo(item):
-    links = item.find_elements_by_tag_name('a')
-    if len(links) > 0:
-        title = links[0].find_elements_by_tag_name('h2')
-        return {'link': links[0].get_attribute('href'),
-                'title':title[0].text}
-    return None
+    headline = item.find_element_by_tag_name('h2')
+    link = headline.find_element_by_tag_name('a')
+    return {'link': link.get_attribute('href'),
+            'title':link.text}

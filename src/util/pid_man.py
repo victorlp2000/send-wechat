@@ -7,9 +7,10 @@
 import os, time
 
 class PidMan(object):
-    def __init__(self, workingDir='.'):
+    def __init__(self, fid, workingDir='.'):
         self.folder = workingDir + '/.pid'
         self.fn = None
+        self.fid = fid
         if not os.path.isdir(self.folder):
             os.mkdir(self.folder)
 
@@ -24,8 +25,8 @@ class PidMan(object):
         # generate filename
         # t = time.time()
         # self.fn = self.folder + '/' + str(t) + '.pid'
-        t = time.strftime("%Y%m%d-%H%M%S", time.localtime())
-        self.fn = self.folder + '/' + t + '.pid'
+        t = time.strftime("%Y%m%d-%H%M%S-", time.localtime())
+        self.fn = self.folder + '/' + t + self.fid + '.pid'
 
         # json_file.saveFile(self.fn, pids)
         f = open(self.fn, 'w')

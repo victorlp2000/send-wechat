@@ -24,13 +24,14 @@ class Settings(object):
     pageWidth = 360
     headless = True     # need to be True, or Chrome does not take full page image
     configDir = None
+    userAgent = 'Mobile'
 
 file = 'bbc-top-story'
 
 def main():
     logger.info('start %s', __file__)
     driver = WebDriver(Settings)
-    pidMan = PidMan()
+    pidMan = PidMan(file)
     pidMan.save(driver.getPIDs())
     contacts = getContacts()
     accessed = Accessed('accessed_bbc.json')
@@ -48,6 +49,9 @@ def main():
             os.remove(imageFile)
             info['exec'] = __file__
             accessed.save(info)
+    else:
+        logger.info('old article')
+
     logger.info('exit.\n')
     pidMan.clean()
     driver.close()

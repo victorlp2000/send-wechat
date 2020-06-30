@@ -9,7 +9,7 @@ import logging
 import shutil
 from datetime import datetime
 
-from nyt.nyt_top_story import getLeadArticleInfo
+from nyt.nyt_lead_article import getLeadArticleInfo
 from nyt.nyt_article import getPageImage
 from util.copy_to_contacts import copyToContacts
 from util.pid_man import PidMan
@@ -24,18 +24,19 @@ class Settings(object):
     pageWidth = 400     # about 20 c-chars in a line
     headless = True     # need to be True for Chrome taking full page image
     configDir = None
+    userAgent = 'Mobile'
 
 file = 'nyt-lead-news'
 
 def main():
     logger.info('start %s', __file__)
     driver = WebDriver(Settings)
-    pidMan = PidMan()
+    pidMan = PidMan(file)
     pidMan.save(driver.getPIDs())
     contacts = getContacts()
     accessed = Accessed('accessed_nytimes.json')
 
-    url = 'https://cn.nytimes.com/'
+    url = 'https://m.cn.nytimes.com/'
     info = getLeadArticleInfo(driver, url)
 
     if info and not accessed.exists(info):
@@ -48,6 +49,9 @@ def main():
             os.remove(imageFile)
             info['exec'] = __file__
             accessed.save(info)
+    else:
+        logger.info('old article')
+
     logger.info('exit.\n')
     pidMan.clean()
     driver.close()

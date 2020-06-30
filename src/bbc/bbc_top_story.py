@@ -14,7 +14,9 @@ def getTopStoryInfo(driver, url):
     logger.info('loading: %s', url)
     driver.loadPage(url) # open the home page
     time.sleep(2)
-    section = findTopStorySection(driver)
+    browser = driver.getBrowser()
+
+    section = findTopStorySection(browser)
     if section == None:
         return None
 
@@ -32,10 +34,10 @@ def getTopStoryInfo(driver, url):
     logger.info('article: %s', info['title'])
     return info
 
-def findTopStorySection(driver):
+def findTopStorySection(browser):
     # find the section in sections
     name = 'Top-stories'
-    sections = driver.findElementsByTagName('section')
+    sections = browser.find_elements_by_tag_name('section')
     logger.debug('found %d sections in the page.', len(sections))
     for section in sections:
         label = section.get_attribute('aria-labelledby')

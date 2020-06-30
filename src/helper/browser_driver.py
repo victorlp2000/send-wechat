@@ -32,6 +32,7 @@ class WebDriver(object):
         self.pageWidth = 400
         self.configDir = None
         self.workingDir = os.path.abspath('.')
+        self.userAgent = None   # or 'Mobile'
 
         setDir = dir(settings)
         if 'browser' in setDir:
@@ -42,6 +43,8 @@ class WebDriver(object):
             self.zoom = settings.zoom
         if 'pageWidth' in setDir:
             self.pageWidth = settings.pageWidth
+        if 'userAgent' in setDir:
+            self.userAgent = settings.userAgent
         if 'configDir' in setDir and settings.configDir != None:
             if os.path.isdir(settings.configDir):
                 self.configDir = settings.configDir
@@ -55,10 +58,16 @@ class WebDriver(object):
 
         self.driver = None
 
+        # user agent string from here:
+        #   https://deviceatlas.com/blog/list-of-user-agent-strings
         if self.browser == 'Chrome':
             options = webdriver.ChromeOptions()
             if self.headless:
                 options.add_argument('--headless')
+            if self.userAgent == 'Mobile':
+                # Samsung Galaxy S8
+                ua = 'Chrome/60.0.3112.107 Mobile Safari/537.36'
+                options.add_argument('user-agent=' + ua)
             if self.configDir is not None:
                 # config data will be changed a lot at run time
                 # we'd like to keep user's config data clean
@@ -76,6 +85,12 @@ class WebDriver(object):
             options = webdriver.FirefoxOptions()
             if self.headless:
                 options.set_headless()
+            if self.userAgent == 'Mobile':
+                # Samsung Galaxy S8
+                ua = 'Mozilla/5.0 (Linux; Android 7.0; SM-G892A Build/NRD90M; wv)'
+                profile = webdriver.FirefoxProfile()
+                profile.set_preference('general.useragent.override', ua)
+                options.profile = profile
             self.driver = webdriver.Firefox(
                         firefox_options=options,
                         executable_path='/usr/local/bin/geckodriver')

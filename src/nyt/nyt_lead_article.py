@@ -14,24 +14,34 @@ def getLeadArticleInfo(driver, url):
     logger.info('loading: %s', url)
     driver.loadPage(url) # open the home page
     time.sleep(1)
-    # <div id="sectionLeadPackage">
-    #   ...
-    # </div>
-    div = driver.findElementById('sectionLeadPackage')
-    if div == None:
-        return None
+    browser = driver.getBrowser()
 
-    info = getArticleInfo(div)
+    list = getArticleList(browser)
+    if len(list) == 0:
+        logger.warning('did not find item in list')
+        return None
+    info = getArticleInfo(list[0])
     if info == None:
         return None
 
     logger.info('article: %s', info['title'])
     return info
 
+def getArticleList(browser):
+    selector = 'ol.article-list'
+    try:
+        ol = browser.find_element_by_css_selector(selector)
+    except:
+        logger.warning('did not find "%s"', selector)
+        return []
+
+    list = ol.find_elements_by_tag_name('li')
+    return list
+
 def getArticleInfo(item):
     links = item.find_elements_by_tag_name('a')
     if len(links) > 0:
         return {'link': links[0].get_attribute('href'),
-                'title':links[0].text}
+                'title':links[0].get_attribute('title')}
     logger.warning('did not find article link.')
     return None

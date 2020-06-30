@@ -13,8 +13,9 @@ logger = getMyLogger(__name__)
 def getMostReadArticleInfo(driver, url):
     logger.info('loading: %s', url)
     driver.loadPage(url) # open the home page
+    browser = driver.getBrowser()
 
-    section = findMostReadSection(driver)
+    section = findMostReadSection(browser)
     if section == None:
         return None
 
@@ -32,9 +33,9 @@ def getMostReadArticleInfo(driver, url):
     logger.info('article: %s', info['title'])
     return info
 
-def findMostReadSection(driver):
+def findMostReadSection(browser):
     # find the most-read-section in about 10 sections
-    sections = driver.findElementsByTagName('section')
+    sections = browser.find_elements_by_tag_name('section')
     logger.debug('found %d sections in the page.', len(sections))
     for section in sections:
         label = section.get_attribute('aria-labelledby')
