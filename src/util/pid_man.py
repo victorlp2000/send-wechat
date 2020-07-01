@@ -7,8 +7,12 @@
 import os, time
 
 class PidMan(object):
-    def __init__(self, fid, workingDir='.'):
-        self.folder = workingDir + '/.pid'
+    def __init__(self, fid, workingDir=None):
+        if workingDir == None:
+            self.folder = './.pid'
+        else:
+            self.folder = workingDir
+
         self.fn = None
         self.fid = fid
         if not os.path.isdir(self.folder):

@@ -11,6 +11,7 @@ from selenium.common.exceptions import WebDriverException
 from util.file_in_use import waitFile
 from helper.browser_driver import WebDriver
 from helper.my_logger import getMyLogger
+from util.pid_man import PidMan
 
 def getQRCode(driver):
     qrcode = driver.getBrowser().find_element_by_css_selector('div.qrcode')
@@ -44,6 +45,7 @@ def loginWechat(driver):
                 qr0 = qr    # qr image updated
                 showQRCode(qr)
         logger.info('wait login to WeChat from phone...')
+        print('\a')     # alerm sound
         time.sleep(3)
     logger.info('logged in.')
     return True
@@ -253,12 +255,19 @@ def checkCmd(driver):
     # response if receive any cmd from "File Transfer":
     friend = "File Transfer"
     cmd = getLastMsg(driver, friend)
-    if cmd.startswith('?') or cmd.startswith(u'？'):
-        logger.info('received cmd: %s', cmd)
+    if not (cmd.startswith('?') or cmd.startswith(u'？')):
+        return 0
+
+    # process cmd
+    logger.info('received cmd: %s', cmd)
+    if cmd == '?' or cmd == u'？':
         if activateFriend(driver, friend) is False:
-            return
-        inputFace(driver, 0)
+            return 0
         # sendReport(friend, ":)")
+        inputFace(driver, 0)
+    elif cmd == '?exit':    # exit wechat
+        return -1
+    return 0
 
 class Settings(object):
     browser = 'Firefox'
@@ -268,6 +277,8 @@ class Settings(object):
 def main():
     logger.info('start ... %s', __file__)
     driver = WebDriver(Settings)
+    pidMan = PidMan('wechat', '.')
+    pidMan.save(driver.getPIDs())
     driver.setWindowSize(driver.pageWidth, 800)
     loginWechat(driver)
     time.sleep(15)  # wait fully loaded,
@@ -279,8 +290,11 @@ def main():
         if timeout <= 0:
             checkOutbox(driver) # check image every timeout
             timeout = timeoutOutbox
-        checkCmd(driver)    # check cmd every 1 second
+            pidMan.save(driver.getPIDs())
+        if checkCmd(driver) == -1:
+            break
         time.sleep(5)
+    pidMan.clean()
     driver.close()
 
 if (__name__ == '__main__'):

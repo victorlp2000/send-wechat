@@ -2,4 +2,5 @@
 *
 # Except this file
 !contacts.json
+!readme.txt
 !.gitignore
