@@ -38,6 +38,7 @@ def loginWechat(driver):
     logger.info('start %s', loginUrl)
     driver.loadPage(loginUrl)
     qr0 = getQRCode(driver)
+    timeout = 10    # loop 10 times
     while (driver.getCurrentUrl() != url):
         if driver.headless:
             qr = getQRCode(driver)
@@ -47,6 +48,9 @@ def loginWechat(driver):
         logger.info('wait login to WeChat from phone...')
         print('\a')     # alerm sound
         time.sleep(3)
+        timeout -= 1
+        if timeout <= 0:
+            return False
     logger.info('logged in.')
     return True
 
@@ -280,20 +284,20 @@ def main():
     pidMan = PidMan('wechat', '.')
     pidMan.save(driver.getPIDs())
     driver.setWindowSize(driver.pageWidth, 800)
-    loginWechat(driver)
-    time.sleep(15)  # wait fully loaded,
-                    # need to find a flag when it is ready
-    timeoutOutbox = 12 * 5
-    timeout = 0
-    while True:
-        timeout -= 1
-        if timeout <= 0:
-            checkOutbox(driver) # check image every timeout
-            timeout = timeoutOutbox
-            pidMan.save(driver.getPIDs())
-        if checkCmd(driver) == -1:
-            break
-        time.sleep(5)
+    if loginWechat(driver) == True:
+        time.sleep(15)  # wait fully loaded,
+                        # need to find a flag when it is ready
+        timeoutOutbox = 12 * 5
+        timeout = 0
+        while True:
+            timeout -= 1
+            if timeout <= 0:
+                checkOutbox(driver) # check image every timeout
+                timeout = timeoutOutbox
+                pidMan.save(driver.getPIDs())
+            if checkCmd(driver) == -1:
+                break
+            time.sleep(5)
     pidMan.clean()
     driver.close()
 

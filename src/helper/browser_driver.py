@@ -236,11 +236,14 @@ class WebDriver(object):
             if self.zoom != None:
                 self.setZoom(self.zoom)
             pageLength = self.scrollToBottom()
-            time.sleep(2)
+            time.sleep(3)
             self.setWindowSize(self.pageWidth, pageLength)
             self.scrollToTop()
             body = self.driver.find_element_by_tag_name('body')
             png = body.screenshot_as_png    # some image does not been load if do once
+            time.sleep(1)
+            png = body.screenshot_as_png
+            time.sleep(1)
             png = body.screenshot_as_png
             with open(fn, "wb") as file:
                 file.write(png)
