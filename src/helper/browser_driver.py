@@ -236,7 +236,12 @@ class WebDriver(object):
             if self.zoom != None:
                 self.setZoom(self.zoom)
             pageLength = self.scrollToBottom()
-            time.sleep(3)
+            time.sleep(1)
+            pageLength = self.scrollToBottom()
+            time.sleep(1)
+            pageLength = self.scrollToBottom()
+            time.sleep(1)
+            pageLength = self.scrollToBottom()
             self.setWindowSize(self.pageWidth, pageLength)
             self.scrollToTop()
             body = self.driver.find_element_by_tag_name('body')
