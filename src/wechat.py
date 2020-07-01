@@ -204,6 +204,8 @@ def getOutboxFolders(workingDir):
         folderPath = outboxPath + '/' + folderName
         if not os.path.isdir(folderPath):
             continue
+        if folderName.startswith('~'):  # folder for internal use
+            continue
         dirs = os.listdir(folderPath)
         files = False
         for f in dirs:

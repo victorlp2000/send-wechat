@@ -10,7 +10,7 @@ from util import json_file
 
 def getContacts():
     # default contacts
-    contacts = ['test']
+    contacts = ['~test']    # folder for internal use
     if len(sys.argv) > 1:
         tmp = json_file.readFile(sys.argv[1])
         if type(tmp) is list:
