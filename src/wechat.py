@@ -54,11 +54,11 @@ def loginWechat(driver):
     logger.info('logged in.')
     return True
 
-def getFriendInNavView(driver, friend):
+def getFriendFromNavView(driver, friend):
     # left-side navigation menu
     navView = driver.findElementById('J_NavChatScrollBody')
     if navView == None:
-        logger.warning('browser was crashed')
+        logger.warning('browser was crashed?')
         return None
     # <div ng-repeat="chatContact in chatList track by chatContact.UserName" class="ng-scope"...
     divs = navView.find_elements_by_css_selector('div.ng-scope')
@@ -75,17 +75,15 @@ def getFriendInNavView(driver, friend):
             return div  # found the friend
     logger.info('did not find "%s" in nav menu', friend)
     logger.info(names)
-    for div in divs:
-        logger.info(' ')
     return None
 
 def getLastMsg(driver, friend):
-    div = getFriendInNavView(driver, friend)
+    div = getFriendFromNavView(driver, friend)
     if div is None:
         # search friend
         if searchFriend(driver, friend) is None:
             return ''
-        div = getFriendInNavView(driver, friend) # try again after search
+        div = getFriendFromNavView(driver, friend) # try again after search
     if div is None:
         return ''
 
@@ -294,9 +292,9 @@ def main():
             if timeout <= 0:
                 checkOutbox(driver) # check image every timeout
                 timeout = timeoutOutbox
-                pidMan.save(driver.getPIDs())
-            if checkCmd(driver) == -1:
-                break
+                # pidMan.save(driver.getPIDs())
+            # if checkCmd(driver) == -1:
+            #     break
             time.sleep(5)
     pidMan.clean()
     driver.close()
