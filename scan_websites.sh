@@ -28,6 +28,9 @@ timeout $limit python src/scan_dw_most_read.py outbox/save.json
 ./cleanup.sh
 
 timeout $limit python src/scan_ft_top_story.py outbox/save.json
+./cleanup.sh
+
+timeout $limit python src/scan_voa_top_story.py outbox/save.json
 
 # if there is crashed process, the pids will be saved in .pid
 # here we do clean up to kill those processes

@@ -9,8 +9,8 @@ import logging
 import shutil
 from datetime import datetime
 
-from bbc.bbc_top_story import getTopStoryInfo
-from bbc.bbc_article import getPageImage
+from voa.voa_top_story import getTopStoryInfo
+from voa.voa_article import getPageImage
 from util.copy_to_contacts import copyToContacts
 from util.pid_man import PidMan
 from helper.browser_driver import WebDriver
@@ -24,8 +24,9 @@ class Settings(object):
     pageWidth = 360
     headless = True     # need to be True, or Chrome does not take full page image
     configDir = None
+    userAgent = 'Mobile'
 
-file = 'bbc-top-story'
+file = 'voa-top-story'
 
 def main():
     logger.info('start %s', __file__)
@@ -33,9 +34,9 @@ def main():
     pidMan = PidMan(file)
     pidMan.save(driver.getPIDs())
     contacts = getContacts()
-    accessed = Accessed('accessed_bbc.json')
+    accessed = Accessed('accessed_voa.json')
 
-    url = "https://www.bbc.com/zhongwen/simp"
+    url = "https://www.voachinese.com/"
     info = getTopStoryInfo(driver, url)
 
     if info and not accessed.exists(info):

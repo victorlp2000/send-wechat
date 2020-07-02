@@ -21,11 +21,17 @@ def getPageImage(driver, url, fn):
 def cleanPage(driver):
     logger.info('cleaning content...')
     selectors = [
+        'div.container.google-translate-container',
         'div.share--box',  # 分享
-        'div.media-block-wrap', # 相关内容, VOA卫视最新视频, 最新美国相关报道, 您可能感兴趣的内容
-        'div.comments.comments--fb', # 脸书论坛
+        'div.media-block.also-read',    # 请同时参阅
+        'div.media-block-wrap',         # 相关内容
+        'div.region',                   # VOA卫视最新视频, 中国, 台湾, 港澳
+                                        # 最新美国相关报道
+        'div.comments.comments--fb',    # 脸书论坛
     ]
     ids = [
+        'comments', # 脸书论坛
+        'youmaylike'    # 您可能感兴趣的内容
     ]
     driver.noneDisplayByCSSSelectors(selectors)
     driver.noneDisplayByIds(ids)

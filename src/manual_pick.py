@@ -44,6 +44,7 @@ class Settings(object):
     zoom = 120
     pageWidth = 400
     headless = False
+    userAgent = 'Mobile'
 
 def main():
     logger.info('start %s', __file__)
