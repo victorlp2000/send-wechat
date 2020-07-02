@@ -41,7 +41,8 @@ def getArticleList(browser):
 def getArticleInfo(item):
     links = item.find_elements_by_tag_name('a')
     if len(links) > 0:
+        h2 = links[0].find_element_by_tag_name('h2')
         return {'link': links[0].get_attribute('href'),
-                'title':links[0].get_attribute('title')}
+                'title':h2.text}
     logger.warning('did not find article link.')
     return None
