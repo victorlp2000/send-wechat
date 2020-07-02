@@ -11,7 +11,7 @@ from util import json_file
 class Accessed(object):
     def __init__(self, fn):
         self.fn = fn
-        self.maxInfo = 10
+        self.maxInfo = 40
         self.info = []
 
     def refresh(self):
