@@ -21,7 +21,7 @@ from helper.my_logger import getMyLogger
 class Settings(object):
     browser = 'Firefox'
     zoom = 100
-    pageWidth = 400     # about 20 c-chars in a line
+    pageWidth = 510     # about 20 c-chars in a line
     headless = True     # need to be True for Chrome taking full page image
     configDir = None
     userAgent = 'Mobile'
