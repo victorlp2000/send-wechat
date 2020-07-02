@@ -194,6 +194,7 @@ def sendReport(driver, friend, msg):
         return
 
     editArea.send_keys(msg)
+    time.sleep(1)
     editArea.send_keys(Keys.ENTER)
 
 # find any folder in outbox
@@ -248,6 +249,7 @@ def inputFace(driver, n):
     links = faces[0].find_elements_by_tag_name('a')
     if n+1 <= len(links):
         links[n].click()
+        time.sleep(1)
         editArea.send_keys(Keys.ENTER)
         return True
     return False

@@ -5,6 +5,9 @@
 # By: Weiping Liu
 
 import os, time
+from helper.my_logger import getMyLogger
+
+logger = getMyLogger(__name__)
 
 class PidMan(object):
     def __init__(self, fid, workingDir=None):
@@ -21,7 +24,7 @@ class PidMan(object):
     def save(self, pids):
         # convert array to string
         s = ' '.join(map(str, pids)) + '\n'
-
+        logger.info('pids: %s', s)
         # only keep the last saved pids
         if self.fn != None:
             self.clean()
