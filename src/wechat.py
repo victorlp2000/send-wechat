@@ -11,6 +11,7 @@ from selenium.common.exceptions import WebDriverException
 from util.file_in_use import waitFile
 from helper.browser_driver import WebDriver
 from helper.my_logger import getMyLogger
+from helper import crontab
 from util.pid_man import PidMan
 
 def getQRCode(driver):
@@ -114,9 +115,9 @@ def searchFriend(driver, nickname):
         textInput = search.find_element_by_tag_name('input')
         textInput.clear()
         textInput.send_keys(nickname)
-        time.sleep(2)
+        time.sleep(1)
         textInput.send_keys(Keys.ENTER)
-        time.sleep(2)   # wait response after entering text
+        time.sleep(1)   # wait response after entering text
         delay = 5
         while delay > 0:
             if getCurrentFriend(driver) == nickname:
@@ -158,13 +159,14 @@ def uploadFile(driver, filename):
         if len(status) == 0:
             uploading = False
         time.sleep(1)
-    ns = waitFile(filename, 30)
+    ns = waitFile(filename, 60)
     logger.info('file in use timeout: %d!', ns)
     return True
 
 def sendFilesToFriends(driver, friends):
     logger.debug('sendFilesToFriends...')
     count = 0   # number of files sent
+    report = ''
     for name in friends:
         logger.info('send file(s) to "%s"', name)
         if activateFriend(driver, name) is False:
@@ -172,6 +174,9 @@ def sendFilesToFriends(driver, friends):
             continue
         folderPath = driver.workingDir + '/outbox/' + name
         files = os.listdir(folderPath)
+        if report != '':
+            report += '\n'
+        report += 'To ' + name + ': '
         for f in files:
             filePath = folderPath + '/' + f
             if not os.path.isfile(filePath):
@@ -180,8 +185,8 @@ def sendFilesToFriends(driver, friends):
                 # remove from the outbox folder
                 os.remove(filePath)
                 count += 1
-        logger.info('sent %d file(s)', count)
-    return count
+                report += f + ' '
+    return report
 
 def sendReport(driver, friend, msg):
     if activateFriend(driver, friend) == False:
@@ -192,9 +197,9 @@ def sendReport(driver, friend, msg):
     if (editArea == None):
         logger.warning('!! did not find input area.')
         return
-
+    logger.info(msg)
+    msg.replace('\n', ' ')
     editArea.send_keys(msg)
-    time.sleep(1)
     editArea.send_keys(Keys.ENTER)
 
 # find any folder in outbox
@@ -228,10 +233,9 @@ def checkOutbox(driver):
     # send file to friend if there is file in outbox
     folders = getOutboxFolders(driver.workingDir)
     if len(folders) > 0:
-        if sendFilesToFriends(driver, folders) > 0:
-            to = 'File Transfer'
-            msg = time.strftime('%Y-%m-%d %H:%M ') + str(folders)
-            sendReport(driver, to, msg)
+        report = sendFilesToFriends(driver, folders)
+        to = 'File Transfer'
+        sendReport(driver, to, report)
 
 def inputFace(driver, n):
     editArea = driver.findElementById('editArea')
@@ -267,7 +271,6 @@ def checkCmd(driver):
     if cmd == '?' or cmd == u'？':
         if activateFriend(driver, friend) is False:
             return 0
-        # sendReport(friend, ":)")
         inputFace(driver, 0)
     elif cmd == '?exit':    # exit wechat
         return -1
@@ -287,17 +290,21 @@ def main():
     if loginWechat(driver) == True:
         time.sleep(15)  # wait fully loaded,
                         # need to find a flag when it is ready
-        timeoutOutbox = 12 * 5
-        timeout = 0
+        delayMin = 5
         while True:
-            timeout -= 1
-            if timeout <= 0:
-                checkOutbox(driver) # check image every timeout
-                timeout = timeoutOutbox
-                # pidMan.save(driver.getPIDs())
-            # if checkCmd(driver) == -1:
-            #     break
-            time.sleep(5)
+            checkOutbox(driver)
+            cmd = crontab.getCrontabSetting('scan_websites.sh')
+            if cmd != None:
+                logger.debug('crontab: "%s..."', cmd[:40])
+                t = time.localtime()
+                s = cmd.split()
+                waitTime = crontab.nextMatchSeconds(t, s)
+                logger.info('next check at %d:%02d plus %d min', waitTime[1], waitTime[2], delayMin)
+                # delay 5 min for scanning webpages finish
+                delay = waitTime[0] + (delayMin * 60)
+                time.sleep(delay)
+            else:
+                time.sleep(delayMin * 60)
     pidMan.clean()
     driver.close()
 
