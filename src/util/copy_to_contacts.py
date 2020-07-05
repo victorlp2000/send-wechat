@@ -17,6 +17,8 @@ def copyToContacts(image, fn, contacts):
         if folderExists(contactFolder):
             logger.info('Save "%s" to "%s".', fn, contact)
             shutil.copyfile(image, contactFolder + '/' + fn)
+        else:
+            logger.warning('folder %s does not exist', contact)
 
 def folderExists(folder):
     return os.path.isdir(folder)

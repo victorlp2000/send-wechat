@@ -24,6 +24,7 @@ class Settings(object):
     pageWidth = 360
     headless = True     # need to be True, or Chrome does not take full page image
     configDir = None
+    userAgent = 'Mobile'
 
 file = 'ft-top-story'
 
@@ -35,7 +36,7 @@ def main():
     contacts = getContacts()
     accessed = Accessed('accessed_ft.json')
 
-    url = "https://m.ftchinese.com/"
+    url = "http://m.ftchinese.com/"
     info = getTopStoryInfo(driver, url)
 
     if info and not accessed.exists(info):
