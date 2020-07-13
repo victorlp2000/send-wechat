@@ -17,8 +17,7 @@ def getPageImage(driver, url, fn):
     driver.loadPage(url)
     driver.scrollToBottom()
     time.sleep(3)   # for loading completely
-    browser = driver.getBrowser()
-    cleanPage(browser)
+    cleanPage(driver)
 
     return driver.saveFullPageToJpg(fn)
 
@@ -26,8 +25,9 @@ def nonDisplayElements(browser, elements):
     for e in elements:
         browser.execute_script("arguments[0].style.display = 'none';", e)
 
-def cleanPage(browser):
+def cleanPage(driver):
     logger.info('cleaning content...')
+    browser = driver.getBrowser()
     divs = browser.find_elements_by_tag_name('div')
     for div in divs:
         prop = div.get_attribute('itemprop')

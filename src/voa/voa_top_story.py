@@ -18,9 +18,7 @@ def getTopStoryInfo(driver, url):
 
     content = browser.find_element_by_id('content')
     ul = content.find_element_by_tag_name('ul')
-    print('ul', ul)
     li = ul.find_element_by_tag_name('li')
-    print('li', li)
 
     # in the list, we only care the first item
     info = getArticleInfo(li)

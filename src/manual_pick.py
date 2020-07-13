@@ -41,7 +41,6 @@ def getChoice(browser, tab=0):
 
 class Settings(object):
     browser = 'Firefox'     # to get full page image, have to use Firefox now
-    zoom = 120
     pageWidth = 400
     headless = False
     userAgent = 'Mobile'
@@ -62,8 +61,8 @@ def main():
         if select == '1':
             driver.setZoom(driver.zoom)
             driver.setWindowSize(driver.pageWidth)
-            driver.scrollToBottom()
             driver.scrollToTop()
+            driver.scrollToBottom()
 
             url = driver.getCurrentUrl()
             if url.startswith('https://cn.reuters.com/article/'):
@@ -75,7 +74,7 @@ def main():
             elif url.startswith('https://www.bbc.com/zhongwen/simp/'):
                 cleanBBCArticle(driver)
                 fn = datetime.now().strftime('%Y%m%d-%H%M%S-nyt.jpg')
-            elif url.startswith('https://www.dw.com/zh/'):
+            elif url.startswith('https://m.dw.com/zh/'):
                 cleanDWArticle(driver)
                 fn = datetime.now().strftime('%Y%m%d-%H%M%S-dw.jpg')
             elif url.startswith('https://m.ftchinese.com/'):

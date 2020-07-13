@@ -39,7 +39,11 @@ def main():
     url = 'https://m.cn.nytimes.com/'
     info = getLeadArticleInfo(driver, url)
 
-    if info and not accessed.exists(info):
+    skip1 = '/morning-brief/'
+    skip2 = '/opinion/'
+    if skip1 in info['link'] or skip2 in info['link']:
+        logger.info('ignore morning-brief or opinion')
+    elif info and not accessed.exists(info):
         fn = '/tmp/' + file + '.jpg'
         imageFile = getPageImage(driver, info['link'], fn)
         # save page to contact outbox
