@@ -129,6 +129,7 @@ def searchFriend(driver, nickname):
         logger.warning('!! did not find friend: %s', nickname)
     except:
         logger.error('!! error in searching friend "%s"', nickname)
+        driver.saveFullPageToJpg('error-wechat.jpg')
         # traceback()
     return None
 
@@ -292,6 +293,7 @@ def main():
                         # need to find a flag when it is ready
         delayMin = 5
         while True:
+            driver.saveFullPageToJpg('wechat.jpg')
             checkOutbox(driver)
             cmd = crontab.getCrontabSetting('scan_websites.sh')
             if cmd != None:
