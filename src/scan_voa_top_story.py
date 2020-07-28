@@ -20,8 +20,7 @@ from helper.my_logger import getMyLogger
 
 class Settings(object):
     browser = 'Firefox'
-    zoom = 100      # about 20 c-chars in a line
-    pageWidth = 360
+    pageWidth = 450
     headless = True     # need to be True, or Chrome does not take full page image
     configDir = None
     userAgent = 'Mobile'
@@ -39,7 +38,9 @@ def main():
     url = "https://www.voachinese.com/"
     info = getTopStoryInfo(driver, url)
 
-    if info and not accessed.exists(info):
+    if info == None:
+        logger.error('did not find article info.')
+    elif not accessed.exists(info):
         fn = '/tmp/' + file + '.jpg'
         imageFile = getPageImage(driver, info['link'], fn)
         # save page to contact outbox

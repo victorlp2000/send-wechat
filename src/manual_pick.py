@@ -41,7 +41,7 @@ def getChoice(browser, tab=0):
 
 class Settings(object):
     browser = 'Firefox'     # to get full page image, have to use Firefox now
-    pageWidth = 400
+    pageWidth = 450
     headless = False
     userAgent = 'Mobile'
 

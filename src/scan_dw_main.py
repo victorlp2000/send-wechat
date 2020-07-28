@@ -20,8 +20,8 @@ from helper.my_logger import getMyLogger
 
 class Settings(object):
     browser = 'Firefox'
-    pageWidth = 430
-    headless = False     # need to be True, or Chrome does not take full page image
+    pageWidth = 450
+    headless = True     # need to be True, or Chrome does not take full page image
     configDir = None
     userAgent = 'Mobile'
 

@@ -29,7 +29,7 @@ class WebDriver(object):
         self.browser = 'Firefox'
         self.headless = False
         self.zoom = None
-        self.pageWidth = 400
+        self.pageWidth = None
         self.configDir = None
         self.workingDir = os.path.abspath('.')
         self.userAgent = None   # or 'Mobile'
@@ -65,8 +65,9 @@ class WebDriver(object):
             if self.headless:
                 options.add_argument('--headless')
             if self.userAgent == 'Mobile':
-                # Samsung Galaxy S8
-                ua = 'Chrome/60.0.3112.107 Mobile Safari/537.36'
+                # Mobile phone web browser
+                ua = 'Mozilla/5.0 (Linux; Android 8.0.0; SM-G930F Build/R16NW; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/74.0.3729.157 Mobile Safari/537.36'
+                logger.info('set userAgent: %s', ua)
                 options.add_argument('user-agent=' + ua)
             if self.configDir is not None:
                 # config data will be changed a lot at run time
@@ -83,19 +84,26 @@ class WebDriver(object):
                         executable_path='/usr/local/bin/chromedriver')
         elif self.browser == 'Firefox':
             options = webdriver.FirefoxOptions()
+            profile = webdriver.FirefoxProfile()
+            profile.set_preference('browser.zoom.full', False)
+            # profile.set_preference('browser.zoom.siteSpecific', False)
+            profile.set_preference('layout.css.devPixelsPerPx', '2.0')
+            profile.set_preference('font.minimum-size.zh-CN', 20)
+            profile.set_preference('font.size.monospace.zh-CN', 16)
+            # profile.set_preference('browser.display.auto_quality_min_font_size', 40)
             if self.headless:
                 options.set_headless()
             if self.userAgent == 'Mobile':
                 # Samsung Galaxy S8
                 ua = 'Mozilla/5.0 (Linux; Android 7.0; SM-G892A Build/NRD90M; wv)'
-                profile = webdriver.FirefoxProfile()
+                logger.info('set userAgent: %s', ua)
                 profile.set_preference('general.useragent.override', ua)
-                options.profile = profile
+            options.profile = profile
             self.driver = webdriver.Firefox(
                         firefox_options=options,
                         executable_path='/usr/local/bin/geckodriver')
         else:
-            print('did not specify browser')
+            logger.error('!! did not specify browser')
 
     def getPIDs(self):
         import psutil
@@ -228,8 +236,10 @@ class WebDriver(object):
             if self.zoom != None:
                 self.setZoom(self.zoom)
                 pageLength *= self.zoom / 100
+            # bodySize = self.driver.find_element_by_tag_name('body').size
             self.setWindowSize(self.pageWidth, pageLength)
             self.scrollToTop()
+            time.sleep(1)
             self.driver.save_screenshot(fn)
         elif self.browser == 'Firefox':
             logger.debug('save Firefox page to %s', fn)

@@ -20,8 +20,7 @@ from helper.my_logger import getMyLogger
 
 class Settings(object):
     browser = 'Firefox'
-    zoom = 100
-    pageWidth = 510     # about 20 c-chars in a line
+    pageWidth = 450
     headless = True     # need to be True for Chrome taking full page image
     configDir = None
     userAgent = 'Mobile'
@@ -41,9 +40,12 @@ def main():
 
     skip1 = '/morning-brief/'
     skip2 = '/opinion/'
-    if skip1 in info['link'] or skip2 in info['link']:
+
+    if info == None:
+        logger.error('did not find article info.')
+    elif skip1 in info['link'] or skip2 in info['link']:
         logger.info('ignore morning-brief or opinion')
-    elif info and not accessed.exists(info):
+    elif not accessed.exists(info):
         fn = '/tmp/' + file + '.jpg'
         imageFile = getPageImage(driver, info['link'], fn)
         # save page to contact outbox
