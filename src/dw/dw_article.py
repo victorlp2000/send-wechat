@@ -28,9 +28,9 @@ def nonDisplayElements(browser, elements):
 def cleanPage(driver):
     logger.info('cleaning content...')
     browser = driver.getBrowser()
-    # make header position fixed
+    # make header stay at top
     header = browser.find_element_by_tag_name('header')
-    browser.execute_script("arguments[0].style.position = 'absolute';", header)
+    browser.execute_script("arguments[0].style.position = 'relative';", header)
 
     # <div id="DW_M_Articles_Leaderboard-label" class="advertisement advertisement--leaderboard advertisement--detail" style="display: block;">
     # <div id="DW_M_Articles_Rectangle-1-label" class="advertisement advertisement--rectangle advertisement--detail" style="display: block;"
