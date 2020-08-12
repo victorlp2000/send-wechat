@@ -35,3 +35,8 @@ def cleanPage(driver):
     ]
     driver.noneDisplayByCSSSelectors(selectors)
     driver.noneDisplayByIds(ids)
+
+    browser = driver.getBrowser()
+    # make header stay at top
+    header = browser.find_element_by_css_selector('div.hdr')
+    browser.execute_script("arguments[0].style.position = 'relative';", header)
