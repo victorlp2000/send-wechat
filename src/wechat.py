@@ -148,7 +148,7 @@ def uploadFile(driver, filename):
         return False
 
     element.send_keys(filename)
-    time.sleep(1)   # wait short time let uploading starts
+    time.sleep(3)   # wait short time let uploading starts
 
     # this tag show up while uploading
     # <span class="status ng-scope" ng-if="chatContact.MMStatus == CONF.MSG_SEND_STATUS_SENDING">
@@ -159,6 +159,7 @@ def uploadFile(driver, filename):
         status = driver.findElementsByCssSelector('span.status.ng-scope')
         if len(status) == 0:
             uploading = False
+        logger.info('waiting for uploading finish')
         time.sleep(1)
     ns = waitFile(filename, 60)
     logger.info('file in use timeout: %d!', ns)
