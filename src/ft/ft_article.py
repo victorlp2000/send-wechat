@@ -65,5 +65,5 @@ def cleanPage(driver):
     driver.noneDisplayElements(links)
 
     # make header stay at top
-    header = browser.find_element_by_css_selector('div.language-switch-container')
+    header = browser.find_element_by_css_selector('div.o-nav')
     browser.execute_script("arguments[0].style.position = 'relative';", header)
