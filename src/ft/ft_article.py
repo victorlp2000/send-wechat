@@ -5,6 +5,7 @@
 # By: Weiping Liu
 
 import os, time
+from datetime import datetime
 import urllib.parse
 
 from helper.my_logger import getMyLogger
@@ -15,6 +16,8 @@ def getPageImage(driver, url, fn):
     logger.info('loading "%s"', urllib.parse.unquote(url))
     driver.setWindowSize(driver.pageWidth)
     driver.loadPage(url)
+
+    fullLink = url
     try:
         # if there is <a href="/story/001088254?adchannelID=&amp;full=y">全文</a>
         full = driver.getBrowser().find_element_by_link_text(u'全文')
@@ -26,6 +29,10 @@ def getPageImage(driver, url, fn):
     driver.scrollToBottom()
     time.sleep(3)   # for loading completely
     cleanPage(driver)
+
+    innerHTML = '<center>' + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + '</center>'
+    innerHTML += fullLink
+    driver.insertTopDiv(innerHTML)
 
     return driver.saveFullPageToJpg(fn)
 

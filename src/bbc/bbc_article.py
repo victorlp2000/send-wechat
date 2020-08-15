@@ -5,6 +5,7 @@
 # By: Weiping Liu
 
 import os, time
+from datetime import datetime
 
 from helper.my_logger import getMyLogger
 
@@ -16,6 +17,11 @@ def getPageImage(driver, url, fn):
     driver.loadPage(url)
     time.sleep(3)   # for loading completely
     cleanPage(driver)
+
+    innerHTML = '<center>' + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + '</center>'
+    innerHTML += url
+    driver.insertTopDiv(innerHTML)
+
     return driver.saveFullPageToJpg(fn)
 
 def cleanPage(driver):

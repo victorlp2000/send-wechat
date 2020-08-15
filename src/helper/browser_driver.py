@@ -170,6 +170,17 @@ class WebDriver(object):
     def scrollToTop(self):
         self.driver.execute_script("window.scrollTo(0, 0);")
 
+    def insertTopDiv(self, innerHTML):
+        js = ''' let element = document.createElement('div');
+        element.style.color = 'white'
+        element.style.background = '#666666'
+        document.body.insertBefore(element, document.body.firstChild);
+        return element;'''
+        element = self.driver.execute_script(js)
+
+        hr = '<hr style="background-color:black;height:10px;border-width:0;">'
+        self.driver.execute_script("arguments[0].innerHTML = arguments[1]", element, innerHTML + hr)
+
     def findElementsByCssSelector(self, css_selectors):
         return self.driver.find_elements_by_css_selector(css_selectors)
 

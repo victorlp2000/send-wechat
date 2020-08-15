@@ -5,7 +5,7 @@
 # By: Weiping Liu
 
 import os, time
-
+from datetime import datetime
 from helper.my_logger import getMyLogger
 
 logger = getMyLogger(__name__)
@@ -18,6 +18,10 @@ def getPageImage(driver, url, fn):
     driver.scrollToBottom()     # make all content visible, then do clean
     time.sleep(3)               # elements may not show if not visible
     cleanPage(driver)
+
+    innerHTML = '<center>' + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + '</center>'
+    innerHTML += url
+    driver.insertTopDiv(innerHTML)
 
     return driver.saveFullPageToJpg(fn)
 
