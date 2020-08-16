@@ -183,11 +183,16 @@ def sendFilesToFriends(driver, friends):
             filePath = folderPath + '/' + f
             if not os.path.isfile(filePath):
                 continue
-            if uploadFile(driver, filePath):
-                # remove from the outbox folder
-                os.remove(filePath)
+            # move to sent folder, then upload,
+            # back to original location if sent failed
+            tmp = '/tmp/' + f
+            os.rename(filePath, tmp)
+            if uploadFile(driver, tmp):
                 count += 1
                 report += f + ' '
+            else:
+                logger.warning('failed to send file %s', filePath)
+                os.rename(tmp, filePath)
     return report
 
 def sendReport(driver, friend, msg):
@@ -279,9 +284,9 @@ def checkCmd(driver):
     return 0
 
 class Settings(object):
-    browser = 'Firefox'
+    browser = 'Chrome'
     pageWidth = 800
-    headless = True
+    headless = False
 
 def main():
     logger.info('start ... %s', __file__)
