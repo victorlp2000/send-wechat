@@ -46,7 +46,7 @@ def main():
     for info in mainInfo:
         if info and not accessed.exists(info):
             fn = '/tmp/' + file + '.jpg'
-            imageFile = getPageImage(driver, info['link'], fn)
+            imageFile = getPageImage(driver, info['link'], fn, 'DW头版')
             # save page to contact outbox
             if imageFile != None:
                 fn = datetime.now().strftime('%Y%m%d-%H%M%S_' + file + '.jpg')

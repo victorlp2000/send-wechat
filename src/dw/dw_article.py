@@ -12,7 +12,7 @@ from helper.my_logger import getMyLogger
 
 logger = getMyLogger(__name__)
 
-def getPageImage(driver, url, fn):
+def getPageImage(driver, url, fn, type):
     logger.info('loading "%s"', urllib.parse.unquote(url))
     driver.setWindowSize(driver.pageWidth)
     driver.loadPage(url)
@@ -20,8 +20,8 @@ def getPageImage(driver, url, fn):
     time.sleep(3)   # for loading completely
     cleanPage(driver)
 
-    innerHTML = '<center>' + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + '</center>'
-    innerHTML += '<small>' + urllib.parse.unquote(url) + '</small>'
+    innerHTML = type + ' ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    innerHTML += '<br>' + urllib.parse.unquote(url)
     driver.insertTopDiv(innerHTML)
 
     return driver.saveFullPageToJpg(fn)
