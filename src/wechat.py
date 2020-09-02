@@ -39,7 +39,7 @@ def loginWechat(driver):
     logger.info('start %s', loginUrl)
     driver.loadPage(loginUrl)
     qr0 = getQRCode(driver)
-    timeout = 10    # loop 10 times
+    timeout = 15    # loop 10 times
     while (driver.getCurrentUrl() != url):
         if driver.headless:
             qr = getQRCode(driver)
@@ -114,10 +114,11 @@ def searchFriend(driver, nickname):
             return None
         textInput = search.find_element_by_tag_name('input')
         textInput.clear()
+        time.sleep(2)
         textInput.send_keys(nickname)
-        time.sleep(1)
+        time.sleep(2)
         textInput.send_keys(Keys.ENTER)
-        time.sleep(1)   # wait response after entering text
+        time.sleep(3)   # wait response after entering text
         delay = 5
         while delay > 0:
             if getCurrentFriend(driver) == nickname:
@@ -126,6 +127,7 @@ def searchFriend(driver, nickname):
             time.sleep(2)
             delay -= 1
         textInput.clear()
+        time.sleep(2)
         logger.warning('!! did not find friend: %s', nickname)
     except:
         logger.error('!! error in searching friend "%s"', nickname)
@@ -148,7 +150,7 @@ def uploadFile(driver, filename):
         return False
 
     element.send_keys(filename)
-    time.sleep(3)   # wait short time let uploading starts
+    time.sleep(5)   # wait short time let uploading starts
 
     # this tag show up while uploading
     # <span class="status ng-scope" ng-if="chatContact.MMStatus == CONF.MSG_SEND_STATUS_SENDING">
@@ -160,7 +162,7 @@ def uploadFile(driver, filename):
         if len(status) == 0:
             uploading = False
         logger.info('waiting for uploading finish')
-        time.sleep(1)
+        time.sleep(5)
     ns = waitFile(filename, 60)
     logger.info('file in use timeout: %d!', ns)
     return True
@@ -207,7 +209,9 @@ def sendReport(driver, friend, msg):
     logger.info(msg)
     msg.replace('\n', ' ')
     editArea.send_keys(msg)
+    time.sleep(2)
     editArea.send_keys(Keys.ENTER)
+    time.sleep(2)
 
 # find any folder in outbox
 # return the folder name if there is any file in side
@@ -260,8 +264,9 @@ def inputFace(driver, n):
     links = faces[0].find_elements_by_tag_name('a')
     if n+1 <= len(links):
         links[n].click()
-        time.sleep(1)
+        time.sleep(2)
         editArea.send_keys(Keys.ENTER)
+        time.sleep(2)
         return True
     return False
 
