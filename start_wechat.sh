@@ -2,6 +2,8 @@
 # where all pids will be saved inside. we need to kill them 
 # after exit
 
+rm *.pid
+
 # start wechat
 python src/wechat.py
 
