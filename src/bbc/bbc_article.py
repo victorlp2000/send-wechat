@@ -46,30 +46,24 @@ def cleanPage(driver):
     ]
     driver.noneDisplayByCSSSelectors(selectors)
     driver.noneDisplayByIds(ids)
-    '''
-    <section>
-        <div id="pulse-container" class="pulse-banner orb-banner-wrapper">
-            <div class="orb-banner b-g-p b-r b-f">
-                <div class="orb-banner-inner">
-                    <h2 class="orb-banner-title">请您自我介绍</h2>
-                    <div class="orb-banner-content">
-                        <p>我们长期致力于网站的改进，您的意见很重要</p>
-                        <p class="pulse-question">您能用几分钟告诉我们您对这个网站的看法吗?</p>
-                    </div>
-                    <ul class="orb-banner-options">
-                        <li><a href="{{pulseaccepthref}}" id="pulse-accept">能</a></li>
-                        <li><button type="button" id="pulse-reject">不能</button></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-    '''
-    unordered = 'ul.story-body__unordered-list'
-    list = driver.findElementsByCssSelector(unordered)
+
     browser = driver.getBrowser()
+
+    list = browser.find_elements_by_tag_name('ul')
     for ul in list:
         a = ul.find_elements_by_tag_name('a')
         li = ul.find_elements_by_tag_name('li')
         if len(li) == len(a):
             browser.execute_script("arguments[0].style.display = 'none';", ul)
+
+    # 请告知您认可接受Cookies
+    header = browser.find_element_by_tag_name('header')
+    wrapper = header.find_element_by_tag_name('div')
+    browser.execute_script("arguments[0].style.display = 'none';", wrapper)
+
+    # <section class="AdContainer-..."
+    sections = browser.find_elements_by_tag_name('section')
+    for section in sections:
+        e2e = section.get_attribute('data-e2e')
+        if e2e == 'advertisement' or e2e == 'related-content-heading' or e2e == 'top-stories-heading' or e2e == 'features-analysis-heading' or e2e == 'most-read':
+            browser.execute_script("arguments[0].style.display = 'none';", section)
