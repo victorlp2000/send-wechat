@@ -51,7 +51,7 @@ def main():
             copyToContacts(imageFile, fn, contacts)
             os.remove(imageFile)
             info['exec'] = __file__
-            # accessed.save(info)
+            accessed.save(info)
     else:
         logger.info('old article')
 
