@@ -26,12 +26,12 @@ def getPageImage(driver, url, fn, type):
         driver.loadPage(fullLink)
     except:
         pass
-    driver.scrollToBottom()
+
     time.sleep(3)   # for loading completely
     cleanPage(driver)
 
-    innerHTML = type + ' ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    innerHTML += '<br>' + fullLink
+    innerHTML = '<h2>' + type + ' ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    innerHTML += '<br>' + fullLink + '</h2>'
     driver.insertTopDiv(innerHTML)
 
     return driver.saveFullPageToJpg(fn)

@@ -15,12 +15,11 @@ def getPageImage(driver, url, fn, type):
     driver.setWindowSize(driver.pageWidth)
     driver.loadPage(url)
 
-    driver.scrollToBottom()     # make all content visible, then do clean
     time.sleep(3)               # elements may not show if not visible
     cleanPage(driver)
 
-    innerHTML = type + ' ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    innerHTML += '<br>' + url
+    innerHTML = '<h2>' + type + ' ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    innerHTML += '<br>' + url + '</h2>'
     driver.insertTopDiv(innerHTML)
 
     return driver.saveFullPageToJpg(fn)

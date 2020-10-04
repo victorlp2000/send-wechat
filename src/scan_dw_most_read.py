@@ -19,8 +19,9 @@ from helper.accessed import Accessed
 from helper.my_logger import getMyLogger
 
 class Settings(object):
-    browser = 'Firefox'
-    pageWidth = 450
+    browser = 'Chrome'
+    pageWidth = 540
+    zoom = 110
     headless = True    # need to be True, or Chrome does not take full page image
     configDir = None
     userAgent = 'Mobile'
@@ -41,6 +42,7 @@ def main():
     if info == None:
         logger.error('did not find article info.')
     elif not accessed.exists(info):
+        driver.setWindowSize(Settings.pageWidth, 2000)
         fn = '/tmp/' + file + '.jpg'
         imageFile = getPageImage(driver, info['link'], fn, 'DW热读')
         # save page to contact outbox

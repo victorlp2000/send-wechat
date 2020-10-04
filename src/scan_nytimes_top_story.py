@@ -19,8 +19,9 @@ from helper.accessed import Accessed
 from helper.my_logger import getMyLogger
 
 class Settings(object):
-    browser = 'Firefox'
-    pageWidth = 450
+    browser = 'Chrome'
+    pageWidth = 540
+    zoom = 150
     headless = True     # need to be True for Chrome taking full page image
     configDir = None
     userAgent = 'Mobile'
@@ -46,6 +47,7 @@ def main():
     elif skip1 in info['link'] or skip2 in info['link']:
         logger.info('ignore morning-brief or opinion')
     elif not accessed.exists(info):
+        driver.setWindowSize(Settings.pageWidth, 2000)
         fn = '/tmp/' + file + '.jpg'
         imageFile = getPageImage(driver, info['link'], fn, 'NYT头条')
         # save page to contact outbox

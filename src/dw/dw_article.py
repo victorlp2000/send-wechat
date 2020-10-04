@@ -16,12 +16,12 @@ def getPageImage(driver, url, fn, type):
     logger.info('loading "%s"', urllib.parse.unquote(url))
     driver.setWindowSize(driver.pageWidth)
     driver.loadPage(url)
-    driver.scrollToBottom()
+
     time.sleep(3)   # for loading completely
     cleanPage(driver)
 
-    innerHTML = type + ' ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    innerHTML += '<br>' + urllib.parse.unquote(url)
+    innerHTML = '<h2>' + type + ' ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    innerHTML += '<br>' + urllib.parse.unquote(url) + '</h2>'
     driver.insertTopDiv(innerHTML)
 
     return driver.saveFullPageToJpg(fn)

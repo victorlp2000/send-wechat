@@ -6,7 +6,7 @@
 
 import time, os
 import shutil
-
+from PIL import Image
 from selenium import webdriver
 from helper.my_logger import getMyLogger
 from util.png2jpg import convertToJpeg
@@ -87,9 +87,9 @@ class WebDriver(object):
             profile = webdriver.FirefoxProfile()
             profile.set_preference('browser.zoom.full', False)
             # profile.set_preference('browser.zoom.siteSpecific', False)
-            profile.set_preference('layout.css.devPixelsPerPx', '2.0')
-            profile.set_preference('font.minimum-size.zh-CN', 20)
-            profile.set_preference('font.size.monospace.zh-CN', 16)
+            # profile.set_preference('layout.css.devPixelsPerPx', '2.0')
+            # profile.set_preference('font.minimum-size.zh-CN', 20)
+            # profile.set_preference('font.size.monospace.zh-CN', 16)
             # profile.set_preference('browser.display.auto_quality_min_font_size', 40)
             if self.headless:
                 options.set_headless()
@@ -156,16 +156,32 @@ class WebDriver(object):
 
     # !!! Firefox does not work right??
     def scrollToBottom(self):
-        lenOfPage = self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);var lenOfPage=document.body.scrollHeight;return lenOfPage;")
-        match=False
-        while match==False:
-            lastCount = lenOfPage
+        time.sleep(2)
+        scrollHeight = self.driver.execute_script("return document.body.parentNode.scrollHeight")
+        viewHeight = self.driver.execute_script("return window.innerHeight")
+        print('view height:', viewHeight)
+        top = 0
+        while top + viewHeight < scrollHeight:
+            top += viewHeight
+            print('top:', top, scrollHeight)
+            # self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight); return document.body.scrollHeight;")
+            self.driver.execute_script("window.scrollTo(0, {0})".format(top))
             time.sleep(1)
-            lenOfPage = self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);var lenOfPage=document.body.scrollHeight;return lenOfPage;")
-            if lastCount==lenOfPage:
-                match=True
-        # time.sleep(1)
-        return lenOfPage
+            scrollHeight = self.driver.execute_script("return document.body.parentNode.scrollHeight")
+
+        return scrollHeight
+
+    def getPageLength(self):
+        h1 = self.scrollToBottom()
+        logger.info('scrollToBottom: %d', h1)
+        h2 = self.driver.execute_script("return document.body.scrollHeight;")
+        logger.info('body.scrollHeight: %d', h2)
+        elem = self.driver.find_element_by_tag_name('body')
+        h4 = self.driver.execute_script('return parseInt(window.getComputedStyle(arguments[0]).height);', elem)
+        logger.info('computed height: %d', h4)
+        h5 = elem.size['height']
+        logger.info('element size height: %d', h4)
+        return max(h1, h2, h4, h5)
 
     def scrollToTop(self):
         self.driver.execute_script("window.scrollTo(0, 0);")
@@ -237,41 +253,117 @@ class WebDriver(object):
         for e in elements:
             self.driver.execute_script("arguments[0].style.display = 'none';", e)
 
+    # save for later debugging
+    def saveFullPageToPng0(self, fn):
+        driver = self.driver
+        file = fn
+
+        print("Starting chrome full page screenshot workaround ...")
+
+        total_width = driver.execute_script("return document.body.offsetWidth")
+        total_height = driver.execute_script("return document.body.parentNode.scrollHeight")
+        viewport_width = driver.execute_script("return document.body.clientWidth")
+        viewport_height = driver.execute_script("return window.innerHeight")
+        print("Total: ({0}, {1}), Viewport: ({2},{3})".format(total_width, total_height,viewport_width,viewport_height))
+        rectangles = []
+
+        i = 0
+        while i < total_height:
+            ii = 0
+            top_height = i + viewport_height
+
+            if top_height > total_height:
+                top_height = total_height
+
+            while ii < total_width:
+                top_width = ii + viewport_width
+
+                if top_width > total_width:
+                    top_width = total_width
+
+                print("Appending rectangle ({0},{1},{2},{3})".format(ii, i, top_width, top_height))
+                rectangles.append((ii, i, top_width,top_height))
+
+                ii = ii + viewport_width
+
+            i = i + viewport_height
+
+        stitched_image = Image.new('RGB', (total_width, total_height))
+        previous = None
+        part = 0
+
+        for rectangle in rectangles:
+            if not previous is None:
+                driver.execute_script("window.scrollTo({0}, {1})".format(rectangle[0], rectangle[1]))
+                print("Scrolled To ({0},{1})".format(rectangle[0], rectangle[1]))
+
+            time.sleep(1)   # wait short time after scroll
+
+            file_name = "part_{0}.png".format(part)
+            print("Capturing {0} ...".format(file_name))
+
+            driver.get_screenshot_as_file(file_name)
+            screenshot = Image.open(file_name)
+
+            # screenshot.show()
+
+            if rectangle[1] + viewport_height > total_height:
+                offset = (rectangle[0], total_height - viewport_height)
+            else:
+                offset = (rectangle[0], rectangle[1])
+
+            print("Adding to stitched image with offset ({0}, {1})".format(offset[0],offset[1]))
+            stitched_image.paste(screenshot, offset)
+
+            time.sleep(1)
+            del screenshot
+            # os.remove(file_name)
+            part = part + 1
+            previous = rectangle
+
+        stitched_image.save(file)
+        print("Finishing chrome full page screenshot workaround...")
+        return fn
+
     def saveFullPageToPng(self, fn):
         self.setWindowSize(self.pageWidth)
-        time.sleep(2)
         if self.browser == 'Chrome':
-            logger.debug('save Chrome page to %s', fn)
-            pageLength = self.scrollToBottom()  # get length
-            time.sleep(2)
+            logger.info('save Chrome page to %s', fn)
+            if self.zoom != None:
+                self.setZoom(self.zoom)
+
+            pageLength = self.getPageLength()  # get length
+            # pageLength += 1000
+
+            # if self.zoom != None:
+                # pageLength *= self.zoom / 100
+            # logger.info('zoom length: %d', pageLength)
+
+            self.setWindowSize(self.pageWidth, pageLength)
+            self.scrollToTop()
+
+            wSize = self.getWindowSize()
+            logger.warning('page size set: %d, %d', wSize['width'], wSize['height'])
+
+            time.sleep(5)
+            self.driver.get_screenshot_as_file(fn)
+            # self.driver.save_screenshot(fn)
+        elif self.browser == 'Firefox':
+            logger.info('save Firefox page to %s', fn)
+            time.sleep(5)
+            pageLength = self.getPageLength()
+            pageWidth = self.pageWidth
+            logger.warning('page size: %d, %d', pageWidth, pageLength)
             if self.zoom != None:
                 self.setZoom(self.zoom)
                 pageLength *= self.zoom / 100
-            # bodySize = self.driver.find_element_by_tag_name('body').size
-            self.setWindowSize(self.pageWidth, pageLength)
-            self.scrollToTop()
-            time.sleep(1)
-            self.driver.save_screenshot(fn)
-        elif self.browser == 'Firefox':
-            logger.debug('save Firefox page to %s', fn)
-            if self.zoom != None:
-                self.setZoom(self.zoom)
-            pageLength = self.scrollToBottom()
-            time.sleep(2)
-            while True:
-                tLength = self.scrollToBottom()
-                if pageLength == tLength:
-                    break
-                pageLength = tLength
-                time.sleep(2)
-            self.setWindowSize(self.pageWidth, pageLength)
-            self.scrollToTop()
-            body = self.driver.find_element_by_tag_name('body')
-            png = body.screenshot_as_png    # some image does not been load if do once
-            time.sleep(2)
-            png = body.screenshot_as_png
-            with open(fn, "wb") as file:
-                file.write(png)
+                pageWidth *= self.zoom / 100
+            logger.warning('page size: %d, %d', pageWidth, pageLength)
+            self.setWindowSize(pageWidth, pageLength + 1000)
+            wSize = self.getWindowSize()
+            logger.warning('page size set: %d, %d', wSize['width'], wSize['height'])
+            time.sleep(5)
+            self.driver.get_screenshot_as_file(fn)
         else:
             logger.error('unknown browser: "%s"', self.browser)
 

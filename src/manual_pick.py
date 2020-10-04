@@ -4,7 +4,7 @@
 # Created:  May 18, 2020
 # By: Weiping Liu
 
-import os
+import os, time
 from datetime import datetime
 from urllib.parse import urlparse
 import logging
@@ -40,8 +40,9 @@ def getChoice(browser, tab=0):
             return choice
 
 class Settings(object):
-    browser = 'Firefox'     # to get full page image, have to use Firefox now
-    pageWidth = 450
+    browser = 'Chrome'     # to get full page image, have to use Firefox now
+    pageWidth = 540
+    zoom = 150
     headless = False
     userAgent = 'Mobile'
 
@@ -59,11 +60,6 @@ def main():
     while True:
         select = getChoice(driver.driver)
         if select == '1':
-            driver.setZoom(driver.zoom)
-            driver.setWindowSize(driver.pageWidth)
-            driver.scrollToTop()
-            driver.scrollToBottom()
-
             url = driver.getCurrentUrl()
             if url.startswith('https://cn.reuters.com/article/'):
                 cleanReutersArticle(driver)
@@ -93,6 +89,19 @@ def main():
             logger.info('save page: %s', url)
             if driver.saveFullPageToJpg(imageFile) != None:
                 copyToContacts(imageFile, fn, contacts)
+
+        elif select == '3':
+            driver.setZoom(driver.zoom)
+            driver.setWindowSize(driver.pageWidth)
+            browser = driver.getBrowser()
+            body = browser.find_element_by_tag_name('body')
+            script = 'return window.getComputedStyle(arguments[0]).height;'
+            h = browser.execute_script(script, body)
+            print('computed height:', h)
+            print('body size:', body.size)
+            driver.scrollToTop()
+            driver.scrollToBottom()
+
         elif select == '0':
             logger.info('exit\n')
             break

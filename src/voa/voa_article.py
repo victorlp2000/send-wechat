@@ -18,8 +18,8 @@ def getPageImage(driver, url, fn, type):
     time.sleep(3)   # for loading completely
     cleanPage(driver)
 
-    innerHTML = type + ' ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    innerHTML += '<br>' + url
+    innerHTML = '<h2>' + type + ' ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    innerHTML += '<br>' + url + '</h2>'
     driver.insertTopDiv(innerHTML)
 
     return driver.saveFullPageToJpg(fn)
