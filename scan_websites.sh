@@ -9,6 +9,8 @@ limit='3m'
 
 timeout $limit python src/scan_bbc_top_story.py outbox/contacts.json
 ./cleanup.sh
+timeout $limit python src/scan_dw_top_story.py outbox/contacts.json
+./cleanup.sh
 timeout $limit python src/scan_nytimes_morning_brief.py outbox/contacts.json
 ./cleanup.sh
 
@@ -19,8 +21,6 @@ timeout $limit python src/scan_nytimes_top_story.py outbox/save.json
 timeout $limit python src/scan_reuters_top_story.py outbox/save.json
 ./cleanup.sh
 timeout $limit python src/scan_bbc_most_read.py outbox/save.json
-./cleanup.sh
-timeout $limit python src/scan_dw_top_story.py outbox/save.json
 ./cleanup.sh
 timeout $limit python src/scan_dw_most_read.py outbox/save.json
 ./cleanup.sh
