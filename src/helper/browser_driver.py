@@ -29,6 +29,7 @@ class WebDriver(object):
         self.browser = 'Firefox'
         self.headless = False
         self.zoom = None
+        self.devScale = None
         self.pageWidth = None
         self.configDir = None
         self.workingDir = os.path.abspath('.')
@@ -41,6 +42,8 @@ class WebDriver(object):
             self.headless = settings.headless
         if 'zoom' in setDir:
             self.zoom = settings.zoom
+        if 'devScale' in setDir:
+            self.devScale = settings.devScale
         if 'pageWidth' in setDir:
             self.pageWidth = settings.pageWidth
         if 'userAgent' in setDir:
@@ -62,6 +65,8 @@ class WebDriver(object):
         #   https://deviceatlas.com/blog/list-of-user-agent-strings
         if self.browser == 'Chrome':
             options = webdriver.ChromeOptions()
+            if self.devScale:
+                options.add_argument('--force-device-scale-factor=' + str(self.devScale))
             if self.headless:
                 options.add_argument('--headless')
             if self.userAgent == 'Mobile':
@@ -156,19 +161,17 @@ class WebDriver(object):
 
     # !!! Firefox does not work right??
     def scrollToBottom(self):
-        time.sleep(2)
         scrollHeight = self.driver.execute_script("return document.body.parentNode.scrollHeight")
         viewHeight = self.driver.execute_script("return window.innerHeight")
         print('view height:', viewHeight)
         top = 0
         while top + viewHeight < scrollHeight:
             top += viewHeight
-            print('top:', top, scrollHeight)
+            # print('top:', top, scrollHeight)
             # self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight); return document.body.scrollHeight;")
             self.driver.execute_script("window.scrollTo(0, {0})".format(top))
-            time.sleep(1)
+            time.sleep(2)
             scrollHeight = self.driver.execute_script("return document.body.parentNode.scrollHeight")
-
         return scrollHeight
 
     def getPageLength(self):
@@ -185,17 +188,6 @@ class WebDriver(object):
 
     def scrollToTop(self):
         self.driver.execute_script("window.scrollTo(0, 0);")
-
-    def insertTopDiv(self, innerHTML):
-        js = ''' let element = document.createElement('div');
-        element.style.color = 'white'
-        element.style.background = '#666666'
-        document.body.insertBefore(element, document.body.firstChild);
-        return element;'''
-        element = self.driver.execute_script(js)
-
-        hr = '<hr style="background-color:black;height:10px;border-width:0;">'
-        self.driver.execute_script("arguments[0].innerHTML = arguments[1]", element, innerHTML + hr)
 
     def findElementsByCssSelector(self, css_selectors):
         return self.driver.find_elements_by_css_selector(css_selectors)
@@ -333,7 +325,6 @@ class WebDriver(object):
                 self.setZoom(self.zoom)
 
             pageLength = self.getPageLength()  # get length
-            # pageLength += 1000
 
             # if self.zoom != None:
                 # pageLength *= self.zoom / 100
@@ -359,7 +350,7 @@ class WebDriver(object):
                 pageLength *= self.zoom / 100
                 pageWidth *= self.zoom / 100
             logger.warning('page size: %d, %d', pageWidth, pageLength)
-            self.setWindowSize(pageWidth, pageLength + 1000)
+            self.setWindowSize(pageWidth, pageLength + 1500)
             wSize = self.getWindowSize()
             logger.warning('page size set: %d, %d', wSize['width'], wSize['height'])
             time.sleep(5)

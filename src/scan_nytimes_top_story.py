@@ -20,9 +20,12 @@ from helper.my_logger import getMyLogger
 
 class Settings(object):
     browser = 'Chrome'
-    pageWidth = 540
-    zoom = 150
-    headless = True     # need to be True for Chrome taking full page image
+    # we like to have 540px width of image
+    # to get about 18 characters in a line, need to adjust devScale/zoom
+    devScale = 1.5
+    pageWidth = 540/devScale
+    # zoom = 98.5
+    headless = True
     configDir = None
     userAgent = 'Mobile'
 
@@ -48,8 +51,10 @@ def main():
         logger.info('ignore morning-brief or opinion')
     elif not accessed.exists(info):
         driver.setWindowSize(Settings.pageWidth, 2000)
-        fn = '/tmp/' + file + '.jpg'
-        imageFile = getPageImage(driver, info['link'], fn, 'NYT头条')
+        imgInfo = info.copy()
+        imgInfo['type'] = '纽约时报中文网: 头条'
+        imgInfo['fn'] = '/tmp/' + file + '.jpg'
+        imageFile = getPageImage(driver, imgInfo)
         # save page to contact outbox
         if imageFile != None:
             fn = datetime.now().strftime('%Y%m%d-%H%M%S_' + file + '.jpg')

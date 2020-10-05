@@ -5,28 +5,27 @@
 # By: Weiping Liu
 
 import os, time
-from datetime import datetime
 
 from helper.my_logger import getMyLogger
+from helper.set_article import setArticle
 
 logger = getMyLogger(__name__)
 
-def getPageImage(driver, url, fn, type):
-    logger.info('loading "%s"', url)
+def getPageImage(driver, info):
+    logger.info('loading "%s"', str(info))
     driver.setWindowSize(driver.pageWidth)
-    driver.loadPage(url)
-
+    driver.loadPage(info['link'])
     time.sleep(3)   # for loading completely
-    cleanPage(driver)
 
-    innerHTML = '<h2>' + type + ' ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    innerHTML += '<br>' + url + '</h2>'
-    driver.insertTopDiv(innerHTML)
+    cleanPage(driver, info)
 
-    return driver.saveFullPageToJpg(fn)
+    return driver.saveFullPageToJpg(info['fn'])
 
-def cleanPage(driver):
+def cleanPage(driver, info=None):
     logger.info('cleaning content...')
+    if info != None:
+        setArticle(driver, info)
+
     selectors = [
         "div.top_banner_ad",
         "div.setting-bar.row",

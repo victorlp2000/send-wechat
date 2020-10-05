@@ -5,52 +5,38 @@
 # By: Weiping Liu
 
 import os, time
-from datetime import datetime
 
 from helper.my_logger import getMyLogger
+from helper.set_article import setArticle
 
 logger = getMyLogger(__name__)
 
-def getPageImage(driver, url, fn, type):
-    logger.info('loading "%s"', url)
+def getPageImage(driver, info):
+    logger.info('loading "%s"', str(info))
     driver.setWindowSize(driver.pageWidth)
-    driver.loadPage(url)
+    driver.loadPage(info['link'])
     time.sleep(3)   # for loading completely
-    cleanPage(driver)
 
-    innerHTML = '<h2>' + type + ' ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    innerHTML += '<br>' + url + '</h2>'
-    driver.insertTopDiv(innerHTML)
+    cleanPage(driver, info)
 
-    return driver.saveFullPageToJpg(fn)
+    return driver.saveFullPageToJpg(info['fn'])
 
-def cleanPage(driver):
+def cleanPage(driver, info=None):
     logger.info('cleaning content...')
-    selectors = [
-        'div.bbccom_slot.mpu-ad.bbccom_standard_slot.bbccom_visible',
-        # 'ul.story-body__unordered-list',
-        'div.share__back-to-top.ghost-column',
-        'div.column--secondary',
-        'div.navigation--footer',
-        'div.story-more',
-        'div.tags-container',
-        'div.share.share--lightweight.show.ghost-column'
-    ]
-    ids = [
-        'bbccom_leaderboard_1_2_3_4',
-        'bbccom_mpu_1_2',
-        'core-navigation',
-        'orb-aside',
-        'comp-small-promo-group',
-        'pulse-container'
-    ]
-    driver.noneDisplayByCSSSelectors(selectors)
-    driver.noneDisplayByIds(ids)
-
+    if info != None:
+        setArticle(driver, info)
     browser = driver.getBrowser()
 
-    list = browser.find_elements_by_tag_name('ul')
-    for ul in list:
+    navs = browser.find_elements_by_tag_name('nav')
+    for nav in navs:
+        role = nav.get_attribute('role')
+        if role == 'navigation':
+            print(role)
+            browser.execute_script("arguments[0].style.display = 'none';", nav)
+
+    # links in line
+    uls = browser.find_elements_by_tag_name('ul')
+    for ul in uls:
         a = ul.find_elements_by_tag_name('a')
         li = ul.find_elements_by_tag_name('li')
         if len(li) == len(a):
@@ -63,7 +49,14 @@ def cleanPage(driver):
 
     # <section class="AdContainer-..."
     sections = browser.find_elements_by_tag_name('section')
+    data = [
+        'advertisement',
+        'related-content-heading',  # 更多相关内容
+        'top-stories-heading',      # 头条新闻
+        'features-analysis-heading',    # 特别推荐
+        'most-read',                # 热读
+    ]
     for section in sections:
         e2e = section.get_attribute('data-e2e')
-        if e2e == 'advertisement' or e2e == 'related-content-heading' or e2e == 'top-stories-heading' or e2e == 'features-analysis-heading' or e2e == 'most-read':
+        if e2e in data:
             browser.execute_script("arguments[0].style.display = 'none';", section)

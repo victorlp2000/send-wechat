@@ -5,55 +5,49 @@
 # By: Weiping Liu
 
 import os, time
-from datetime import datetime
+
 from helper.my_logger import getMyLogger
+from helper.set_article import setArticle
 
 logger = getMyLogger(__name__)
 
-def getPageImage(driver, url, fn, type):
-    logger.info('loading "%s"', url)
+def getPageImage(driver, info):
+    logger.info('loading "%s"', str(info))
     driver.setWindowSize(driver.pageWidth)
-    driver.loadPage(url)
+    driver.loadPage(info['link'])
+    time.sleep(3)   # for loading completely
 
-    time.sleep(3)               # elements may not show if not visible
-    cleanPage(driver)
+    cleanPage(driver, info)
 
-    innerHTML = '<h2>' + type + ' ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    innerHTML += '<br>' + url + '</h2>'
-    driver.insertTopDiv(innerHTML)
+    return driver.saveFullPageToJpg(info['fn'])
 
-    return driver.saveFullPageToJpg(fn)
-
-def cleanPage(driver):
+def cleanPage(driver, info=None):
     logger.info('cleaning content...')
-    selectors = [
-        # 广告
-        'div.DPSlot_container.StandardArticleBody_dp-slot-inline.StandardArticleBody_inline-canvas',
-        'div.DPSlot_container.StandardArticleBody_dp-slot-inline',
-        'div.StandardArticleBody_dp-slot-inline',
-        # 下一篇文章, 更多文章
-        'div.RelatedCoverage_related-coverage-module.module.RelatedCoverage_recirc',
-        # Paid promotional links, More from Reuters,
-        'div.StandardArticleBody_dianomi-container.dianomi_context',
-        # 移动应用 邮件订阅 Reuters Plus 广告选择 使用条款 隐私保护
-        'div.Footer_links',
-        'div.Footer_social',
-        # 'div.Sticky_track.Leaderboard_sticky-container',
-        # 'div.DPSlot_container.StandardArticleBody_dp-slot-inline.StandardArticleBody_inline-canvas',
-        # 'div.DPSlot_container',
-        # 'div.TrendingStories_container',
-        # 'div.footer-container',
-    ]
-    driver.noneDisplayByCSSSelectors(selectors)
-    # ids = [
-    # ]
-    # driver.noneDisplayByIds(ids)
+    if info != None:
+        setArticle(driver, info)
 
-    # articleBody = driver.driver.find_element_by_css_selector('div.StandardArticleBody_body')
-    # # convert links into <img>, so it get showing
-    # links = articleBody.find_elements_by_tag_name('a')
-    # for link in links:
-    #     if link.text.startswith('tmsnrt.rs'):
-    #         print(link.get_attribute('href'))
-    #         iframe = '<iframe width="' + str(driver.pageWidth) + 'px" src=\"' + link.get_attribute('href') + '"></iframe>'
-    #         driver.driver.execute_script('arguments[0].innerHTML=arguments[1]', link, iframe)
+    browser = driver.getBrowser()
+
+    divs = browser.find_elements_by_tag_name('div')
+    print(len(divs))
+    for div in divs:
+        classes = div.get_attribute('class')
+        ss = classes.split()
+        rm = False
+        for s in ss:
+            rm |= s.startswith('StickyContainer_')
+            rm |= s.startswith('AdSlot_')
+            rm |= s.startswith('RelatedArticles-container')
+            rm |= s.startswith('ArticlePage-dianomi')
+            rm |= s.startswith('SocialTools_')
+            # rm |= s.startswith('RecircRibbon-container-')
+        if rm:
+            print(classes)
+            browser.execute_script("arguments[0].style.display = 'none';", div)
+
+    uls = browser.find_elements_by_tag_name('ul')
+    for ul in uls:
+        role = ul.get_attribute('role')
+        if role == 'site-links':
+            print(role)
+            browser.execute_script("arguments[0].style.display = 'none';", ul)

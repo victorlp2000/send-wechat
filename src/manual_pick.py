@@ -42,9 +42,9 @@ def getChoice(browser, tab=0):
 class Settings(object):
     browser = 'Chrome'     # to get full page image, have to use Firefox now
     pageWidth = 540
-    zoom = 150
+    zoom = 100
     headless = False
-    userAgent = 'Mobile'
+    # userAgent = 'Mobile'
 
 def main():
     logger.info('start %s', __file__)

@@ -20,8 +20,11 @@ from helper.my_logger import getMyLogger
 
 class Settings(object):
     browser = 'Chrome'
-    pageWidth = 540
-    zoom = 160
+    # we like to have 540px width of image
+    # to get about 18 characters in a line, need to adjust devScale or zoom
+    devScale = 1.8
+    pageWidth = 540/devScale
+    zoom = 99   # use 100 result in cut off at bottom
     headless = True
     configDir = None
     userAgent = 'Mobile'
@@ -43,8 +46,10 @@ def main():
         logger.error('did not find article info.')
     elif not accessed.exists(info):
         driver.setWindowSize(Settings.pageWidth, 2000)
-        fn = '/tmp/' + file + '.jpg'
-        imageFile = getPageImage(driver, info['link'], fn, 'BBC头条')
+        imgInfo = info.copy()
+        imgInfo['type'] = 'BBC News 中文: 头条'
+        imgInfo['fn'] = '/tmp/' + file + '.jpg'
+        imageFile = getPageImage(driver, imgInfo)
         # save page to contact outbox
         if imageFile != None:
             fn = datetime.now().strftime('%Y%m%d-%H%M%S_' + file + '.jpg')

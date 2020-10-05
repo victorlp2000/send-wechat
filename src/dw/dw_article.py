@@ -5,34 +5,33 @@
 # By: Weiping Liu
 
 import os, time
-from datetime import datetime
 import urllib.parse
-
+from helper.set_article import setArticle
 from helper.my_logger import getMyLogger
 
 logger = getMyLogger(__name__)
 
-def getPageImage(driver, url, fn, type):
-    logger.info('loading "%s"', urllib.parse.unquote(url))
+def getPageImage(driver, info):
+    logger.info('loading "%s"', urllib.parse.unquote(info['link']))
     driver.setWindowSize(driver.pageWidth)
-    driver.loadPage(url)
-
+    driver.loadPage(info['link'])
     time.sleep(3)   # for loading completely
-    cleanPage(driver)
 
-    innerHTML = '<h2>' + type + ' ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    innerHTML += '<br>' + urllib.parse.unquote(url) + '</h2>'
-    driver.insertTopDiv(innerHTML)
+    cleanPage(driver, info)
 
-    return driver.saveFullPageToJpg(fn)
+    return driver.saveFullPageToJpg(info['fn'])
 
 def nonDisplayElements(browser, elements):
     for e in elements:
         browser.execute_script("arguments[0].style.display = 'none';", e)
 
-def cleanPage(driver):
+def cleanPage(driver, info=None):
     logger.info('cleaning content...')
+    if info != None:
+        setArticle(driver, info)
+
     browser = driver.getBrowser()
+
     # make header stay at top
     header = browser.find_element_by_tag_name('header')
     browser.execute_script("arguments[0].style.position = 'relative';", header)

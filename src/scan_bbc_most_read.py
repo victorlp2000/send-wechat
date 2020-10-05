@@ -20,9 +20,14 @@ from helper.my_logger import getMyLogger
 
 class Settings(object):
     browser = 'Chrome'
-    pageWidth = 540
-    zoom = 160
-    headless = True     # need to be True, or Chrome does not take full page image
+    # we like to have 540px width of image
+    # to get about 18 characters in a line, need to scale or zoom
+    # when use zoom, page length returned not exactly right, so we use devScale
+    # instead. need to adjust these settings: devScale, zoom
+    devScale = 1.8
+    pageWidth = 540/devScale
+    zoom = 98.5
+    headless = True
     configDir = None
     userAgent = 'Mobile'
 
@@ -44,7 +49,10 @@ def main():
     elif not accessed.exists(info):
         fn = '/tmp/' + file + '.jpg'
         driver.setWindowSize(Settings.pageWidth, 2000)
-        imageFile = getPageImage(driver, info['link'], fn, 'BBC热读')
+        imgInfo = info.copy()
+        imgInfo['type'] = 'BBC News 中文: 热读'
+        imgInfo['fn'] = '/tmp/' + file + '.jpg'
+        imageFile = getPageImage(driver, imgInfo)
         # save page to contact outbox
         if imageFile != None:
             fn = datetime.now().strftime('%Y%m%d-%H%M%S_' + file + '.jpg')
@@ -54,6 +62,7 @@ def main():
             accessed.save(info)
     else:
         logger.info('old article')
+
     logger.info('exit.\n')
     pidMan.clean()
     driver.close()

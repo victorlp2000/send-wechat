@@ -20,9 +20,13 @@ from helper.my_logger import getMyLogger
 
 class Settings(object):
     browser = 'Chrome'
-    pageWidth = 540
-    zoom = 110
-    headless = True     # need to be True, or Chrome does not take full page image
+    # we like to have 540px width of image
+    # to get about 18 characters in a line, need to scale or zoom
+    # try to adjust these settings: devScale, zoom
+    devScale = 1
+    pageWidth = 540/devScale
+    zoom = 115
+    headless = True
     configDir = None
     userAgent = 'Mobile'
 
@@ -37,15 +41,16 @@ def main():
     accessed = Accessed('accessed_dw.json')
 
     url = "https://m.dw.com/zh/在线报导/s-9058"
-    # url = 'https://m.dw.com/zh/在线报导/s-9058'    # mobile version
     info = getTopStoryInfo(driver, url)
 
     if info == None:
         logger.error('did not find article info.')
     elif not accessed.exists(info):
         driver.setWindowSize(Settings.pageWidth, 2000)
-        fn = '/tmp/' + file + '.jpg'
-        imageFile = getPageImage(driver, info['link'], fn, 'DW头条')
+        imgInfo = info.copy()
+        imgInfo['type'] = '德国之声中文网: 头条'
+        imgInfo['fn'] = '/tmp/' + file + '.jpg'
+        imageFile = getPageImage(driver, imgInfo)
         # save page to contact outbox
         if imageFile != None:
             fn = datetime.now().strftime('%Y%m%d-%H%M%S_' + file + '.jpg')
