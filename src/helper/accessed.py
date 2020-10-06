@@ -32,6 +32,9 @@ class Accessed(object):
         self.refresh()  # data may changed from outside
         link = urllib.parse.unquote(info['link'])
         for i in self.info:
-            if i['link'] == link:
+            if i['link'] == link and i['title'] == info['title']:
                 return True
+            if i['link'] == link or i['title'] == info['title']:
+                info['updated'] = True
+                return False
         return False
