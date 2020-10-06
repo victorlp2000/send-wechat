@@ -27,8 +27,8 @@ def setHeader(browser, info):
     innerHTML += '<center><b>' + info['type'] + '</b></center>'
     # innerHTML += '<br>' + getTimeNow('Asia/Shanghai')    # 'US/Pacific'
     innerHTML += '<br>' + getTimeNow('US/Pacific')    # 'US/Pacific'
-    if info['updated']:
-        innerHTML += ' <b>更新</b>'
+    if 'updated' in info:
+        innerHTML += ' <span style="color:orange">--修改更新</span>'
     innerHTML += '<br>' + urllib.parse.unquote(info['link'])
     innerHTML += '</div>'
     innerHTML += '<hr style="background-color:black;height:6px;margin:0px;padding:0px;border-width:0;">'
