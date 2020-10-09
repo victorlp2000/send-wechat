@@ -18,20 +18,21 @@ def getPageImage(driver, info):
     driver.loadPage(info['link'])
 
     fullLink = info['link']
-    try:
-        # if there is <a href="/story/001088254?adchannelID=&amp;full=y">全文</a>
-        full = driver.getBrowser().find_element_by_link_text(u'全文')
-        fullLink = full.get_attribute('href')
-        logger.info('loading full "%s"', urllib.parse.unquote(fullLink))
-        info['link'] = fulllink
-        driver.loadPage(fullLink)
-    except:
-        pass
+    # try:
+    # if there is <a href="/story/001088254?adchannelID=&amp;full=y">全文</a>
+    full = driver.getBrowser().find_element_by_link_text(u'全文')
+    fullLink = full.get_attribute('href')
+    logger.info('loading full "%s"', urllib.parse.unquote(fullLink))
+    info['link'] = fullLink
+    driver.loadPage(fullLink)
+    # except:
+    #     logger.error('did not find full page link.')
+    #     pass
 
     time.sleep(3)   # for loading completely
 
+    info['zoomHeader'] = '93%'
     cleanPage(driver, info)
-
     return driver.saveFullPageToJpg(info['fn'])
 
 def cleanPage(driver, info=None):

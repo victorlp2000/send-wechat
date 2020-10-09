@@ -22,7 +22,7 @@ class Settings(object):
     browser = 'Chrome'
     # we like to have 540px width of image
     # to get about 18 characters in a line, need to adjust devScale/zoom
-    devScale = 1.5
+    devScale = 1.35
     pageWidth = 540/devScale
     # zoom = 100
     headless = True
