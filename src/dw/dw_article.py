@@ -17,6 +17,7 @@ def getPageImage(driver, info):
     driver.loadPage(info['link'])
     time.sleep(3)   # for loading completely
 
+    info['zoomHeader'] = '130%'
     cleanPage(driver, info)
 
     return driver.saveFullPageToJpg(info['fn'])

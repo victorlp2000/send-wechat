@@ -23,10 +23,12 @@ def getTimeNow(zone):
 
 def setHeader(browser, info):
     header = insertHeader(browser)
+    if 'zoomHeader' in info:
+        browser.execute_script("arguments[0].style.zoom = '" + info['zoomHeader'] + "';", header)
     innerHTML = '<div style="padding:10px;backGround:#666666;color:white;">'
-    innerHTML += '<center><b>' + info['type'] + '</b></center>'
+    innerHTML += '<div style="text-align:center; padding: 6px;"><b>' + info['type'] + '</b></div>'
     # innerHTML += '<br>' + getTimeNow('Asia/Shanghai')    # 'US/Pacific'
-    innerHTML += '<br>' + getTimeNow('US/Pacific')    # 'US/Pacific'
+    innerHTML += getTimeNow('US/Pacific')    # 'US/Pacific'
     if 'updated' in info:
         innerHTML += ' <span style="color:orange">--修改更新</span>'
     innerHTML += '<br>' + urllib.parse.unquote(info['link'])

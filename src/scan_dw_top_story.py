@@ -25,7 +25,7 @@ class Settings(object):
     # try to adjust these settings: devScale, zoom
     devScale = 1
     pageWidth = 540/devScale
-    zoom = 115
+    zoom = 116.4
     headless = True
     configDir = None
     userAgent = 'Mobile'
