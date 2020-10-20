@@ -39,7 +39,7 @@ def main():
     pidMan = PidMan(file)
     pidMan.save(driver.getPIDs())
     contacts = getContacts()
-    accessed = Accessed('accessed_dw.json')
+    accessed = Accessed('accessed_' + file + '.json')
 
     url = "https://m.dw.com/zh/在线报导/s-9058"
     info = getMostReadArticleInfo(driver, url)

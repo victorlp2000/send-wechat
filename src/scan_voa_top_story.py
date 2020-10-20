@@ -37,7 +37,7 @@ def main():
     pidMan = PidMan(file)
     pidMan.save(driver.getPIDs())
     contacts = getContacts()
-    accessed = Accessed('accessed_voa.json')
+    accessed = Accessed('accessed_' + file + '.json')
 
     url = "https://www.voachinese.com/"
     info = getTopStoryInfo(driver, url)

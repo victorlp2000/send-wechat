@@ -37,7 +37,7 @@ def main():
     pidMan = PidMan(file)
     pidMan.save(driver.getPIDs())
     contacts = getContacts()
-    accessed = Accessed('accessed_bbc.json')
+    accessed = Accessed('accessed_' + file + '.json')
 
     url = "https://www.bbc.com/zhongwen/simp"
     info = getTopStoryInfo(driver, url)

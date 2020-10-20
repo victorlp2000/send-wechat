@@ -37,7 +37,7 @@ def main():
     pidMan = PidMan(file)
     pidMan.save(driver.getPIDs())
     contacts = getContacts()
-    accessed = Accessed('accessed_ft.json')
+    accessed = Accessed('accessed_' + file + '.json')
 
     url = "http://m.ftchinese.com/"
     info = getTopStoryInfo(driver, url)

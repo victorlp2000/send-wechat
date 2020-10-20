@@ -37,7 +37,7 @@ def main():
     pidMan = PidMan(file)
     pidMan.save(driver.getPIDs())
     contacts = getContacts()
-    accessed = Accessed('accessed_nytimes.json')
+    accessed = Accessed('accessed_' + file + '.json')
 
     url = 'https://m.cn.nytimes.com/morning-brief'
     info = getLeadArticleInfo(driver, url)

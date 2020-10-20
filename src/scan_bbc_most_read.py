@@ -39,7 +39,7 @@ def main():
     pidMan = PidMan(file)
     pidMan.save(driver.getPIDs())
     contacts = getContacts()
-    accessed = Accessed('accessed_bbc.json')
+    accessed = Accessed('accessed_' + file + '.json')
 
     url = "https://www.bbc.com/zhongwen/simp"
     info = getMostReadArticleInfo(driver, url)
@@ -47,7 +47,6 @@ def main():
     if info == None:
         logger.error('did not find article info.')
     elif not accessed.exists(info):
-        fn = '/tmp/' + file + '.jpg'
         driver.setWindowSize(Settings.pageWidth, 2000)
         imgInfo = info.copy()
         imgInfo['type'] = 'BBC News 中文: 热读'
