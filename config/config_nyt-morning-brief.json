@@ -1,0 +1,24 @@
+{
+  "name": "nyt-morning-brief",
+  "contacts": [
+    "电子计算机77"
+  ],
+  "settings": {
+    "browser": "Chrome",
+    "headless": true,
+    "userAgent": "Mobile",
+    "devScale": 1.5,
+    "pageWidth": 540,
+    "zoom": 100
+  },
+  "main_url": "https://m.cn.nytimes.com/morning-brief",
+
+  "article_info": {
+    "do_find": "nyt.nyt_lead_article"
+  },
+  "article_img": {
+    "do_cleanup": "nyt.nyt_cleanup",
+    "title": "纽约时报中文网: 简报",
+    "zoom": 93
+  }
+}

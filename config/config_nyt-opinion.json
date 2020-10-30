@@ -1,0 +1,24 @@
+{
+  "name": "nyt-opinion",
+  "contacts": [
+    "File Transfer"
+  ],
+  "settings": {
+    "browser": "Chrome",
+    "headless": true,
+    "userAgent": "Mobile",
+    "devScale": 1.5,
+    "pageWidth": 540,
+    "zoom": 100
+  },
+  "main_url": "https://m.cn.nytimes.com/opinion",
+
+  "article_info": {
+    "do_find": "nyt.nyt_lead_article"
+  },
+  "article_img": {
+    "do_cleanup": "nyt.nyt_cleanup",
+    "title": "纽约时报中文网: 观点与评论",
+    "zoom": 93
+  }
+}

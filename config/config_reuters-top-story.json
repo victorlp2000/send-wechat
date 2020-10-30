@@ -1,0 +1,24 @@
+{
+  "name": "reuters-top-story",
+  "contacts": [
+    "File Transfer"
+  ],
+  "settings": {
+    "browser": "Chrome",
+    "headless": true,
+    "userAgent": "",
+    "devScale": 1.45,
+    "pageWidth": 540,
+    "zoom": 100
+  },
+  "main_url": "https://cn.reuters.com/",
+
+  "article_info": {
+    "do_find": "reuters.reuters_top_story"
+  },
+  "article_img": {
+    "do_cleanup": "reuters.reuters_cleanup",
+    "title": "路透中文网: 头条",
+    "zoom": 105
+  }
+}

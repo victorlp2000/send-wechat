@@ -1,0 +1,24 @@
+{
+  "name": "dw-top-story",
+  "contacts": [
+    "电子计算机77"
+  ],
+  "settings": {
+    "browser": "Chrome",
+    "headless": true,
+    "userAgent": "Mobile",
+    "devScale": 1,
+    "pageWidth": 540,
+    "zoom": 116.4
+  },
+  "main_url": "https://m.dw.com/zh/在线报导/s-9058",
+
+  "article_info": {
+    "do_find": "dw.dw_top_story"
+  },
+  "article_img": {
+    "do_cleanup": "dw.dw_cleanup",
+    "title": "德国之声中文网: 头条",
+    "zoom": 125
+  }
+}
