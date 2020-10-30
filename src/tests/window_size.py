@@ -4,14 +4,14 @@ def run(browser):
     for x in range(50, 1000, 50):
         browser.setWindowSize(x, x)
         time.sleep(1)
-        t = browser.getWindowSize()
+        t = browser.driver.get_window_size()
         if t['width'] != x or t['height'] != x:
             print('Failed (', t, t['width'], t['height'], ')')
 
     for x in range(1000, 50, -50):
         browser.setWindowSize(x, x)
         time.sleep(1)
-        t = browser.getWindowSize()
+        t = browser.driver.get_window_size()
         if t['width'] != x or t['height'] != x:
             print('Failed (', t, t['width'], t['height'], ')')
 # Report:

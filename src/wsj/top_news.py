@@ -7,7 +7,7 @@ logger = getMyLogger(__name__)
 
 def getTopNews(driver, url):
     logger.info('loading "%s"', url)
-    driver.loadPage(url)
+    driver.getBrowser().get(url)
     time.sleep(10)
     browser = driver.getBrowser()
     # p = '//*[@id="root"]/div/div/div/div[2]/div/div/article/div[1]/h3/a'

@@ -37,14 +37,14 @@ def main():
     url = 'https://www.bbc.com/zhongwen/simp/chinese-news-54462810'
     # url = 'https://www.voachinese.com/a/trump-to-return-to-white-house-20201005/5609783.html'
     # url = 'https://cn.reuters.com/article/us-trump-covid-stock-investors-1005-idCNKBS26Q0FD'
-    driver.loadPage(url)
+    driver.getBrowser.get(url)
 
     # test this function
     pageMeta = PageMeta()
     pageMeta.getMeta(driver.getBrowser())
     input('wait... close')
 
-    driver.close()
+    driver.getBrowser().quit()
 
 if __name__ == '__main__':
     fn = os.path.basename(__file__)

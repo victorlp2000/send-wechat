@@ -140,7 +140,7 @@ def main():
     settings = getPageSetings(getArticleSource(url), Settings)
 
     driver = WebDriver(settings)
-    driver.loadPage(url)
+    driver.getBrowser().get(url)
     imageFile = '/tmp/manual-pick.jpg'
     fn = None
 
@@ -151,7 +151,7 @@ def main():
         fn = cleanPage(driver)
         if driver.saveFullPageToJpg(imageFile) != None:
             copyToContacts(imageFile, fn, contacts)
-        driver.close()
+        driver.getBrowser().quit()
         return
 
     while True:
@@ -181,7 +181,7 @@ def main():
         elif select == '0':
             logger.info('exit\n')
             break
-    driver.close()
+    driver.getBrowser().quit()
 
 if __name__ == '__main__':
     fn = os.path.basename(__file__)

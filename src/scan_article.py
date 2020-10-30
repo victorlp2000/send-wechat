@@ -21,7 +21,7 @@ from helper.set_article import setArticle
 def loadArticle(driver, url, configImg):
     unquote = urllib.parse.unquote(url)
     logger.info('loading %s', unquote)
-    driver.loadPage(url)
+    driver.getBrowser().get(url)
 
     # cleanup the page
     if 'do_cleanup' in configImg:
@@ -49,7 +49,7 @@ def processPage(driver, config):
     if not 'main_url' in config:
         logger.warning('did not find \'main_url\' in config')
         return
-    driver.loadPage(config['main_url'])
+    driver.getBrowser().get(config['main_url'])
 
     # find article from webpage
     info = findArticle(driver, config['article_info'])
@@ -94,7 +94,7 @@ def main(config):
 
     logger.info('exit.\n')
     pidMan.clean()
-    driver.close()
+    driver.getBrowser().quit()
 
 if __name__ == "__main__":
     fn = os.path.basename(__file__)

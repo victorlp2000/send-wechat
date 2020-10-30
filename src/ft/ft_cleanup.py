@@ -13,10 +13,11 @@ logger = getMyLogger(__name__)
 def cleanupPage(driver):
     # try:
     # if there is <a href="/story/001088254?adchannelID=&amp;full=y">全文</a>
-    full = driver.getBrowser().find_element_by_link_text(u'全文')
+    browser = driver.getBrowser()
+    full = browser.find_element_by_link_text(u'全文')
     fullLink = full.get_attribute('href')
     logger.info('loading full "%s"', urllib.parse.unquote(fullLink))
-    driver.loadPage(fullLink)
+    browser.get(fullLink)
     # except:
     #     logger.error('did not find full page link.')
     #     pass

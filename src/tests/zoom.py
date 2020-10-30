@@ -4,7 +4,7 @@ import time
 def run(browser):
     cwd = os.getcwd()
     url = 'file://' + cwd + '/tests/my_page_1.html'
-    browser.loadPage(url)
+    browser.getBrowser().get(url)
 
     browser.setWindowSize(500, 500)
     for x in range(60, 160, 20):

@@ -1,0 +1,24 @@
+{
+  "name": "bbc-most-read",
+  "contacts": [
+    "File Transfer"
+  ],
+  "settings": {
+    "browser": "Chrome",
+    "headless": true,
+    "userAgent": "Mobile",
+    "devScale": 1.8,
+    "pageWidth": 540,
+    "zoom": 98
+  },
+  "main_url": "https://www.bbc.com/zhongwen/simp",
+
+  "article_info": {
+    "do_find": "bbc.bbc_most_read"
+  },
+  "article_img": {
+    "do_cleanup": "bbc.bbc_cleanup",
+    "title": "BBC News 中文: 热读",
+    "zoom": 85
+  }
+}

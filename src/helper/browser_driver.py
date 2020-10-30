@@ -126,22 +126,10 @@ class WebDriver(object):
     def getBrowser(self):
         return self.driver
 
-    def loadPage(self, url):
-        self.driver.get(url)
-
-    def getCurrentUrl(self):
-        return self.driver.current_url
-
-    def close(self):
-        self.driver.quit()
-
-    def getWindowSize(self):
-        return self.driver.get_window_size()
-
     # ubuntu min window width: 508
     def setWindowSize(self, width, height=None):
         if width is None or height is None:
-            wsize = self.getWindowSize()
+            wsize = self.driver.get_window_size()
         if width is None:
             width = wsize['width']
         if height is None:
@@ -188,28 +176,6 @@ class WebDriver(object):
     def scrollToTop(self):
         self.driver.execute_script("window.scrollTo(0, 0);")
 
-    def findElementsByCssSelector(self, css_selectors):
-        return self.driver.find_elements_by_css_selector(css_selectors)
-
-    def findElementsByTagName(self, tag):
-        return self.driver.find_elements_by_tag_name(tag)
-
-    def findElementByName(self, name):
-        try:
-            element = self.driver.find_element_by_name(name)
-            return element
-        except:
-            logger.error('did not find element with name: "%s"', name)
-            return None
-
-    def findElementById(self, id):
-        try:
-            element = self.driver.find_element_by_id(id)
-            return element
-        except:
-            logger.error('did not find element with id: "%s"', id)
-            return None
-
     def noneDisplayByCSSSelectors(self, css_selectors, element=None):
         ele = self.driver
         if element != None:
@@ -244,78 +210,6 @@ class WebDriver(object):
         for e in elements:
             self.driver.execute_script("arguments[0].style.display = 'none';", e)
 
-    # save for later debugging
-    def saveFullPageToPng0(self, fn):
-        driver = self.driver
-        file = fn
-
-        print("Starting chrome full page screenshot workaround ...")
-
-        total_width = driver.execute_script("return document.body.offsetWidth")
-        total_height = driver.execute_script("return document.body.parentNode.scrollHeight")
-        viewport_width = driver.execute_script("return document.body.clientWidth")
-        viewport_height = driver.execute_script("return window.innerHeight")
-        print("Total: ({0}, {1}), Viewport: ({2},{3})".format(total_width, total_height,viewport_width,viewport_height))
-        rectangles = []
-
-        i = 0
-        while i < total_height:
-            ii = 0
-            top_height = i + viewport_height
-
-            if top_height > total_height:
-                top_height = total_height
-
-            while ii < total_width:
-                top_width = ii + viewport_width
-
-                if top_width > total_width:
-                    top_width = total_width
-
-                print("Appending rectangle ({0},{1},{2},{3})".format(ii, i, top_width, top_height))
-                rectangles.append((ii, i, top_width,top_height))
-
-                ii = ii + viewport_width
-
-            i = i + viewport_height
-
-        stitched_image = Image.new('RGB', (total_width, total_height))
-        previous = None
-        part = 0
-
-        for rectangle in rectangles:
-            if not previous is None:
-                driver.execute_script("window.scrollTo({0}, {1})".format(rectangle[0], rectangle[1]))
-                print("Scrolled To ({0},{1})".format(rectangle[0], rectangle[1]))
-
-            time.sleep(1)   # wait short time after scroll
-
-            file_name = "part_{0}.png".format(part)
-            print("Capturing {0} ...".format(file_name))
-
-            driver.get_screenshot_as_file(file_name)
-            screenshot = Image.open(file_name)
-
-            # screenshot.show()
-
-            if rectangle[1] + viewport_height > total_height:
-                offset = (rectangle[0], total_height - viewport_height)
-            else:
-                offset = (rectangle[0], rectangle[1])
-
-            print("Adding to stitched image with offset ({0}, {1})".format(offset[0],offset[1]))
-            stitched_image.paste(screenshot, offset)
-
-            time.sleep(1)
-            del screenshot
-            # os.remove(file_name)
-            part = part + 1
-            previous = rectangle
-
-        stitched_image.save(file)
-        print("Finishing chrome full page screenshot workaround...")
-        return fn
-
     def saveFullPageToPng(self, fn):
         self.setWindowSize(self.pageWidth)
         if self.browser == 'Chrome':
@@ -332,7 +226,7 @@ class WebDriver(object):
             self.setWindowSize(self.pageWidth, pageLength)
             self.scrollToTop()
 
-            wSize = self.getWindowSize()
+            wSize = self.driver.get_window_size()
             logger.warning('page size set: %d, %d', wSize['width'], wSize['height'])
 
             time.sleep(5)
@@ -350,7 +244,7 @@ class WebDriver(object):
                 pageWidth *= self.zoom / 100
             logger.warning('page size: %d, %d', pageWidth, pageLength)
             self.setWindowSize(pageWidth, pageLength + 1500)
-            wSize = self.getWindowSize()
+            wSize = self.driver.get_window_size()
             logger.warning('page size set: %d, %d', wSize['width'], wSize['height'])
             time.sleep(5)
             self.driver.get_screenshot_as_file(fn)

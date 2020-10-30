@@ -37,10 +37,10 @@ def loginWechat(driver):
     url = "https://web.wechat.com/"
 
     logger.info('start %s', loginUrl)
-    driver.loadPage(loginUrl)
+    driver.getBrowser().get(loginUrl)
     qr0 = getQRCode(driver)
     timeout = 15    # loop 10 times
-    while (driver.getCurrentUrl() != url):
+    while (driver.getBrowser().current_url != url):
         if driver.headless:
             qr = getQRCode(driver)
             if qr != None and len(qr0) != len(qr):
@@ -57,7 +57,7 @@ def loginWechat(driver):
 
 def getFriendFromNavView(driver, friend):
     # left-side navigation menu
-    navView = driver.findElementById('J_NavChatScrollBody')
+    navView = driver.driver.find_element_by_id('J_NavChatScrollBody')
     if navView == None:
         logger.warning('browser was crashed?')
         return None
@@ -99,7 +99,7 @@ def getLastMsg(driver, friend):
     return ''
 
 def getCurrentFriend(driver):
-    chatArea = driver.findElementById('chatArea')
+    chatArea = driver.driver.find_element_by_id('chatArea')
     if chatArea == None:
         return None
     name = chatArea.find_element_by_tag_name('a')
@@ -109,7 +109,7 @@ def getCurrentFriend(driver):
 def searchFriend(driver, nickname):
     try:
         # enter search, check chat header
-        search = driver.findElementById('search_bar')
+        search = driver.driver.find_element_by_id('search_bar')
         if search == None:
             return None
         textInput = search.find_element_by_tag_name('input')
@@ -145,7 +145,7 @@ def activateFriend(driver, friend):
 
 def uploadFile(driver, filename):
     logger.info('uploading: %s', filename)
-    element = driver.findElementByName('file')
+    element = driver.driver.find_element_by_name('file')
     if element == None:
         return False
 
@@ -158,7 +158,7 @@ def uploadFile(driver, filename):
     # </span>
     uploading = True
     while uploading:
-        status = driver.findElementsByCssSelector('span.status.ng-scope')
+        status = driver.driver.find_elements_by_css_selector('span.status.ng-scope')
         if len(status) == 0:
             uploading = False
         logger.info('waiting for uploading finish')
@@ -202,7 +202,7 @@ def sendReport(driver, friend, msg):
         logger.info('could not send report.')
         return
     # enter msg to textarea
-    editArea = driver.findElementById('editArea')
+    editArea = driver.driver.find_element_by_id('editArea')
     if (editArea == None):
         logger.warning('!! did not find input area.')
         return
@@ -249,15 +249,15 @@ def checkOutbox(driver):
         sendReport(driver, to, report)
 
 def inputFace(driver, n):
-    editArea = driver.findElementById('editArea')
+    editArea = driver.driver.find_element_by_id('editArea')
     editArea.click()
 
-    menu = driver.findElementsByCssSelector('a.web_wechat_face')
+    menu = driver.driver.find_elements_by_css_selector('a.web_wechat_face')
     if len(menu) <= 0:
         logger.warning('did not find stickers icon')
         return False
     menu[0].click()
-    faces = driver.findElementsByCssSelector('div.qq_face')
+    faces = driver.driver.find_elements_by_css_selector('div.qq_face')
     if len(faces) <= 0:
         logger.warning('could not open face menu')
         return False
@@ -288,14 +288,14 @@ def checkCmd(driver):
         return -1
     return 0
 
-class Settings(object):
-    browser = 'Chrome'
-    pageWidth = 800
-    headless = False
-
 def main():
     logger.info('start ... %s', __file__)
-    driver = WebDriver(Settings)
+    settings = {
+        'browser': 'Chrome',
+        'pageWidth': 800,
+        'headless': False
+    }
+    driver = WebDriver(settings)
     pidMan = PidMan('wechat', '.')
     pidMan.save(driver.getPIDs())
     driver.setWindowSize(driver.pageWidth, 800)
@@ -319,7 +319,7 @@ def main():
             else:
                 time.sleep(delayMin * 60)
     pidMan.clean()
-    driver.close()
+    driver.getBrowser().quit()
 
 if (__name__ == '__main__'):
     fn = os.path.basename(__file__)

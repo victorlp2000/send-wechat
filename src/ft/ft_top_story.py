@@ -23,8 +23,8 @@ def findArticleInfo(driver):
 def findTopStoryItem(driver):
     # first 'div.item-inner' in 'div.items'
     selector = 'div.block-container.dark-green.has-side.side-right.all'
-    items = driver.findElementsByCssSelector(selector)
-    # items = driver.findElementsByCssSelector('div.items')
+    items = driver.driver.find_elements_by_css_selector(selector)
+    # items = driver.driver.find_elements_by_css_selector('div.items')
     logger.debug('%d of "div.items" found.', len(items))
     if len(items) == 0:
         logger.warning('did not find list items')

@@ -4,7 +4,7 @@ import time
 def run(browser):
     cwd = os.getcwd()
     url = 'file://' + cwd + '/tests/my_page_1.html'
-    browser.loadPage(url)
+    browser.getBrowser().get(url)
 
     for x in range(80, 121, 20):
         browser.setZoom(x)
