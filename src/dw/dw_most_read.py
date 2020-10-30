@@ -4,37 +4,24 @@
 # Created:  June 9, 2020
 # By: Weiping Liu
 
-import time
-import urllib.parse
-
 from helper.my_logger import getMyLogger
 
 logger = getMyLogger(__name__)
 
-def getMostReadArticleInfo(driver, url):
-    logger.info('loading: %s', urllib.parse.unquote(url))
-    driver.loadPage(url) # open the home page
+# find 'most-read' article from the current page
+# return {link, title} or None
+def findArticleInfo(driver):
+    logger.info('looking for most read article')
     browser = driver.getBrowser()
 
-    selector = 'div.articlelinks.articlelinks--numbered'
-    divs = browser.find_elements_by_css_selector(selector)
-    # verify...
-    for div in divs:
-        h2 = div.find_element_by_tag_name('h2')
+    h2s = browser.find_elements_by_tag_name('h2')
+    for h2 in h2s:
         if h2.text != '最多阅读':
             continue
-        list = div.find_elements_by_tag_name('li')
-        info = getArticleInfo(list[0])
-        if info == None:
-            logger.warning('did not find link from the article list.')
-            return None
-        logger.info('article: %s', info['title'])
-        return info
-    return None
-
-def getArticleInfo(item):
-    links = item.find_elements_by_tag_name('a')
-    if len(links) > 0:
-        return {'link': links[0].get_attribute('href'),
-                'title':links[0].text}
+        a = h2.find_element_by_xpath('../ol/li[1]/h3/a')
+        link =  a.get_attribute('href')
+        title = a.text
+        if link and title:
+            return {'link': link, 'title': title}
+    logger.info('did not find article')
     return None

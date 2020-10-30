@@ -8,11 +8,15 @@ import sys
 
 from util import json_file
 
-def getContacts():
-    # default contacts
-    contacts = ['~test']    # folder for internal use
-    if len(sys.argv) > 1:
-        tmp = json_file.readFile(sys.argv[1])
-        if type(tmp) is list:
-            contacts = tmp
-    return contacts
+def getUrl():
+    for argv in sys.argv:
+        if argv.startswith('http'):
+            return argv
+    return None
+
+# config file must be in config folder and starts with config_
+def getConfig():
+    for argv in sys.argv:
+        if argv.startswith('config/config_'):
+            return argv
+    return None

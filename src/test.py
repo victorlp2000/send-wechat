@@ -12,7 +12,7 @@ import logging
 from helper.browser_driver import WebDriver
 from helper.my_logger import getMyLogger
 
-from bbc.bbc_article import cleanPage
+from helper.page_verify import PageMeta
 
 class Settings(object):
     browser = 'Chrome'     # to get full page image, have to use Firefox now
@@ -33,13 +33,15 @@ def main():
     logger.info('start %s', __file__)
     driver = WebDriver(Settings)
     url = 'https://www.bbc.com/zhongwen/simp/world-54407333'
+    url = 'https://www.bbc.com/zhongwen/simp/world-54471111'
+    url = 'https://www.bbc.com/zhongwen/simp/chinese-news-54462810'
     # url = 'https://www.voachinese.com/a/trump-to-return-to-white-house-20201005/5609783.html'
     # url = 'https://cn.reuters.com/article/us-trump-covid-stock-investors-1005-idCNKBS26Q0FD'
     driver.loadPage(url)
-    driver.setWindowSize(Settings.pageWidth)
-    # test this function
-    cleanPage(driver)
 
+    # test this function
+    pageMeta = PageMeta()
+    pageMeta.getMeta(driver.getBrowser())
     input('wait... close')
 
     driver.close()

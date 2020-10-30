@@ -4,15 +4,12 @@
 # Created:  June 9, 2020
 # By: Weiping Liu
 
-import time
-
 from helper.my_logger import getMyLogger
 
 logger = getMyLogger(__name__)
 
-def getMostReadArticleInfo(driver, url):
-    logger.info('loading: %s', url)
-    driver.loadPage(url) # open the home page
+def findArticleInfo(driver):
+    logger.info('looking for most read article')
     browser = driver.getBrowser()
 
     section = findMostReadSection(browser)
@@ -29,8 +26,6 @@ def getMostReadArticleInfo(driver, url):
     if info == None:
         logger.warning('did not find link from the article list.')
         return None
-
-    logger.info('article: %s', info['title'])
     return info
 
 def findMostReadSection(browser):

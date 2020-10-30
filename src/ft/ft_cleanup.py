@@ -4,26 +4,18 @@
 # Created:  June 21, 2020
 # By: Weiping Liu
 
-import os, time
 import urllib.parse
 
 from helper.my_logger import getMyLogger
-from helper.set_article import setArticle
 
 logger = getMyLogger(__name__)
 
-def getPageImage(driver, info):
-    logger.info('loading "%s"', str(info))
-    driver.setWindowSize(driver.pageWidth)
-    driver.loadPage(info['link'])
-
-    fullLink = info['link']
+def cleanupPage(driver):
     # try:
     # if there is <a href="/story/001088254?adchannelID=&amp;full=y">全文</a>
     full = driver.getBrowser().find_element_by_link_text(u'全文')
     fullLink = full.get_attribute('href')
     logger.info('loading full "%s"', urllib.parse.unquote(fullLink))
-    info['link'] = fullLink
     driver.loadPage(fullLink)
     # except:
     #     logger.error('did not find full page link.')
@@ -31,14 +23,7 @@ def getPageImage(driver, info):
 
     time.sleep(3)   # for loading completely
 
-    info['zoomHeader'] = '93%'
-    cleanPage(driver, info)
-    return driver.saveFullPageToJpg(info['fn'])
-
-def cleanPage(driver, info=None):
     logger.info('cleaning content...')
-    if info != None:
-        setArticle(driver, info)
 
     selectors = [
         'div.story-action',     # left-side action menu
@@ -56,7 +41,7 @@ def cleanPage(driver, info=None):
     driver.noneDisplayByCSSSelectors(selectors)
     driver.noneDisplayByIds(ids)
 
-    browser = driver.driver
+    browser = driver.getBrowser()
 
     divs = browser.find_elements_by_tag_name('div')
     for div in divs:

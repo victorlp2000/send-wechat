@@ -4,18 +4,21 @@
 # Created:  October 4, 2020
 # By: Weiping Liu
 
-class PageType(object):
+class PageMeta(object):
 
     def __init__(self):
         """
             info = [
-                name: website name, i.e. 'bbc'
                 {
                     type: comments for the page structure
-                    head: array of head tags
-                    body: array of body tags
-                }, ...
-                ]
+                    url:
+                    html: {
+                        head: [array of head tags]
+                        body: [array of body tags]
+                    }
+                },
+                ...
+            ]
         """
         self.info = None
         self.fn = None
@@ -39,7 +42,12 @@ class PageType(object):
             tagName.append(t.tag_name)
         return tagName
 
-    def getInfo(self, browser):
+    def getMeta(self, browser):
         info = {}
-        info['head'] = getChildrenTagNames(browser.find_element_by_tag_name('head'))
-        info['body'] = getChildrenTagNames(browser.find_element_by_tag_name('body'))
+        html = {}
+        html['head'] = self.getChildrenTagNames(browser.find_element_by_tag_name('head'))
+        html['body'] = self.getChildrenTagNames(browser.find_element_by_tag_name('body'))
+        url = browser.current_url
+        info['url'] = url
+        info['html'] = html
+        print(info)

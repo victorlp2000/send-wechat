@@ -1,4 +1,4 @@
-#!/usr/bin/python
+settings#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 # Created:  May 18, 2020
@@ -10,14 +10,14 @@ from urllib.parse import urlparse
 import logging
 
 from helper.browser_driver import WebDriver
-from reuters.reuters_article import cleanPage as cleanReutersArticle
-from nyt.nyt_article import cleanPage as cleanNYTimesArticle
-from bbc.bbc_article import cleanPage as cleanBBCArticle
-from dw.dw_article import cleanPage as cleanDWArticle
-from ft.ft_article import cleanPage as cleanFTArticle
-from voa.voa_article import cleanPage as cleanVOAArticle
+from reuters import reuters_article as reutersArticle
+from nyt import nyt_article as nytArticle
+from bbc import bbc_article as bbcArticle
+from dw import dw_article as dwArticle
+from ft import ft_article as ftArticle
+from voa import voa_article as voaArticle
 from util.copy_to_contacts import copyToContacts
-from helper.cmd_argv import getContacts
+from helper import cmd_argv as CmdArg
 from helper.my_logger import getMyLogger
 
 def menu():
@@ -39,49 +39,125 @@ def getChoice(browser, tab=0):
         else:
             return choice
 
+def getArticleSource(url)
+    if url.startswith('https://cn.reuters.com/article/'):
+        return 'reuters'
+    elif url.startswith('https://cn.nytimes.com/'):
+        return 'nyt'
+    elif url.startswith('https://www.bbc.com/zhongwen/simp/'):
+        return 'bbc'
+    elif url.startswith('https://m.dw.com/zh/'):
+        return 'dw'
+    elif url.startswith('https://m.ftchinese.com/'):
+        return 'ft'
+    elif url.startswith('https://www.voachinese.com'):
+        return 'voa'
+    else:
+        print ('no parser for the page.')
+    return None
+
+def getPageSettings(src, settings):
+    if src == 'reuters':
+        settings = reutersArticle.pageSettings(settings)
+    elif src == 'nyt':
+        settings = nytArticle.pageSettings(settings)
+    elif src == 'bbc':
+        settings = bbcArticle.pageSettings(settings)
+    elif src == 'dw':
+        settings = dwArticle.pageSettings(settings)
+    elif src == 'ft':
+        settings = ftArticle.pageSettings(settings)
+    elif src == 'voa':
+        settings = voaArticle.pageSettings(settings)
+    else:
+        print ('no parser for the page.')
+    return settings
+
+def getPageImage(driver, imgInfo):
+    src = getArticleSource(driver)
+    imgInfo['fn'] = '/tmp/manual-pick.jpg'
+    if src == 'reuters':
+        imgInfo['type'] = 'BBC News 中文: 文章选摘'
+        imgInfo['zoomHeader'] = '85%'
+        img = reutersArticle.getPageImage(driver)
+
+    elif src == 'nyt':
+        img = nytArticle.getPageImage(driver)
+
+    elif src == 'bbc':
+        img = bbcArticle.getPageImage(driver)
+
+    elif src == 'dw':
+        img = dwArticle.getPageImage(driver)
+
+    elif src == 'ft':
+        img = ftArticle.getPageImage(driver)
+
+    elif src == 'voa':
+        img = voaArticle.getPageImage(driver)
+
+    else:
+        print ('no parser for the page.')
+    return fn
+
+def cleanPage(driver):
+    src = getArticleSource(driver)
+    if src == 'reuters':
+        reutersArticle.pageClean(driver)
+        fn = datetime.now().strftime('%Y%m%d-%H%M%S-reu.jpg')
+    elif src == 'nyt':
+        nytArticle.pageClean(driver)
+        fn = datetime.now().strftime('%Y%m%d-%H%M%S-nyt.jpg')
+    elif src == 'bbc':
+        bbcArticle.pageClean(driver)
+        fn = datetime.now().strftime('%Y%m%d-%H%M%S-nyt.jpg')
+    elif src == 'dw':
+        dwArticle.pageClean(driver)
+        fn = datetime.now().strftime('%Y%m%d-%H%M%S-dw.jpg')
+    elif src == 'ft':
+        ftArticle.pageClean(driver)
+        fn = datetime.now().strftime('%Y%m%d-%H%M%S-ft.jpg')
+    elif src == 'voa':
+        voaArticle.pageClean(driver)
+        fn = datetime.now().strftime('%Y%m%d-%H%M%S-voa.jpg')
+    else:
+        print ('no parser for the page.')
+    return fn
+
 class Settings(object):
-    browser = 'Chrome'     # to get full page image, have to use Firefox now
-    pageWidth = 540
-    zoom = 100
-    headless = False
+    browser = 'Chrome'
     userAgent = 'Mobile'
 
 def main():
     logger.info('start %s', __file__)
-    driver = WebDriver(Settings)
-    driver.loadPage('file://' + os.path.abspath('./manual-bookmarks.html'))
-    contacts = getContacts()
+    contacts = CmdArg.getContacts()
+    url = CmdArg.getUrl()
+    if url == None or getArticleSource(url) == None:
+        url = 'file://' + os.path.abspath('./manual-bookmarks.html')
+        Settings.headless = False
+    else:
+        Settings.headless = True
+    settings = getPageSetings(getArticleSource(url), Settings)
+
+    driver = WebDriver(settings)
+    driver.loadPage(url)
     imageFile = '/tmp/manual-pick.jpg'
     fn = None
 
     if os.path.isfile(imageFile):
         os.remove(imageFile)
 
+    if url.startswith('http'):
+        fn = cleanPage(driver)
+        if driver.saveFullPageToJpg(imageFile) != None:
+            copyToContacts(imageFile, fn, contacts)
+        driver.close()
+        return
+
     while True:
         select = getChoice(driver.driver)
         if select == '1':
-            url = driver.getCurrentUrl()
-            if url.startswith('https://cn.reuters.com/article/'):
-                cleanReutersArticle(driver)
-                fn = datetime.now().strftime('%Y%m%d-%H%M%S-reu.jpg')
-            elif url.startswith('https://cn.nytimes.com/'):
-                cleanNYTimesArticle(driver)
-                fn = datetime.now().strftime('%Y%m%d-%H%M%S-nyt.jpg')
-            elif url.startswith('https://www.bbc.com/zhongwen/simp/'):
-                cleanBBCArticle(driver)
-                fn = datetime.now().strftime('%Y%m%d-%H%M%S-nyt.jpg')
-            elif url.startswith('https://m.dw.com/zh/'):
-                cleanDWArticle(driver)
-                fn = datetime.now().strftime('%Y%m%d-%H%M%S-dw.jpg')
-            elif url.startswith('https://m.ftchinese.com/'):
-                cleanFTArticle(driver)
-                fn = datetime.now().strftime('%Y%m%d-%H%M%S-ft.jpg')
-            elif url.startswith('https://www.voachinese.com'):
-                cleanVOAArticle(driver)
-                fn = datetime.now().strftime('%Y%m%d-%H%M%S-voa.jpg')
-            else:
-                print ('no parser for the page.')
-
+            fn = cleanPage(driver)
         elif select == '2':
             if fn == None:
                 logger.warning('select 1 to get page cleaned.')

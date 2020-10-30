@@ -4,16 +4,12 @@
 # Created:  June 9, 2020
 # By: Weiping Liu
 
-import time
-
 from helper.my_logger import getMyLogger
 
 logger = getMyLogger(__name__)
 
-def getTopStoryInfo(driver, url):
-    logger.info('loading: %s', url)
-    driver.loadPage(url) # open the home page
-    time.sleep(2)
+def findArticleInfo(driver):
+    logger.info('looking for most read article')
     browser = driver.getBrowser()
 
     section = findTopStorySection(browser)
@@ -30,8 +26,6 @@ def getTopStoryInfo(driver, url):
     if info == None:
         logger.warning('did not find link from the article list.')
         return None
-
-    logger.info('article: %s', info['title'])
     return info
 
 def findTopStorySection(browser):

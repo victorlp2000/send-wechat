@@ -8,7 +8,7 @@ from datetime import datetime
 import urllib.parse
 from util import json_file
 
-class Accessed(object):
+class History(object):
     def __init__(self, fn):
         self.fn = fn
         self.maxInfo = 40

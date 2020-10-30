@@ -4,28 +4,12 @@
 # Created:  June 9, 2020
 # By: Weiping Liu
 
-import os, time
-
 from helper.my_logger import getMyLogger
-from helper.set_article import setArticle
 
 logger = getMyLogger(__name__)
 
-def getPageImage(driver, info):
-    logger.info('loading "%s"', str(info))
-    driver.setWindowSize(driver.pageWidth)
-    driver.loadPage(info['link'])
-    time.sleep(3)   # for loading completely
-
-    info['zoomHeader'] = '95%'
-    cleanPage(driver, info)
-
-    return driver.saveFullPageToJpg(info['fn'])
-
-def cleanPage(driver, info=None):
+def cleanupPage(driver):
     logger.info('cleaning content...')
-    if info != None:
-        setArticle(driver, info)
 
     selectors = [
         "div.top_banner_ad",

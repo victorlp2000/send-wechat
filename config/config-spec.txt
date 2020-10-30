@@ -1,0 +1,27 @@
+. config file using json object, and will be read into python
+  as dict.
+
+  - name: (string), name of the config
+
+  - contacts: (array)       where to put generated image files
+
+  - settings:               controls browser, window size, zoom scale, ...
+  - settings.browser:       ['Chrome'/'Firefox']
+  - settings.headless:      [true/false], need to be true to get whole page screenshot
+  - settings.userAgent:     ['Mobile'], enable to use mobile user-agent setting
+  - settings.devScale:      [-1-], enlarge browser window at device level
+  - settings.zoom:          [-100-], enlarge page in browser
+  - settings.pageWidth:     window width in pixel, generated image width
+
+  - main_url: (string)      entry to website
+
+  - history: (srting)       filename of the history record, has visited article info
+
+  - article_info:
+  - article_info.do_find:   module of function to find article
+
+  - article_img
+  - article_img.do_cleanup: module function to clean up page content
+                            remove ads and non-article related content
+  - article_img.title:      type of the article
+  - article_img.zoom:       [-100-] scale header font

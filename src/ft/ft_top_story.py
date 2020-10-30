@@ -10,22 +10,15 @@ from helper.my_logger import getMyLogger
 
 logger = getMyLogger(__name__)
 
-def getTopStoryInfo(driver, url):
-    logger.info('loading: %s', url)
-    driver.loadPage(url) # open the home page
-    time.sleep(2)
+def findArticleInfo(driver):
+    logger.info('looking for article')
+
     item = findTopStoryItem(driver)
     if item == None:
         return None
 
     # in the list, we only care the first item
-    info = getArticleInfo(item)
-    if info == None:
-        logger.warning('did not find link from the article list.')
-        return None
-
-    logger.info('article: %s', info['title'])
-    return info
+    return getArticleInfo(item)
 
 def findTopStoryItem(driver):
     # first 'div.item-inner' in 'div.items'
@@ -43,6 +36,11 @@ def findTopStoryItem(driver):
 def getArticleInfo(item):
     try:
         link = item.find_element_by_css_selector('a.item-headline-link')
+        classes = link.get_attribute('class').split()
+        for c in classes:
+            if c == 'locked':
+                return None
+
         return {'link': link.get_attribute('href'),
                 'title':link.text}
     except:

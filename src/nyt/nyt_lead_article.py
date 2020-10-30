@@ -10,22 +10,15 @@ from helper.my_logger import getMyLogger
 
 logger = getMyLogger(__name__)
 
-def getLeadArticleInfo(driver, url):
-    logger.info('loading: %s', url)
-    driver.loadPage(url) # open the home page
-    time.sleep(1)
+def findArticleInfo(driver):
+    logger.info('looking for article')
     browser = driver.getBrowser()
 
     list = getArticleList(browser)
     if len(list) == 0:
         logger.warning('did not find item in list')
         return None
-    info = getArticleInfo(list[0])
-    if info == None:
-        return None
-
-    logger.info('article: %s', info['title'])
-    return info
+    return getArticleInfo(list[0])
 
 def getArticleList(browser):
     selector = 'ol.article-list'

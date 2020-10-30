@@ -4,33 +4,12 @@
 # Created:  June 9, 2020
 # By: Weiping Liu
 
-import os, time
-import urllib.parse
-from helper.set_article import setArticle
 from helper.my_logger import getMyLogger
 
 logger = getMyLogger(__name__)
 
-def getPageImage(driver, info):
-    logger.info('loading "%s"', urllib.parse.unquote(info['link']))
-    driver.setWindowSize(driver.pageWidth)
-    driver.loadPage(info['link'])
-    time.sleep(3)   # for loading completely
-
-    info['zoomHeader'] = '130%'
-    cleanPage(driver, info)
-
-    return driver.saveFullPageToJpg(info['fn'])
-
-def nonDisplayElements(browser, elements):
-    for e in elements:
-        browser.execute_script("arguments[0].style.display = 'none';", e)
-
-def cleanPage(driver, info=None):
-    logger.info('cleaning content...')
-    if info != None:
-        setArticle(driver, info)
-
+def cleanupPage(driver):
+    logger.info('cleaning content ...')
     browser = driver.getBrowser()
 
     # make header stay at top

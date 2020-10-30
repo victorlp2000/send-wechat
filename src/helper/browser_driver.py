@@ -24,40 +24,39 @@ def isSameStrArray(s1, s2):
     return True
 
 class WebDriver(object):
-    def __init__(self, settings=None):
+    def __init__(self, settings):
         # default settings
         self.browser = 'Firefox'
         self.headless = False
         self.zoom = None
-        self.devScale = None
+        self.devScale = 1
         self.pageWidth = None
         self.configDir = None
         self.workingDir = os.path.abspath('.')
         self.userAgent = None   # or 'Mobile'
 
-        setDir = dir(settings)
-        if 'browser' in setDir:
-            self.browser = settings.browser
-        if 'headless' in setDir:
-            self.headless = settings.headless
-        if 'zoom' in setDir:
-            self.zoom = settings.zoom
-        if 'devScale' in setDir:
-            self.devScale = settings.devScale
-        if 'pageWidth' in setDir:
-            self.pageWidth = settings.pageWidth
-        if 'userAgent' in setDir:
-            self.userAgent = settings.userAgent
-        if 'configDir' in setDir and settings.configDir != None:
-            if os.path.isdir(settings.configDir):
-                self.configDir = settings.configDir
+        if 'browser' in settings:
+            self.browser = settings['browser']
+        if 'headless' in settings:
+            self.headless = settings['headless']
+        if 'zoom' in settings:
+            self.zoom = settings['zoom']
+        if 'devScale' in settings:
+            self.devScale = settings['devScale']
+        if 'pageWidth' in settings:
+            self.pageWidth = settings['pageWidth'] / self.devScale
+        if 'userAgent' in settings:
+            self.userAgent = settings['userAgent']
+        if 'configDir' in settings and settings['configDir'] != None:
+            if os.path.isdir(settings['configDir']):
+                self.configDir = settings['configDir']
             else:
-                logger.warning('configDir: "%s" does not exist', settings.configDir)
-        if 'workingDir' in setDir and settings.workingDir != None:
-            if os.path.isdir(settings.workingDir):
-                self.workingDir = os.path.abspath(settings.workingDir)
+                logger.warning('configDir: "%s" does not exist', settings['configDir'])
+        if 'workingDir' in settings and settings['workingDir'] != None:
+            if os.path.isdir(settings['workingDir']):
+                self.workingDir = os.path.abspath(settings['workingDir'])
             else:
-                logger.warning('workingDir: "%s" does not exist', settings.workingDir)
+                logger.warning('workingDir: "%s" does not exist', settings['workingDir'])
 
         self.driver = None
 
