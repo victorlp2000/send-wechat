@@ -9,7 +9,7 @@ from helper.my_logger import getMyLogger
 logger = getMyLogger(__name__)
 
 def cleanupPage(driver):
-    logger.info('cleaning content...')
+    logger.info('cleaning content')
 
     selectors = [
         "div.top_banner_ad",

@@ -10,7 +10,7 @@ from helper.my_logger import getMyLogger
 logger = getMyLogger(__name__)
 
 def convertToJpeg(fnPng, fnJpg=None):
-    logger.debug('convert to jpg...')
+    logger.debug('convert to jpg')
     if fnPng.endswith('.png'):
         if fnJpg == None:
             fnJpg = fnPng[:-4] + '.jpg'

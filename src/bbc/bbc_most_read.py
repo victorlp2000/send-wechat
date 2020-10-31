@@ -9,7 +9,7 @@ from helper.my_logger import getMyLogger
 logger = getMyLogger(__name__)
 
 def findArticleInfo(driver):
-    logger.info('looking for most read article')
+    logger.info('looking for article')
     browser = driver.getBrowser()
 
     section = findMostReadSection(browser)

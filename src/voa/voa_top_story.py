@@ -9,6 +9,7 @@ from helper.my_logger import getMyLogger
 logger = getMyLogger(__name__)
 
 def findArticleInfo(driver):
+    logger.info('looking for article')
     browser = driver.getBrowser()
 
     content = browser.find_element_by_id('content')

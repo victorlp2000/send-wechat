@@ -9,6 +9,7 @@ from helper.my_logger import getMyLogger
 logger = getMyLogger(__name__)
 
 def findArticleInfo(driver):
+    logger.info('looking for article')
     browser = driver.getBrowser()
     selector = 'div.basicteaser__wrap'
     divs = browser.find_elements_by_css_selector(selector)

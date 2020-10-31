@@ -11,7 +11,7 @@ logger = getMyLogger(__name__)
 # find 'most-read' article from the current page
 # return {link, title} or None
 def findArticleInfo(driver):
-    logger.info('looking for most read article')
+    logger.info('looking for article')
     browser = driver.getBrowser()
 
     h2s = browser.find_elements_by_tag_name('h2')

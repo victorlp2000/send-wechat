@@ -12,7 +12,7 @@ from helper.set_article import setArticle
 logger = getMyLogger(__name__)
 
 def cleanupPage(driver):
-    logger.info('cleaning content...')
+    logger.info('cleaning content')
     browser = driver.getBrowser()
 
     navs = browser.find_elements_by_tag_name('nav')
@@ -35,7 +35,7 @@ def cleanupPage(driver):
     wrapper = header.find_element_by_tag_name('div')
     browser.execute_script("arguments[0].style.display = 'none';", wrapper)
 
-    # <section class="AdContainer-..."
+    # <section class="AdContainer-"
     sections = browser.find_elements_by_tag_name('section')
     data = [
         'advertisement',

@@ -24,7 +24,7 @@ def cleanupPage(driver):
 
     time.sleep(3)   # for loading completely
 
-    logger.info('cleaning content...')
+    logger.info('cleaning content')
 
     selectors = [
         'div.story-action',     # left-side action menu

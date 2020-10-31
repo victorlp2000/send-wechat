@@ -46,7 +46,7 @@ def loginWechat(driver):
             if qr != None and len(qr0) != len(qr):
                 qr0 = qr    # qr image updated
                 showQRCode(qr)
-        logger.info('wait login to WeChat from phone...')
+        logger.info('wait login to WeChat from phone')
         print('\a')     # alerm sound
         time.sleep(3)
         timeout -= 1
@@ -77,26 +77,6 @@ def getFriendFromNavView(driver, friend):
     logger.info('did not find "%s" in nav menu', friend)
     logger.info(names)
     return None
-
-def getLastMsg(driver, friend):
-    div = getFriendFromNavView(driver, friend)
-    if div is None:
-        # search friend
-        if searchFriend(driver, friend) is None:
-            return ''
-        div = getFriendFromNavView(driver, friend) # try again after search
-    if div is None:
-        return ''
-
-    '''
-    if there is msg, it should have following data:
-        <p class="msg ng-scope" ng-if="chatContact.MMDigest">
-            <span ng-bind-html="chatContact.MMDigest" class="ng-binding">谢谢</span>
-    '''
-    msgs = div.find_elements_by_css_selector('p.msg.ng-scope')
-    if len(msgs) > 0:
-        return msgs[0].text
-    return ''
 
 def getCurrentFriend(driver):
     chatArea = driver.driver.find_element_by_id('chatArea')
@@ -168,7 +148,7 @@ def uploadFile(driver, filename):
     return True
 
 def sendFilesToFriends(driver, friends):
-    logger.debug('sendFilesToFriends...')
+    logger.debug('sendFilesToFriends')
     count = 0   # number of files sent
     report = ''
     for name in friends:
@@ -217,7 +197,7 @@ def sendReport(driver, friend, msg):
 # return the folder name if there is any file in side
 # !! note the folder name encoding
 def getOutboxFolders(workingDir):
-    logger.debug('getOutboxFolders...')
+    logger.debug('getOutboxFolders')
     outboxPath = workingDir + '/outbox'
     folders = []
     outbox = os.listdir(outboxPath)
@@ -240,7 +220,7 @@ def getOutboxFolders(workingDir):
     return folders
 
 def checkOutbox(driver):
-    logger.info('checking outbox...')
+    logger.info('checkOutbox')
     # send file to friend if there is file in outbox
     folders = getOutboxFolders(driver.workingDir)
     if len(folders) > 0:
@@ -248,48 +228,8 @@ def checkOutbox(driver):
         to = 'File Transfer'
         sendReport(driver, to, report)
 
-def inputFace(driver, n):
-    editArea = driver.driver.find_element_by_id('editArea')
-    editArea.click()
-
-    menu = driver.driver.find_elements_by_css_selector('a.web_wechat_face')
-    if len(menu) <= 0:
-        logger.warning('did not find stickers icon')
-        return False
-    menu[0].click()
-    faces = driver.driver.find_elements_by_css_selector('div.qq_face')
-    if len(faces) <= 0:
-        logger.warning('could not open face menu')
-        return False
-    links = faces[0].find_elements_by_tag_name('a')
-    if n+1 <= len(links):
-        links[n].click()
-        time.sleep(2)
-        editArea.send_keys(Keys.ENTER)
-        time.sleep(2)
-        return True
-    return False
-
-def checkCmd(driver):
-    logger.debug('checkCmd...')
-    # response if receive any cmd from "File Transfer":
-    friend = "File Transfer"
-    cmd = getLastMsg(driver, friend)
-    if not (cmd.startswith('?') or cmd.startswith(u'？')):
-        return 0
-
-    # process cmd
-    logger.info('received cmd: %s', cmd)
-    if cmd == '?' or cmd == u'？':
-        if activateFriend(driver, friend) is False:
-            return 0
-        inputFace(driver, 0)
-    elif cmd == '?exit':    # exit wechat
-        return -1
-    return 0
-
 def main():
-    logger.info('start ... %s', __file__)
+    logger.info('start "%s"', __file__)
     settings = {
         'browser': 'Chrome',
         'pageWidth': 800,

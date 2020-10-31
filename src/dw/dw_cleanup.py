@@ -9,7 +9,7 @@ from helper.my_logger import getMyLogger
 logger = getMyLogger(__name__)
 
 def cleanupPage(driver):
-    logger.info('cleaning content ...')
+    logger.info('cleaning content')
     browser = driver.getBrowser()
 
     # make header stay at top
