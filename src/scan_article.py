@@ -83,7 +83,7 @@ def processPage(driver, config):
     history.save(info)
 
 def main(config):
-    logger.info('start "%s"', config['name'])
+    logger.info('=== start "%s"', config['name'])
 
     # start driver with website specific configurations
     driver = WebDriver(config['settings'])

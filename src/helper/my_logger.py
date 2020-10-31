@@ -14,7 +14,7 @@ def getMyLogger(name=None, fn=None, level=None):
             logger.setLevel(level)
         else:
             logger.setLevel(logging.INFO)
-        formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s",
                                     "%Y-%m-%d %H:%M")
         # create console handler and set level to debug
         handler = logging.StreamHandler()

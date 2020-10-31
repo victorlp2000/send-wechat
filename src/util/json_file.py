@@ -13,7 +13,7 @@ logger = getMyLogger(__name__)
 # read utf8 json defaultContact
 # convert to unicode for the return object
 def readFile(filename):
-    logger.info('loading "%s"', filename)
+    # logger.info('loading "%s"', filename)
     if os.path.isfile(filename):
         with open(filename) as infile:
             return json.load(infile)

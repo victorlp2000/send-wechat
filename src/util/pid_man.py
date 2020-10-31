@@ -24,7 +24,7 @@ class PidMan(object):
     def save(self, pids):
         # convert array to string
         s = ' '.join(map(str, pids)) + '\n'
-        logger.info('pids: %s', s)
+        logger.debug('pids: %s', s)
         # only keep the last saved pids
         if self.fn != None:
             self.clean()

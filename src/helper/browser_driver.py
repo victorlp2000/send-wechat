@@ -71,7 +71,7 @@ class WebDriver(object):
             if self.userAgent == 'Mobile':
                 # Mobile phone web browser
                 ua = 'Mozilla/5.0 (Linux; Android 8.0.0; SM-G930F Build/R16NW; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/74.0.3729.157 Mobile Safari/537.36'
-                logger.info('set userAgent: %s', ua)
+                logger.debug('set userAgent: %s', ua)
                 options.add_argument('user-agent=' + ua)
             if self.configDir is not None:
                 # config data will be changed a lot at run time
