@@ -39,6 +39,7 @@ def getArticleInfo(item):
         classes = link.get_attribute('class').split()
         for c in classes:
             if c == 'locked':
+                logger.warning('article locked: %s', link.text)
                 return None
 
         return {'link': link.get_attribute('href'),
