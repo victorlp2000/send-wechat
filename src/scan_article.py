@@ -56,6 +56,9 @@ def processPage(driver, config):
     if info == None:  # found article
         logger.warning('did not find article.')
         return
+    if info['title'] == '':
+        logger.warning('did not get title')
+        return
     logger.info('article: "%s"', info['title'])
 
     # check if the article has been visited
