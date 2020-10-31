@@ -163,14 +163,14 @@ class WebDriver(object):
 
     def getPageLength(self):
         h1 = self.scrollToBottom()
-        logger.info('scrollToBottom: %d', h1)
+        logger.debug('scrollToBottom: %d', h1)
         h2 = self.driver.execute_script("return document.body.scrollHeight;")
-        logger.info('body.scrollHeight: %d', h2)
+        logger.debug('body.scrollHeight: %d', h2)
         elem = self.driver.find_element_by_tag_name('body')
         h4 = self.driver.execute_script('return parseInt(window.getComputedStyle(arguments[0]).height);', elem)
-        logger.info('computed height: %d', h4)
+        logger.debug('computed height: %d', h4)
         h5 = elem.size['height']
-        logger.info('element size height: %d', h4)
+        logger.debug('element size height: %d', h4)
         return max(h1, h2, h4, h5)
 
     def scrollToTop(self):
@@ -213,7 +213,7 @@ class WebDriver(object):
     def saveFullPageToPng(self, fn):
         self.setWindowSize(self.pageWidth)
         if self.browser == 'Chrome':
-            logger.info('save Chrome page to %s', fn)
+            logger.debug('save Chrome page to %s', fn)
             if self.zoom != None:
                 self.setZoom(self.zoom)
 
@@ -257,7 +257,7 @@ class WebDriver(object):
         return None
 
     def saveFullPageToJpg(self, fn):
-        logger.info('save to %s', fn)
+        logger.debug('save to %s', fn)
         imgf = self.saveFullPageToPng(fn + '.png')
         logger.debug('tmp file %s', imgf)
         if imgf != None:
