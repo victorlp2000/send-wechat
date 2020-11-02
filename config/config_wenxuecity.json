@@ -1,5 +1,5 @@
 {
-  "name": "ft-top-story",
+  "name": "wenxuecity",
   "contacts": [
     "File Transfer"
   ],
@@ -7,18 +7,16 @@
     "browser": "Chrome",
     "headless": true,
     "userAgent": "Mobile",
-    "devScale": 1.35,
+    "devScale": 1.45,
     "pageWidth": 540,
     "zoom": 100
   },
-  "main_url": "http://m.ftchinese.com/",
-
+  "main_url": "https://m.wenxuecity.com/news/2020/11/02/10023074.html",
   "article_info": {
-    "do_find": "ft.ft_top_story"
   },
   "article_img": {
-    "do_cleanup": "ft.ft_cleanup",
-    "title": "《金融时报》中文网: 头条",
-    "zoom": 80
+    "do_cleanup": "articles.wenxuecity_cleanup",
+    "title": "文学城: 选文",
+    "zoom": 98
   }
 }

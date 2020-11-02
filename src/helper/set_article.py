@@ -33,14 +33,9 @@ def setHeader(browser, info):
         html += ' <span style="color:orange">--修改更新</span>'
     html += '<br>' + urllib.parse.unquote(info['link'])
     html += '</div>'
-    html += '<hr style="background-color:black;height:6px;margin:0px;padding:0px;border-width:0;">'
+    html += '<div style="background-color:black;height:6px;margin:0px;padding:0px;border-width:0;"></div>'
     browser.execute_script("arguments[0].innerHTML = arguments[1]", header, html)
-
-def removeScrollbar(browser):
-    body = browser.find_element_by_tag_name('body')
-    browser.execute_script("arguments[0].style.overflow = 'hidden';", body)
 
 def setArticle(driver, info):
     browser = driver.getBrowser()
     setHeader(browser, info)
-    removeScrollbar(browser)

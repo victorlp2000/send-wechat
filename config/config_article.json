@@ -1,0 +1,22 @@
+{
+  "name": "article",
+  "contacts": [
+    "File Transfer"
+  ],
+  "settings": {
+    "browser": "Chrome",
+    "headless": true,
+    "userAgent": "Mobile",
+    "devScale": 1.8,
+    "pageWidth": 540,
+    "zoom": 99
+  },
+  "main_url": "https://theinitium.com/article/20201101-opinion-the-unraveling-of-america/",
+  "article_info": {
+  },
+  "article_img": {
+    "do_cleanup": "theinitium_cleanup",
+    "title": "端傳媒: 选文",
+    "zoom": 85
+  }
+}

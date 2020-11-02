@@ -18,25 +18,27 @@ from util import json_file as JsonUtil
 from helper import cmd_argv as CmdArgv
 from helper.set_article import setArticle
 
-def loadArticle(driver, url, configImg):
+def getArticle(driver, url, configImg):
     unquote = urllib.parse.unquote(url)
     logger.info('loading %s', unquote)
-    driver.getBrowser().get(url)
+    browser = driver.getBrowser()
+
+    browser.get(url)
 
     # cleanup the page
     if 'do_cleanup' in configImg:
         module = importlib.import_module(configImg['do_cleanup'])
         module.cleanupPage(driver)
 
-    configImg['link'] = unquote
+    configImg['link'] = urllib.parse.unquote(browser.current_url)
     setArticle(driver, configImg)
     return
 
-def findArticle(driver, configInfo):
+def findArticle(driver, url, configInfo):
     if not 'do_find' in configInfo:
-        logger.warning('did not see do_find module in config')
-        return None
+        return {'link': url, 'title': 'article'}
 
+    driver.getBrowser().get(config['main_url'])
     module = importlib.import_module(configInfo['do_find'])
     return module.findArticleInfo(driver)
 
@@ -49,10 +51,9 @@ def processPage(driver, config):
     if not 'main_url' in config:
         logger.warning('did not find \'main_url\' in config')
         return
-    driver.getBrowser().get(config['main_url'])
 
     # find article from webpage
-    info = findArticle(driver, config['article_info'])
+    info = findArticle(driver, config['main_url'], config['article_info'])
     if info == None:  # found article
         logger.warning('did not find article.')
         return
@@ -62,12 +63,15 @@ def processPage(driver, config):
     logger.info('article: "%s"', info['title'])
 
     # check if the article has been visited
-    if history.exists(info):
+    if ('debug' not in config) and history.exists(info):
         logger.warning('old article')
         return
 
     # get article image
-    loadArticle(driver, info['link'], config['article_img'])
+    getArticle(driver, info['link'], config['article_img'])
+
+    if 'debug' in config:
+        input('finished clenup...')
 
     # get article image
     fn = '/tmp/' + config['name'] + '.jpg'
@@ -105,6 +109,9 @@ if __name__ == "__main__":
     configFile = CmdArgv.getConfig()
     if configFile != None:
         config = JsonUtil.readFile(configFile)
+        if CmdArgv.getDebug():
+            config['debug'] = True
+            config['settings']['headless'] = False
         main(config)
     else:
         logger.error('no config')

@@ -150,11 +150,10 @@ class WebDriver(object):
     def scrollToBottom(self):
         scrollHeight = self.driver.execute_script("return document.body.parentNode.scrollHeight")
         viewHeight = self.driver.execute_script("return window.innerHeight")
-        print('view height:', viewHeight)
         top = 0
         while top + viewHeight < scrollHeight:
             top += viewHeight
-            # print('top:', top, scrollHeight)
+            logger.debug('scrolling: %d', top)
             # self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight); return document.body.scrollHeight;")
             self.driver.execute_script("window.scrollTo(0, {0})".format(top))
             time.sleep(2)
@@ -211,7 +210,10 @@ class WebDriver(object):
             self.driver.execute_script("arguments[0].style.display = 'none';", e)
 
     def saveFullPageToPng(self, fn):
-        self.setWindowSize(self.pageWidth)
+        body = self.driver.find_element_by_tag_name('body')
+        self.driver.execute_script("arguments[0].style.overflow = 'hidden';", body)
+
+        self.setWindowSize(self.pageWidth, 1080)
         if self.browser == 'Chrome':
             logger.debug('save Chrome page to %s', fn)
             if self.zoom != None:

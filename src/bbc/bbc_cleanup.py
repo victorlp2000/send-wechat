@@ -4,10 +4,7 @@
 # Created:  June 9, 2020
 # By: Weiping Liu
 
-import os, time
-
 from helper.my_logger import getMyLogger
-from helper.set_article import setArticle
 
 logger = getMyLogger(__name__)
 

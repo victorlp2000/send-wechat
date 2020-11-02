@@ -14,6 +14,12 @@ def getUrl():
             return argv
     return None
 
+def getDebug():
+    for argv in sys.argv:
+        if argv == 'debug':
+            return True
+    return False
+
 # config file must be in config folder and starts with config_
 def getConfig():
     for argv in sys.argv:
