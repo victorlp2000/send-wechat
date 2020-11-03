@@ -33,6 +33,14 @@ class History(object):
         link = urllib.parse.unquote(info['link'])
         for i in self.info:
             if i['title'] == info['title']:
+                if 'live' in info:
+                    last = datetime.strptime(i['time'], '%Y-%m-%d %H:%M')
+                    now = datetime.now()
+                    seconds = (now - last).seconds
+                    Hour = 60
+                    if seconds / 60 > 4 * Hour:
+                        info['updated'] = True
+                        return False
                 return True
             if i['link'] == link:
                 info['updated'] = True

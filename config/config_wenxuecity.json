@@ -16,7 +16,7 @@
   },
   "article_img": {
     "do_cleanup": "articles.wenxuecity_cleanup",
-    "title": "文学城: 选文",
-    "zoom": 98
+    "h-title": "文学城: 选文",
+    "h-zoom": 98
   }
 }

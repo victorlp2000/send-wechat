@@ -18,7 +18,7 @@ from util import json_file as JsonUtil
 from helper import cmd_argv as CmdArgv
 from helper.set_article import setArticle
 
-def getArticle(driver, url, configImg):
+def getArticle(driver, url, imgInfo):
     unquote = urllib.parse.unquote(url)
     logger.info('loading %s', unquote)
     browser = driver.getBrowser()
@@ -26,12 +26,12 @@ def getArticle(driver, url, configImg):
     browser.get(url)
 
     # cleanup the page
-    if 'do_cleanup' in configImg:
-        module = importlib.import_module(configImg['do_cleanup'])
+    if 'do_cleanup' in imgInfo:
+        module = importlib.import_module(imgInfo['do_cleanup'])
         module.cleanupPage(driver)
 
-    configImg['link'] = urllib.parse.unquote(browser.current_url)
-    setArticle(driver, configImg)
+    imgInfo['link'] = urllib.parse.unquote(browser.current_url)
+    setArticle(driver, imgInfo)
     return
 
 def findArticle(driver, url, configInfo):
@@ -68,7 +68,10 @@ def processPage(driver, config):
         return
 
     # get article image
-    getArticle(driver, info['link'], config['article_img'])
+    imgInfo = {}
+    imgInfo.update(config['article_img'])
+    imgInfo.update(info)
+    getArticle(driver, info['link'], imgInfo)
 
     if 'debug' in config:
         input('finished clenup...')

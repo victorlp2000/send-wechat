@@ -18,7 +18,7 @@
   },
   "article_img": {
     "do_cleanup": "ft.ft_cleanup",
-    "title": "《金融时报》中文网: 头条",
-    "zoom": 80
+    "h-title": "《金融时报》中文网: 头条",
+    "h-zoom": 80
   }
 }

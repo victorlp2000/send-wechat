@@ -18,7 +18,7 @@
   },
   "article_img": {
     "do_cleanup": "dw.dw_cleanup",
-    "title": "德国之声中文网: 头条",
-    "zoom": 125
+    "h-title": "德国之声中文网: 头条",
+    "h-zoom": 125
   }
 }

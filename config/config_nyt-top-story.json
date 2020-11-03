@@ -18,7 +18,7 @@
   },
   "article_img": {
     "do_cleanup": "nyt.nyt_cleanup",
-    "title": "纽约时报中文网: 头条",
-    "zoom": 93
+    "h-title": "纽约时报中文网: 头条",
+    "h-zoom": 93
   }
 }

@@ -23,5 +23,5 @@
   - article_img
   - article_img.do_cleanup: module function to clean up page content
                             remove ads and non-article related content
-  - article_img.title:      type of the article
-  - article_img.zoom:       [-100-] scale header font
+  - article_img.h-title:      type of the article
+  - article_img.h-zoom:       [-100-] scale header font

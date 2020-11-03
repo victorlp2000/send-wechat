@@ -18,7 +18,7 @@
   },
   "article_img": {
     "do_cleanup": "bbc.bbc_cleanup",
-    "title": "BBC News 中文: 热读",
-    "zoom": 85
+    "h-title": "BBC News 中文: 热读",
+    "h-zoom": 85
   }
 }

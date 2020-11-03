@@ -18,7 +18,7 @@
   },
   "article_img": {
     "do_cleanup": "voa.voa_cleanup",
-    "title": "美国之音中文网: 头条",
-    "zoom": 82
+    "h-title": "美国之音中文网: 头条",
+    "h-zoom": 82
   }
 }

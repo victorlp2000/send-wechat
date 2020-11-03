@@ -44,6 +44,9 @@ def findTopStorySection(browser):
 def getArticleInfo(item):
     links = item.find_elements_by_tag_name('a')
     if len(links) > 0:
-        return {'link': links[0].get_attribute('href'),
+        info = {'link': links[0].get_attribute('href'),
                 'title':links[0].text}
+        if info['title'].startswith('直播'):
+            info['live'] = True
+        return info
     return None

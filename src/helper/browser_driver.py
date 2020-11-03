@@ -210,7 +210,7 @@ class WebDriver(object):
             self.driver.execute_script("arguments[0].style.display = 'none';", e)
 
     def saveFullPageToPng(self, fn):
-        body = self.driver.find_element_by_tag_name('body')
+        body = self.driver.find_element_by_tag_name('html')
         self.driver.execute_script("arguments[0].style.overflow = 'hidden';", body)
 
         self.setWindowSize(self.pageWidth, 1080)

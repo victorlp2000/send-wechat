@@ -44,5 +44,5 @@ def getArticleInfo(item):
     links = item.find_elements_by_tag_name('a')
     if len(links) > 0:
         return {'link': links[0].get_attribute('href'),
-                'title':links[0].text}
+                'title': links[0].text}
     return None

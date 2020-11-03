@@ -16,7 +16,7 @@
   },
   "article_img": {
     "do_cleanup": "articles.theinitium_cleanup",
-    "title": "端傳媒: 选文",
-    "zoom": 80
+    "h-title": "端傳媒: 选文",
+    "h-zoom": 80
   }
 }

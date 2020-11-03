@@ -12,11 +12,22 @@ def cleanupPage(driver):
     logger.info('cleaning content')
     browser = driver.getBrowser()
 
+    # 返回页首
+    divs = browser.find_elements_by_css_selector('div.lx-commentary__top-link')
+    for div in divs:
+        browser.execute_script("arguments[0].style.display = 'none';", div)
+    # 分类
+    divs = browser.find_elements_by_id('core-navigation')
+    for div in divs:
+        buttons = div.find_elements_by_tag_name('button')
+        for btn in buttons:
+            browser.execute_script("arguments[0].style.display = 'none';", btn)
+
     navs = browser.find_elements_by_tag_name('nav')
     for nav in navs:
         role = nav.get_attribute('role')
         if role == 'navigation':
-            print(role)
+            logger.debug('role: %s', role)
             browser.execute_script("arguments[0].style.display = 'none';", nav)
 
     # links in line
