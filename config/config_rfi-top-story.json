@@ -1,0 +1,24 @@
+{
+  "name": "rfi-top-story",
+  "contacts": [
+    "File Transfer"
+  ],
+  "settings": {
+    "browser": "Chrome",
+    "headless": true,
+    "userAgent": "Mobile",
+    "devScale": 1.6,
+    "pageWidth": 540,
+    "zoom": 98
+  },
+  "main_url": "https://www.rfi.fr/cn/",
+
+  "article_info": {
+    "do_find": "rfi.rfi_top_story"
+  },
+  "article_img": {
+    "do_cleanup": "rfi.rfi_cleanup",
+    "h-title": "法国国际广播电台: 头条",
+    "h-zoom": 85
+  }
+}
