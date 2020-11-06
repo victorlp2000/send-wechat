@@ -10,7 +10,7 @@ from helper.my_logger import getMyLogger
 logger = getMyLogger(__name__)
 
 def closePopup(div):
-    print('close popup')
+    logger.debuf('close popup')
     div.find_element_by_tag_name('a').click()
     return
 
@@ -20,7 +20,6 @@ def cleanupPage(driver):
 
     check = 10
     while check > 0:
-        print(check)
         div = browser.find_elements_by_css_selector('div.didomi-popup-view')
         if len(div) > 0:
             closePopup(div[0])
@@ -52,6 +51,7 @@ def cleanupPage(driver):
         'div.t-content__tags',
         'div.t-content__related',
         'div.t-content__list-content',
+        'div.o-self-promo'
     ]
     for selector in selectors:
         divs = browser.find_elements_by_css_selector(selector)
