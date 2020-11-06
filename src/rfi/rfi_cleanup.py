@@ -34,6 +34,20 @@ def cleanupPage(driver):
     header = browser.find_element_by_tag_name('header')
     browser.execute_script("arguments[0].style.position = 'relative';", header)
 
+    # overwrite existing style, as it covers the header info
+    js = '''
+        var myStyle = document.createElement('style');
+        var myCss = '.o-header .o-header__inner .o-header__inner__background::before {content:"";width:100%;height:0px;position:absolute;top:0}';
+        myStyle.innerHTML = myCss;
+        document.body.insertBefore(myStyle, arguments[0]);
+        '''
+    browser.execute_script(js, header)
+    div = header.find_element_by_css_selector('div.o-header__inner__background')
+    browser.execute_script("arguments[0].setAttribute('class', 'o-header__inner__background myHeader');", div)
+
+    div = header.find_element_by_css_selector('div.o-site-nav-wrapper')
+    browser.execute_script("arguments[0].style.display = 'none';", div)
+
     selectors = [
         'div.tms-ad',
         'div.m-block-ad',
