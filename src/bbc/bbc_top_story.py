@@ -47,6 +47,6 @@ def getArticleInfo(item):
         info = {'link': links[0].get_attribute('href'),
                 'title':links[0].text}
         if info['title'].startswith('直播'):
-            info['live'] = True
+            info['live'] = []
         return info
     return None

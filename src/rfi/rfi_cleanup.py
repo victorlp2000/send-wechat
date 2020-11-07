@@ -10,7 +10,7 @@ from helper.my_logger import getMyLogger
 logger = getMyLogger(__name__)
 
 def closePopup(div):
-    logger.debuf('close popup')
+    logger.debug('close popup')
     div.find_element_by_tag_name('a').click()
     return
 

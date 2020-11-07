@@ -25,6 +25,13 @@ def getArticle(driver, url, imgInfo):
 
     browser.get(url)
 
+    if 'do_live' in imgInfo:
+        module = importlib.import_module(imgInfo['do_live'])
+        live = module.getTimePoints(driver)
+        if live != None:
+            imgInfo['live'] = live
+            print(live)
+
     # cleanup the page
     if 'do_cleanup' in imgInfo:
         module = importlib.import_module(imgInfo['do_cleanup'])
@@ -75,6 +82,11 @@ def processPage(driver, config):
 
     if 'debug' in config:
         input('finished clenup...')
+
+    if 'live' in imgInfo:
+        info['live'] = imgInfo['live']
+        if history.exists(info):
+            return
 
     # get article image
     fn = '/tmp/' + config['name'] + '.jpg'
