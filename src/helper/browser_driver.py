@@ -161,7 +161,7 @@ class WebDriver(object):
         return scrollHeight
 
     def getPageLength(self):
-        h1 = self.scrollToBottom(0.2)
+        h1 = self.scrollToBottom(0.5)
         logger.debug('scrollToBottom: %d', h1)
         h2 = self.driver.execute_script("return document.body.scrollHeight;")
         logger.debug('body.scrollHeight: %d', h2)

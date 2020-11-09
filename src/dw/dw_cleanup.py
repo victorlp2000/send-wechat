@@ -10,7 +10,7 @@ logger = getMyLogger(__name__)
 
 def cleanupPage(driver, config):
     logger.info('cleaning content')
-    driver.scrollToBottom()
+    driver.scrollToBottom(1.5)
     browser = driver.getBrowser()
 
     # make header stay at top

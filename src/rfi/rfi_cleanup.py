@@ -16,7 +16,7 @@ def closePopup(div):
 
 def cleanupPage(driver, config):
     logger.info('cleaning content')
-    driver.scrollToBottom()
+    driver.scrollToBottom(1.5)
     browser = driver.getBrowser()
 
     check = 10

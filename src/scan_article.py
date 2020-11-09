@@ -98,25 +98,29 @@ def processPage(driver, config):
         return
     logger.info('article: "%s"', urllib.parse.unquote(url))
 
+    # get article meta data
     meta = getArticleMeta(driver, url, config)
     if not ('url' in meta and 'title' in meta):
         logger.warning('did not find article url or title')
+        return
+
+    # check if the article has been visited
+    if history.exists(meta):
+        logger.warning('visited article')
         return
 
     if 'debug' in config:
         print(meta)
         input('finished meta...')
 
+    # cleanup the article page
     config['meta'] = meta
     nomalizeArticle(driver, config)
 
     if 'debug' in config:
         input('finished clenup...')
 
-    if history.exists(meta):
-        logger.warning('visited article')
-        return
-
+    # get screenshot image
     img = getScreenshot(driver, config)
     if img == None:
         logger.warning('failed to generate article image.')
