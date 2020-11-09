@@ -1,0 +1,25 @@
+{
+  "name": "bbc-article",
+  "contacts": [
+    "File Transfer"
+  ],
+  "settings": {
+    "browser": "Chrome",
+    "headless": true,
+    "userAgent": "Mobile",
+    "devScale": 1.8,
+    "pageWidth": 540,
+    "zoom": 98
+  },
+  "main_url": "",
+
+  "article_info": {
+    "m_findArticleUrl": "bbc.bbc_top_story",
+    "m_getArticleMeta": "bbc.bbc_meta"
+  },
+  "article_img": {
+    "m_cleanup": "bbc.bbc_cleanup",
+    "h-title": "BBC News 中文: 选文",
+    "h-zoom": 85
+  }
+}
