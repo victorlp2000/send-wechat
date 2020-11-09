@@ -10,7 +10,7 @@ logger = getMyLogger(__name__)
 
 # find 'most-read' article from the current page
 # return {link, title} or None
-def findArticleInfo(driver):
+def findArticleUrl(driver):
     logger.info('looking for article')
     browser = driver.getBrowser()
 
@@ -20,8 +20,6 @@ def findArticleInfo(driver):
             continue
         a = h2.find_element_by_xpath('../ol/li[1]/h3/a')
         link =  a.get_attribute('href')
-        title = a.text
-        if link and title:
-            return {'link': link, 'title': title}
-    logger.info('did not find article')
+        return link
+
     return None

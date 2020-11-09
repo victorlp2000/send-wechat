@@ -10,7 +10,7 @@ from helper.my_logger import getMyLogger
 
 logger = getMyLogger(__name__)
 
-def findArticleInfo(driver):
+def findArticleUrl(driver):
     logger.info('looking for article')
 
     item = findTopStoryItem(driver)
@@ -42,8 +42,8 @@ def getArticleInfo(item):
                 logger.warning('article locked: %s', link.text)
                 return None
 
-        return {'link': link.get_attribute('href'),
-                'title':link.text}
+        return link.get_attribute('href')
+
     except:
         logger.warning('did not find link item')
         return None

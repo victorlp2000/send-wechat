@@ -6,6 +6,7 @@ logger = getMyLogger(__name__)
 
 def cleanupPage(driver):
     logger.info('cleaning content')
+    driver.scrollToBottom()
     browser = driver.getBrowser()
 
     actions = ActionChains(browser)

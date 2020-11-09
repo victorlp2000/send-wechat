@@ -23,8 +23,8 @@ class History(object):
             self.info = data
 
     def save(self, info):
-        link = urllib.parse.unquote(info['link'])
-        info['link'] = link
+        link = urllib.parse.unquote(info['url'])
+        info['url'] = link
         info['time'] = datetime.now().strftime('%Y-%m-%d %H:%M')
         self.info.insert(0, info.copy())
         if len(self.info) > self.maxInfo:
@@ -47,15 +47,15 @@ class History(object):
         info['updated'] = True
         return False
 
-    def exists(self, info):
+    def exists(self, meta):
         self.refresh()  # data may changed from outside
-        link = urllib.parse.unquote(info['link'])
+        url = urllib.parse.unquote(meta['url'])
         for i in self.info:
-            if i['title'] == info['title']:
-                if 'live' in info:
-                    return self.liveTimeout(i, info)
+            if i['title'] == meta['title']:
+                if 'live' in meta:
+                    return self.liveTimeout(i, meta)
                 return True
-            if i['link'] == link:
-                info['updated'] = True
+            if i['url'] == url:
+                meta['updated'] = True
                 return False
         return False

@@ -8,8 +8,9 @@ from helper.my_logger import getMyLogger
 
 logger = getMyLogger(__name__)
 
-def cleanupPage(driver):
+def cleanupPage(driver, config):
     logger.info('cleaning content')
+    driver.scrollToBottom()
     browser = driver.getBrowser()
 
     # make header stay at top

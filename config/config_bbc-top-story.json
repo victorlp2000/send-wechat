@@ -14,11 +14,11 @@
   "main_url": "https://www.bbc.com/zhongwen/simp",
 
   "article_info": {
-    "do_find": "bbc.bbc_top_story"
+    "m_findArticleUrl": "bbc.bbc_top_story",
+    "m_getArticleMeta": "bbc.bbc_meta"
   },
   "article_img": {
-    "do_cleanup": "bbc.bbc_cleanup",
-    "do_live": "bbc.bbc_live",
+    "m_cleanup": "bbc.bbc_cleanup",
     "h-title": "BBC News 中文: 头条",
     "h-zoom": 85
   }

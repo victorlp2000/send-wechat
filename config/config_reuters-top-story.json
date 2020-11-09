@@ -14,10 +14,10 @@
   "main_url": "https://cn.reuters.com/",
 
   "article_info": {
-    "do_find": "reuters.reuters_top_story"
+    "m_findArticleUrl": "reuters.reuters_top_story"
   },
   "article_img": {
-    "do_cleanup": "reuters.reuters_cleanup",
+    "m_cleanup": "reuters.reuters_cleanup",
     "h-title": "路透中文网: 头条",
     "h-zoom": 105
   }

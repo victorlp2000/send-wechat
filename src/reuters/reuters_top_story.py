@@ -8,7 +8,7 @@ from helper.my_logger import getMyLogger
 
 logger = getMyLogger(__name__)
 
-def findArticleInfo(driver):
+def findArticleUrl(driver):
     logger.info('looking for article')
 
     # find topStory section
@@ -22,9 +22,8 @@ def findArticleInfo(driver):
     try:
         title = section.find_element_by_css_selector('h2.story-title')
         link = title.find_element_by_tag_name('a')
-        info = {'link': link.get_attribute('href'),
-                'title':link.text}
-        return info
+        return link.get_attribute('href')
+
     except:
         logger.warning('did not find top story')
         return None

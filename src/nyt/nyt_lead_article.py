@@ -10,7 +10,7 @@ from helper.my_logger import getMyLogger
 
 logger = getMyLogger(__name__)
 
-def findArticleInfo(driver):
+def findArticleUrl(driver):
     logger.info('looking for article')
     browser = driver.getBrowser()
 
@@ -35,7 +35,7 @@ def getArticleInfo(item):
     links = item.find_elements_by_tag_name('a')
     if len(links) > 0:
         h2 = links[0].find_element_by_tag_name('h2')
-        return {'link': links[0].get_attribute('href'),
-                'title':h2.text}
+        return links[0].get_attribute('href')
+
     logger.warning('did not find article link.')
     return None

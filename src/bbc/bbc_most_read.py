@@ -8,7 +8,7 @@ from helper.my_logger import getMyLogger
 
 logger = getMyLogger(__name__)
 
-def findArticleInfo(driver):
+def findArticleUrl(driver):
     logger.info('looking for article')
     browser = driver.getBrowser()
 
@@ -43,6 +43,6 @@ def findMostReadSection(browser):
 def getArticleInfo(item):
     links = item.find_elements_by_tag_name('a')
     if len(links) > 0:
-        return {'link': links[0].get_attribute('href'),
-                'title': links[0].text}
+        return links[0].get_attribute('href')
+        
     return None

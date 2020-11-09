@@ -14,10 +14,10 @@
   "main_url": "https://www.voachinese.com/",
 
   "article_info": {
-    "do_find": "voa.voa_top_story"
+    "m_findArticleUrl": "voa.voa_top_story"
   },
   "article_img": {
-    "do_cleanup": "voa.voa_cleanup",
+    "m_cleanup": "voa.voa_cleanup",
     "h-title": "美国之音中文网: 头条",
     "h-zoom": 82
   }

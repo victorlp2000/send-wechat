@@ -14,10 +14,10 @@
   "main_url": "http://m.ftchinese.com/",
 
   "article_info": {
-    "do_find": "ft.ft_top_story"
+    "m_findArticleUrl": "ft.ft_top_story"
   },
   "article_img": {
-    "do_cleanup": "ft.ft_cleanup",
+    "m_cleanup": "ft.ft_cleanup",
     "h-title": "《金融时报》中文网: 头条",
     "h-zoom": 80
   }

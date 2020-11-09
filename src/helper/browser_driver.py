@@ -147,7 +147,7 @@ class WebDriver(object):
                 self.driver.execute_script('document.body.style.MozTransformOrigin = "0 0";')
 
     # !!! Firefox does not work right??
-    def scrollToBottom(self):
+    def scrollToBottom(self, delay=2):
         scrollHeight = self.driver.execute_script("return document.body.parentNode.scrollHeight")
         viewHeight = self.driver.execute_script("return window.innerHeight")
         top = 0
@@ -156,12 +156,12 @@ class WebDriver(object):
             logger.debug('scrolling: %d', top)
             # self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight); return document.body.scrollHeight;")
             self.driver.execute_script("window.scrollTo(0, {0})".format(top))
-            time.sleep(2)
+            time.sleep(delay)
             scrollHeight = self.driver.execute_script("return document.body.parentNode.scrollHeight")
         return scrollHeight
 
     def getPageLength(self):
-        h1 = self.scrollToBottom()
+        h1 = self.scrollToBottom(0.2)
         logger.debug('scrollToBottom: %d', h1)
         h2 = self.driver.execute_script("return document.body.scrollHeight;")
         logger.debug('body.scrollHeight: %d', h2)

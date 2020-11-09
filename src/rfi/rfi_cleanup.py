@@ -14,8 +14,9 @@ def closePopup(div):
     div.find_element_by_tag_name('a').click()
     return
 
-def cleanupPage(driver):
+def cleanupPage(driver, config):
     logger.info('cleaning content')
+    driver.scrollToBottom()
     browser = driver.getBrowser()
 
     check = 10

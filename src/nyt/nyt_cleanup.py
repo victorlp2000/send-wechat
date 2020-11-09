@@ -8,8 +8,10 @@ from helper.my_logger import getMyLogger
 
 logger = getMyLogger(__name__)
 
-def cleanupPage(driver):
+def cleanupPage(driver, config):
     logger.info('cleaning content')
+    driver.scrollToBottom()
+    browser = driver.getBrowser()
 
     selectors = [
         "div.top_banner_ad",
@@ -20,9 +22,16 @@ def cleanupPage(driver):
         "nav.nav-footer.container",
         "div.download"
     ]
+    for s in selectors:
+        elements = browser.find_elements_by_css_selector(s)
+        for e in elements:
+            if 'debug' in config:
+                print('none display:', e.tag_name, 'class:', e.get_attribute('class'))
+            browser.execute_script("arguments[0].style.display = 'none';", e)
+
     ids = [
         "subscribe_cont",
         "subscribe_mobile_cont"
     ]
-    driver.noneDisplayByCSSSelectors(selectors)
+    # driver.noneDisplayByCSSSelectors(selectors)
     driver.noneDisplayByIds(ids)

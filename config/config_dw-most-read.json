@@ -14,10 +14,11 @@
   "main_url": "https://m.dw.com/zh/在线报导/s-9058",
 
   "article_info": {
-    "do_find": "dw.dw_most_read"
+    "m_findArticleUrl": "dw.dw_most_read",
+    "m_getArticleMeta": "dw.dw_meta"
   },
   "article_img": {
-    "do_cleanup": "dw.dw_cleanup",
+    "m_cleanup": "dw.dw_cleanup",
     "h-title": "德国之声中文网: 热读",
     "h-zoom": 125
   }

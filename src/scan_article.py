@@ -16,81 +16,108 @@ from helper.history import History
 from helper.my_logger import getMyLogger
 from util import json_file as JsonUtil
 from helper import cmd_argv as CmdArgv
-from helper.set_article import setArticle
+from helper.set_article import setArticleHeader
 
-def getArticle(driver, url, imgInfo):
-    unquote = urllib.parse.unquote(url)
-    logger.info('loading %s', unquote)
-    browser = driver.getBrowser()
+def getScreenshot(driver, config):
+    # get article image
+    fn = '/tmp/' + config['name'] + '.jpg'
+    img = driver.saveFullPageToJpg(fn)
+    return img
 
-    browser.get(url)
-
-    if 'do_live' in imgInfo:
-        module = importlib.import_module(imgInfo['do_live'])
-        live = module.getTimePoints(driver)
-        if live != None:
-            imgInfo['live'] = live
-            print(live)
-
+# get ready article page for taking screenshot
+#   1. clean up content
+#   2. set header info
+def nomalizeArticle(driver, config):
     # cleanup the page
-    if 'do_cleanup' in imgInfo:
-        module = importlib.import_module(imgInfo['do_cleanup'])
-        module.cleanupPage(driver)
+    if 'article_img'in config:
+        if 'm_cleanup' in config['article_img']:
+            module = importlib.import_module(config['article_img']['m_cleanup'])
+            module.cleanupPage(driver, config)
+        else:
+            logger.warning('di not see m_cleanup in config')
+    # set header info
+    setArticleHeader(driver, config)
 
-    imgInfo['link'] = urllib.parse.unquote(browser.current_url)
-    setArticle(driver, imgInfo)
-    return
+#   1. load the article page
+#   2. extract meta info:
+#       link, title, author, ...
+def getArticleMeta(driver, url, config):
+    if 'article_info' in config:
+        if 'm_getArticleMeta' in config['article_info']:
+            module = importlib.import_module(config['article_info']['m_getArticleMeta'])
+            meta = module.getArticleMeta(driver, url)
+            return meta
+        else:
+            logger.warning('did not see m_getArticleMeta in config')
+    # caller supposed the page is loaded
+    driver.getBrowser().get(url)
+    return {'url': url}
 
-def findArticle(driver, url, configInfo):
-    if not 'do_find' in configInfo:
-        return {'link': url, 'title': 'article'}
+# get article url from:
+#   1. command line
+#   2. config
+#   3. main_url page
+def findArticleUrl(driver, config):
+    # try to get from command line
+    url = CmdArgv.getUrl()
+    if url != None:
+        return url
 
+    if not 'main_url' in config:
+        logger.warning('did not see main_url in config')
+        return None
+
+    # if m_find function does not set, use main_url
+    if not 'article_info' in config:
+        logger.warning('did not see article_info in config')
+        return config['main_url']
+
+    if not 'm_findArticleUrl' in config['article_info']:
+        logger.warning('did not see m_find in article_info')
+        return config['main_url']
+
+    url = config['main_url']
+    if url == '':
+        logger.warning('did not set main url')
+        return None
+
+    logger.info('loading main url')
     driver.getBrowser().get(config['main_url'])
-    module = importlib.import_module(configInfo['do_find'])
-    return module.findArticleInfo(driver)
+
+    module = importlib.import_module(config['article_info']['m_findArticleUrl'])
+    return module.findArticleUrl(driver)
 
 def processPage(driver, config):
     # load hidtory for checking visited articles
     fn = 'history_' + config['name'] + '.json'
     history = History(fn)
 
-    # load main page
-    if not 'main_url' in config:
-        logger.warning('did not find \'main_url\' in config')
+    # find specific article url
+    url = findArticleUrl(driver, config)
+    if url == None:
+        return
+    logger.info('article: "%s"', urllib.parse.unquote(url))
+
+    meta = getArticleMeta(driver, url, config)
+    if not ('url' in meta and 'title' in meta):
+        logger.warning('did not find article url or title')
         return
 
-    # find article from webpage
-    info = findArticle(driver, config['main_url'], config['article_info'])
-    if info == None:  # found article
-        logger.warning('did not find article.')
-        return
-    if info['title'] == '':
-        logger.warning('did not get title')
-        return
-    logger.info('article: "%s"', info['title'])
+    if 'debug' in config:
+        print(meta)
+        input('finished meta...')
 
-    # check if the article has been visited
-    if ('debug' not in config) and history.exists(info):
-        logger.warning('old article')
-        return
-
-    # get article image
-    imgInfo = {}
-    imgInfo.update(config['article_img'])
-    imgInfo.update(info)
-    getArticle(driver, info['link'], imgInfo)
+    config['meta'] = meta
+    nomalizeArticle(driver, config)
 
     if 'debug' in config:
         input('finished clenup...')
 
-    if 'live' in imgInfo:
-        info['live'] = imgInfo['live']
-        if history.exists(info):
-            return
+    if history.exists(meta):
+        logger.warning('visited article')
+        return
 
-    # get article image
-    fn = '/tmp/' + config['name'] + '.jpg'
-    img = driver.saveFullPageToJpg(fn)
+    img = getScreenshot(driver, config)
     if img == None:
         logger.warning('failed to generate article image.')
         return
@@ -99,7 +126,7 @@ def processPage(driver, config):
     fn = datetime.now().strftime('%Y%m%d-%H%M%S_' + config['name'] + '.jpg')
     copyToContacts(img, fn, config['contacts'])
     os.remove(img)
-    history.save(info)
+    history.save(meta)
 
 def main(config):
     logger.info('=== start "%s"', config['name'])

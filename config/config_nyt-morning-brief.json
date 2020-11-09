@@ -14,10 +14,11 @@
   "main_url": "https://m.cn.nytimes.com/morning-brief",
 
   "article_info": {
-    "do_find": "nyt.nyt_lead_article"
+    "m_findArticleUrl": "nyt.nyt_lead_article",
+    "m_getArticleMeta": "nyt.nyt_meta"
   },
   "article_img": {
-    "do_cleanup": "nyt.nyt_cleanup",
+    "m_cleanup": "nyt.nyt_cleanup",
     "h-title": "纽约时报中文网: 简报",
     "h-zoom": 93
   }
