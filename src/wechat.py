@@ -74,7 +74,7 @@ def getFriendFromNavView(driver, friend):
         if nickname.text == friend:
             logger.debug('found fiend: "%s"', friend)
             return div  # found the friend
-    logger.info('did not find "%s" in nav menu', friend)
+    logger.warning('did not find "%s" in nav menu', friend)
     logger.info(names)
     return None
 
@@ -119,7 +119,7 @@ def activateFriend(driver, friend):
     if getCurrentFriend(driver) != friend:
         searchFriend(driver, friend)
         if getCurrentFriend(driver) != friend:
-            logger.info('failed activate friend "%s"', friend)
+            logger.warning('failed activate friend "%s"', friend)
             return False
     return True
 
@@ -179,7 +179,7 @@ def sendFilesToFriends(driver, friends):
 
 def sendReport(driver, friend, msg):
     if activateFriend(driver, friend) == False:
-        logger.info('could not send report.')
+        logger.warning('could not send report.')
         return
     # enter msg to textarea
     editArea = driver.driver.find_element_by_id('editArea')
@@ -220,7 +220,7 @@ def getOutboxFolders(workingDir):
     return folders
 
 def checkOutbox(driver):
-    logger.info('checkOutbox')
+    logger.info('check Outbox')
     # send file to friend if there is file in outbox
     folders = getOutboxFolders(driver.workingDir)
     if len(folders) > 0:

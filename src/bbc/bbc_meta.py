@@ -16,6 +16,7 @@ logger = getMyLogger(__name__)
 #       ...
 #   }
 def getArticleMeta(driver, url):
+    logger.info('get article meta data')
     meta = {}
     browser = driver.getBrowser()
 

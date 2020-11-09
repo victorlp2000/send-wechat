@@ -15,7 +15,7 @@ def findArticleUrl(driver):
     name = 'topStory'
     section = driver.getBrowser().find_element_by_id(name)
     if section == None:
-        logger.info('did not find "%s" section.', name)
+        logger.warning('did not find "%s" section.', name)
         return None
 
     # find title link

@@ -34,7 +34,7 @@ def nomalizeArticle(driver, config):
             module = importlib.import_module(config['article_img']['m_cleanup'])
             module.cleanupPage(driver, config)
         else:
-            logger.warning('di not see m_cleanup in config')
+            logger.warning('did not see m_cleanup in config')
     # set header info
     setArticleHeader(driver, config)
 

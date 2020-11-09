@@ -100,7 +100,7 @@ class WebDriver(object):
             if self.userAgent == 'Mobile':
                 # Samsung Galaxy S8
                 ua = 'Mozilla/5.0 (Linux; Android 7.0; SM-G892A Build/NRD90M; wv)'
-                logger.info('set userAgent: %s', ua)
+                logger.debug('set userAgent: %s', ua)
                 profile.set_preference('general.useragent.override', ua)
             options.profile = profile
             self.driver = webdriver.Firefox(
@@ -229,7 +229,7 @@ class WebDriver(object):
             self.scrollToTop()
 
             wSize = self.driver.get_window_size()
-            logger.warning('page size set: %d, %d', wSize['width'], wSize['height'])
+            logger.info('page size set: %d, %d', wSize['width'], wSize['height'])
 
             time.sleep(5)
             self.driver.get_screenshot_as_file(fn)
@@ -239,15 +239,15 @@ class WebDriver(object):
             time.sleep(5)
             pageLength = self.getPageLength()
             pageWidth = self.pageWidth
-            logger.warning('page size: %d, %d', pageWidth, pageLength)
+            logger.info('page size: %d, %d', pageWidth, pageLength)
             if self.zoom != None:
                 self.setZoom(self.zoom)
                 pageLength *= self.zoom / 100
                 pageWidth *= self.zoom / 100
-            logger.warning('page size: %d, %d', pageWidth, pageLength)
+            logger.info('page size: %d, %d', pageWidth, pageLength)
             self.setWindowSize(pageWidth, pageLength + 1500)
             wSize = self.driver.get_window_size()
-            logger.warning('page size set: %d, %d', wSize['width'], wSize['height'])
+            logger.info('page size set: %d, %d', wSize['width'], wSize['height'])
             time.sleep(5)
             self.driver.get_screenshot_as_file(fn)
         else:
