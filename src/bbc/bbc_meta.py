@@ -35,17 +35,14 @@ def getArticleMeta(driver, url):
     return meta
 
 def getMeta(browser, meta):
-    xpath = '//*[@id="main-wrapper"]/div/div/div[1]/main'
-    content = browser.find_element_by_xpath(xpath)
-
     # title
-    xpath = '//*[@id="content"]'
-    title = content.find_element_by_xpath(xpath)
+    xpath = '//main[@role="main"]/div/h1'
+    title = browser.find_element_by_xpath(xpath)
     meta['title'] = title.text
 
-    # author
-    author = content.find_element_by_xpath('//div[2]/div/ul')
-    meta['author'] = author.text
+    # author! -- not all articles have author
+    # author = content.find_element_by_xpath('//div[2]/div/ul')
+    # meta['author'] = author.text
     return meta
 
 def getLiveMeta(browser, meta):

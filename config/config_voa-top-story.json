@@ -14,7 +14,8 @@
   "main_url": "https://www.voachinese.com/",
 
   "article_info": {
-    "m_findArticleUrl": "voa.voa_top_story"
+    "m_findArticleUrl": "voa.voa_top_story",
+    "m_getArticleMeta": "voa.voa_meta"
   },
   "article_img": {
     "m_cleanup": "voa.voa_cleanup",
