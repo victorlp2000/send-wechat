@@ -29,12 +29,16 @@ def getScreenshot(driver, config):
 #   2. set header info
 def nomalizeArticle(driver, config):
     # cleanup the page
-    if 'article_img'in config:
-        if 'm_cleanup' in config['article_img']:
-            module = importlib.import_module(config['article_img']['m_cleanup'])
-            module.cleanupPage(driver, config)
-        else:
-            logger.warning('did not see m_cleanup in config')
+    if not 'article_img'in config:
+        logger.warning('did not see article_img in config')
+        return
+
+    if 'm_cleanup' in config['article_img']:
+        module = importlib.import_module(config['article_img']['m_cleanup'])
+        module.cleanupPage(driver, config)
+    else:
+        logger.warning('did not see m_cleanup in config')
+
     # set header info
     setArticleHeader(driver, config)
 
@@ -100,7 +104,8 @@ def processPage(driver, config):
 
     # get article meta data
     meta = getArticleMeta(driver, url, config)
-    if not ('url' in meta and 'title' in meta):
+    if not ('url' in meta):
+        logger.info(meta)
         logger.warning('did not find article url or title')
         return
 
@@ -128,7 +133,13 @@ def processPage(driver, config):
 
     # save page to outbox
     fn = datetime.now().strftime('%Y%m%d-%H%M%S_' + config['name'] + '.jpg')
-    copyToContacts(img, fn, config['contacts'])
+    if 'contacts' in config:
+        copyToContacts(img, fn, config['contacts'])
+    else:
+        toFile = './outbox/' + fn
+        logger.info('generated file: %s', toFile)
+        import shutil
+        shutil.copyfile(img, toFile)
     os.remove(img)
     history.save(meta)
 

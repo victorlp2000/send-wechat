@@ -51,7 +51,7 @@ class History(object):
         self.refresh()  # data may changed from outside
         url = urllib.parse.unquote(meta['url'])
         for i in self.info:
-            if i['title'] == meta['title']:
+            if ('title' in meta) and (i['title'] == meta['title']):
                 if 'live' in meta:
                     return self.liveTimeout(i, meta)
                 return True
