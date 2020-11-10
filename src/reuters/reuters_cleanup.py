@@ -8,8 +8,9 @@ from helper.my_logger import getMyLogger
 
 logger = getMyLogger(__name__)
 
-def cleanupPage(driver):
+def cleanupPage(driver, config):
     logger.info('cleaning content')
+    driver.scrollToBottom(1.5)
     browser = driver.getBrowser()
 
     divs = browser.find_elements_by_tag_name('div')

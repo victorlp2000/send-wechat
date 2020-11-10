@@ -14,7 +14,8 @@
   "main_url": "https://cn.reuters.com/",
 
   "article_info": {
-    "m_findArticleUrl": "reuters.reuters_top_story"
+    "m_findArticleUrl": "reuters.reuters_top_story",
+    "m_getArticleMeta": "reuters.reuters_meta"
   },
   "article_img": {
     "m_cleanup": "reuters.reuters_cleanup",

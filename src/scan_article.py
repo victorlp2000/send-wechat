@@ -96,7 +96,7 @@ def processPage(driver, config):
     url = findArticleUrl(driver, config)
     if url == None:
         return
-    logger.info('article: "%s"', urllib.parse.unquote(url))
+    logger.info('url: "%s"', urllib.parse.unquote(url))
 
     # get article meta data
     meta = getArticleMeta(driver, url, config)
