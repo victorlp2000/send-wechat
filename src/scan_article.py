@@ -120,31 +120,27 @@ def processPage(driver, config):
 
     # cleanup the article page
     config['meta'] = meta
-    if not 'infoOnly' in config['article_info']:
-        nomalizeArticle(driver, config)
-    else:
-        logger.warning('meta will be saved')
+    nomalizeArticle(driver, config)
 
     if 'debug' in config:
         input('finished clenup...')
 
     # get screenshot image
-    if not 'infoOnly' in config['article_info']:
-        img = getScreenshot(driver, config)
-        if img == None:
-            logger.warning('failed to generate article image.')
-            return
+    img = getScreenshot(driver, config)
+    if img == None:
+        logger.warning('failed to generate article image.')
+        return
 
-        # save page to outbox
-        fn = datetime.now().strftime('%Y%m%d-%H%M%S_' + config['name'] + '.jpg')
-        if 'contacts' in config:
-            copyToContacts(img, fn, config['contacts'])
-        else:
-            toFile = './outbox/' + fn
-            logger.info('generated file: %s', toFile)
-            import shutil
-            shutil.copyfile(img, toFile)
-        os.remove(img)
+    # save page to outbox
+    fn = datetime.now().strftime('%Y%m%d-%H%M%S_' + config['name'] + '.jpg')
+    if 'contacts' in config:
+        copyToContacts(img, fn, config['contacts'])
+    else:
+        toFile = './outbox/' + fn
+        logger.info('generated file: %s', toFile)
+        import shutil
+        shutil.copyfile(img, toFile)
+    os.remove(img)
     history.save(meta)
 
 def main(config):

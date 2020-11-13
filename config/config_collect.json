@@ -1,0 +1,16 @@
+{
+  "time": "2020-11-12 19:01",
+  "contacts": [],
+  "history": [
+    {
+      "fn": "./history_rfi-top-story.json",
+      "head": "法国国际广播电台: 头条",
+      "url": "https://www.rfi.fr/cn/"
+    },
+    {
+      "fn": "./history_dw-top-story.json",
+      "head": "德国之声中文网: 头条",
+      "url": "https://m.dw.com/zh/在线报导/s-9058"
+    }
+  ]
+}

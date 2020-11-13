@@ -1,7 +1,7 @@
 {
   "name": "rfi-top-story",
   "contacts": [
-    "电子计算机77"
+    "File Transfer"
   ],
   "settings": {
     "browser": "Chrome",
@@ -15,8 +15,7 @@
 
   "article_info": {
     "m_findArticleUrl": "rfi.rfi_top_story",
-    "m_getArticleMeta": "rfi.rfi_meta",
-    "infoOnly": true
+    "m_getArticleMeta": "rfi.rfi_meta"
   },
   "article_img": {
     "m_cleanup": "rfi.rfi_cleanup",
