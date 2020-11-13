@@ -16,6 +16,7 @@
   "article_info": {
     "m_findArticleUrl": "dw.dw_top_story",
     "m_getArticleMeta": "dw.dw_meta"
+    "infoOnly": true
   },
   "article_img": {
     "m_cleanup": "dw.dw_cleanup",
