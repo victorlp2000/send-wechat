@@ -33,7 +33,7 @@ def main(config):
     timeFrom = datetime.strptime(config['time'], '%Y-%m-%d %H:%M')
 
     # create news file in '/tmp'
-    fn = datetime.now().strftime('%Y-%m-%d_%H%M') + '.txt'
+    fn = datetime.now().strftime('标题新闻%Y-%m-%d') + '.txt'
     tmpF = '/tmp/' + fn
     logger.info('tmp file: %s', fn)
     f = open(tmpF, 'w')
