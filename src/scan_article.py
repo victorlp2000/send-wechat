@@ -134,6 +134,7 @@ def processPage(driver, config):
     # save page to outbox
     fn = datetime.now().strftime('%Y%m%d-%H%M%S_' + config['name'] + '.jpg')
     if 'contacts' in config:
+        meta['file'] = fn
         copyToContacts(img, fn, config['contacts'])
     else:
         toFile = './outbox/' + fn
