@@ -4,8 +4,8 @@
 # Created:  May 18, 2020
 # By: Weiping Liu
 
-import os, sys, time
-from datetime import datetime
+import os, sys, time, pytz
+from datetime import datetime, timedelta
 from helper import cmd_argv as CmdArg
 from helper.my_logger import getMyLogger
 from util import json_file
@@ -29,22 +29,27 @@ def collectNews(history, timeFrom):
 
 def main(config):
     logger.info('start %s', __file__)
-    # get start tiem from config
-    timeFrom = datetime.strptime(config['time'], '%Y-%m-%d %H:%M')
 
     # create news file in '/tmp'
     fn = datetime.now().strftime('标题新闻%Y-%m-%d') + '.txt'
     tmpF = '/tmp/' + fn
     logger.info('tmp file: %s', fn)
     f = open(tmpF, 'w')
-    f.write(config['time'] + '\n')
+
+    now = datetime.utcnow().replace(tzinfo=pytz.utc)
+    s = now.astimezone(pytz.timezone('US/Pacific')).strftime('[%Y-%m-%d %H:%M %Z]')
+
+    f.write('过去24小时标题新闻 ' + s + '\n')
+    # get start time from past 24 hours
+    timeFrom = datetime.now() - timedelta(hours=24, minutes=0)
+
     data = False
     for history in config['history']:
         news = collectNews(history, timeFrom)
         if news != None:
             data = True
             f.write('\n' + news['head'])
-            f.write('\n(' + news['url'] + ')\n')
+            f.write(' (' + news['url'] + ')\n')
             for t in news['title']:
                 f.write('- ' + t + '\n')
     f.close()
@@ -66,6 +71,4 @@ if __name__ == '__main__':
         logger.info('run collect with: %s', cfgFile)
         config = json_file.readFile(cfgFile)
         # print(config)
-        if main(config):
-            config['time'] = datetime.now().strftime('%Y-%m-%d %H:%M')
-            json_file.saveFile(cfgFile, config)
+        main(config)

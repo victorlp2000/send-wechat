@@ -6,10 +6,15 @@
 
 from datetime import datetime
 import urllib.parse
+from difflib import SequenceMatcher
 from util import json_file
 from helper.my_logger import getMyLogger
 
 logger = getMyLogger(__name__)
+
+def similarity(a, b):
+    isjunk = None
+    return SequenceMatcher(isjunk, a, b).ratio()
 
 class History(object):
     def __init__(self, fn):
@@ -48,10 +53,14 @@ class History(object):
         return False
 
     def exists(self, meta):
+        if not 'title' in meta:
+            return True     # no title? ignore it, suppose exists
+
         self.refresh()  # data may changed from outside
         url = urllib.parse.unquote(meta['url'])
+
         for i in self.info:
-            if ('title' in meta) and (i['title'] == meta['title']):
+            if similarity(i['title'], meta['title']) > 0.8:
                 if 'live' in meta:
                     return self.liveTimeout(i, meta)
                 return True
