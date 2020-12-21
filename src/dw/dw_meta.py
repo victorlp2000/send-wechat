@@ -38,4 +38,8 @@ def getArticleMeta(driver, url):
     element = browser.find_element_by_xpath(xpath)
     meta['category'] = element.text
 
+    xpath = '/html/body/div[4]/article/header/div[4]'
+    element = browser.find_element_by_xpath(xpath)
+    meta['abstract'] = element.text
+
     return meta

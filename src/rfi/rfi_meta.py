@@ -38,4 +38,8 @@ def getArticleMeta(driver, url):
     author = header.find_element_by_css_selector('div.m-from-author')
     meta['author'] = author.text
 
+    # degestbody > div:nth-child(8) > div.t-content.t-content--article > article > p
+    abstract = header.find_element_by_css_selector('p.t-content__chapo')
+    meta['abstract'] = abstract.text
+
     return meta
