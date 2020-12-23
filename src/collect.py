@@ -37,15 +37,15 @@ def collectNews(history, timeFrom):
 def main(config):
     logger.info('start %s', __file__)
 
+    title = '今日新闻'
     # create news file in '/tmp'
-    fn = datetime.now().strftime('标题新闻%Y-%m-%d') + '.html'
+    fn = title + datetime.now().strftime('%Y-%m-%d') + '.html'
     tmpF = '/tmp/' + fn
-    logger.info('tmp file: %s', fn)
+    logger.info('generating file: %s', tmpF)
     f = open(tmpF, 'w')
 
     now = datetime.utcnow().replace(tzinfo=pytz.utc)
-    s = now.astimezone(pytz.timezone('US/Pacific')).strftime('[%Y-%m-%d %H:%M %Z]')
-    title = '今日新闻'
+    s = now.astimezone(pytz.timezone('US/Pacific')).strftime('%Y-%m-%d %H:%M %Z')
     f.write('<!DOCTYPE html>\n<html>\n')
     f.write('<head>\n <title>' + title + '</title>\n <meta charset="utf-8"/>\n')
     f.write(' <style>\n')
@@ -61,6 +61,7 @@ def main(config):
     f.write('</head>\n<body style="margin:1em">\n')
     f.write(' <div class="dd1">' + title + '</div>\n')
     f.write(' <div class="dd2">' + s + '</div>\n')
+
     # get start time from past 24 hours
     timeFrom = datetime.now() - timedelta(hours=24, minutes=0)
 
@@ -79,12 +80,10 @@ def main(config):
             f.write(' </ul>\n')
     f.write('</body>\n</html>')
     f.close()
-    logger.info('file %s generated', tmpF)
 
     # copy generated file to contacts
-    if os.path.getsize(tmpF):
-        logger.info('save to contacts %s', config['contacts'])
-        copyToContacts(tmpF, fn, config['contacts'])
+    logger.info('save to contacts %s', config['contacts'])
+    copyToContacts(tmpF, fn, config['contacts'])
 
     return
 
