@@ -57,6 +57,7 @@ def main(config):
     f.write('  li {margin-bottom:2em;}\n')
     f.write('  div.dd1 {text-align:center; padding-top:20px; font-weight:bold; font-size:x-large}\n')
     f.write('  div.dd2 {text-align:center; padding-bottom:20px; font-size:small; color:#999999;}\n')
+    f.write('  div.ending {text-align:center;height:0.2em; background-color:#999999; margin:2em 1em 2em 1em;}')
     f.write(' </style>\n')
     f.write('</head>\n<body style="margin:1em">\n')
     f.write(' <div class="dd1">' + title + '</div>\n')
@@ -78,6 +79,7 @@ def main(config):
                     f.write('<div class="abstract">' + t['abstract'] + '</div>')
                 f.write('</li>\n')
             f.write(' </ul>\n')
+    f.write(' <div class="ending"></div>')
     f.write('</body>\n</html>')
     f.close()
 
