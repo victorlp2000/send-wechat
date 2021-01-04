@@ -229,25 +229,25 @@ class WebDriver(object):
             self.scrollToTop()
 
             wSize = self.driver.get_window_size()
-            logger.info('page size set: %d, %d', wSize['width'], wSize['height'])
+            logger.debug('page size set: %d, %d', wSize['width'], wSize['height'])
 
             time.sleep(5)
             self.driver.get_screenshot_as_file(fn)
             # self.driver.save_screenshot(fn)
         elif self.browser == 'Firefox':
-            logger.info('save Firefox page to %s', fn)
+            logger.debug('save Firefox page to %s', fn)
             time.sleep(5)
             pageLength = self.getPageLength()
             pageWidth = self.pageWidth
-            logger.info('page size: %d, %d', pageWidth, pageLength)
+            logger.debug('page size: %d, %d', pageWidth, pageLength)
             if self.zoom != None:
                 self.setZoom(self.zoom)
                 pageLength *= self.zoom / 100
                 pageWidth *= self.zoom / 100
-            logger.info('page size: %d, %d', pageWidth, pageLength)
+            logger.debug('page size: %d, %d', pageWidth, pageLength)
             self.setWindowSize(pageWidth, pageLength + 1500)
             wSize = self.driver.get_window_size()
-            logger.info('page size set: %d, %d', wSize['width'], wSize['height'])
+            logger.debug('page size set: %d, %d', wSize['width'], wSize['height'])
             time.sleep(5)
             self.driver.get_screenshot_as_file(fn)
         else:

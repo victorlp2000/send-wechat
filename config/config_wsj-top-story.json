@@ -1,0 +1,19 @@
+{
+  "name": "wsj-top-story",
+  "contacts": [
+  ],
+  "settings": {
+    "browser": "Chrome",
+    "headless": true,
+    "userAgent": "Mobile",
+    "devScale": 1.8,
+    "pageWidth": 540,
+    "zoom": 98.3
+  },
+  "main_url": "https://cn.wsj.com/",
+
+  "article_info": {
+    "m_findArticleUrl": "wsj.wsj_top_story",
+    "m_getArticleMeta": "wsj.wsj_meta"
+  }
+}

@@ -71,7 +71,7 @@ def main(config):
         news = collectNews(history, timeFrom)
         if news != None:
             f.write(' <div class="head">' + news['head'])
-            f.write('<span class="weburl">(' + news['url'] + ')</span></div>\n')
+            f.write(' <span class="weburl">(' + news['url'] + ')</span></div>\n')
             f.write(' <ul>\n')
             for t in news['items']:
                 f.write('  <li><div class="title">' + t['title'] + '</div>')

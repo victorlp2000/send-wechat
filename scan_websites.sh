@@ -30,3 +30,5 @@ timeout $limit python src/scan_article.py config/config_voa-top-story.json
 ./cleanup.sh
 timeout $limit python src/scan_article.py config/config_rfi-top-story.json
 ./cleanup.sh
+timeout $limit python src/scan_article.py config/config_wsj-top-story.json
+./cleanup.sh

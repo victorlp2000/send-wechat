@@ -18,11 +18,24 @@ from util import json_file as JsonUtil
 from helper import cmd_argv as CmdArgv
 from helper.set_article import setArticleHeader
 
-def getScreenshot(driver, config):
-    # get article image
+def saveArticleScreenShot(driver, config):
+    # get screenshot image
     fn = '/tmp/' + config['name'] + '.jpg'
     img = driver.saveFullPageToJpg(fn)
-    return img
+    if img == None:
+        logger.warning('failed to generate article image.')
+        return
+
+    # save page to outbox
+    fn = config['meta']['file']
+    if 'contacts' in config:
+        copyToContacts(img, fn, config['contacts'])
+    else:
+        toFile = './outbox/' + fn
+        logger.info('generated file: %s', toFile)
+        import shutil
+        shutil.copyfile(img, toFile)
+    os.remove(img)
 
 # get ready article page for taking screenshot
 #   1. clean up content
@@ -125,23 +138,10 @@ def processPage(driver, config):
     if 'debug' in config:
         input('finished clenup...')
 
-    # get screenshot image
-    img = getScreenshot(driver, config)
-    if img == None:
-        logger.warning('failed to generate article image.')
-        return
+    if len(config['contacts']) > 0:
+        meta['file'] = datetime.now().strftime('%Y%m%d-%H%M%S_' + config['name'] + '.jpg')
+        saveArticleScreenShot(driver, config)
 
-    # save page to outbox
-    fn = datetime.now().strftime('%Y%m%d-%H%M%S_' + config['name'] + '.jpg')
-    if 'contacts' in config:
-        meta['file'] = fn
-        copyToContacts(img, fn, config['contacts'])
-    else:
-        toFile = './outbox/' + fn
-        logger.info('generated file: %s', toFile)
-        import shutil
-        shutil.copyfile(img, toFile)
-    os.remove(img)
     history.save(meta)
 
 def main(config):
