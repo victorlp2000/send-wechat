@@ -49,19 +49,21 @@ def main(config):
     f.write('<!DOCTYPE html>\n<html>\n')
     f.write('<head>\n <title>' + title + '</title>\n <meta charset="utf-8"/>\n')
     f.write(' <style>\n')
-    f.write('  div.head {font-weight:normal; font-size:large; color:#0000bb;}\n')
-    f.write('  span.weburl {font-style:italic;}\n')
-    f.write('  div.title {font-family:sans-serif; font-weight:normal;}\n')
-    f.write('  div.abstract {font-family:serif; font-size:small; color:#666666;}\n')
+    f.write('  img.logo {float:left; height:3em;margin:0.2em;}\n')
+    f.write('  div.src-name {display:table-row; font-weight:normal; font-size:1.4em; color:#0000bb;}\n')
+    f.write('  div.src-url {display:table-row; font-style:italic; font-size:0.8em; color:#9999ee;}\n')
+    f.write('  div.article {font-family:sans-serif; font-weight:normal;}\n')
+    f.write('  div.abstract {font-family:serif; font-size:0.7em; color:#777777;}\n')
     f.write('  ul {list-style-type:disc; padding-left:2em;}\n')
     f.write('  li {margin-bottom:2em;}\n')
-    f.write('  div.dd1 {text-align:center; padding-top:20px; font-weight:bold; font-size:x-large}\n')
-    f.write('  div.dd2 {text-align:center; padding-bottom:20px; font-size:small; color:#999999;}\n')
-    f.write('  div.ending {display:block; text-align:center;height:0.2em; background-color:#999999; margin:6em;}')
+    f.write('  div.title {text-align:center; padding-top:1em; font-weight:bold; font-size:2em;}\n')
+    f.write('  div.time {text-align:center; padding-bottom:1em; font-size:0.7em; color:#999999;}\n')
+    f.write('  div.ending {display:block; text-align:center;height:0.2em; background-color:#999999; margin:6em;}\n')
     f.write(' </style>\n')
-    f.write('</head>\n<body style="margin:1em">\n')
-    f.write(' <div class="dd1">' + title + '</div>\n')
-    f.write(' <div class="dd2">' + s + '</div>\n')
+
+    f.write('</head>\n<body style="margin:1em; font-size:0.25in">\n')
+    f.write(' <div class="title">' + title + '</div>\n')
+    f.write(' <div class="time">' + s + '</div>\n')
 
     # get start time from past 24 hours
     timeFrom = datetime.now() - timedelta(hours=24, minutes=0)
@@ -70,11 +72,16 @@ def main(config):
     for history in config['history']:
         news = collectNews(history, timeFrom)
         if news != None:
-            f.write(' <div class="head">' + news['head'])
-            f.write(' <span class="weburl">(' + news['url'] + ')</span></div>\n')
+            f.write(' <div style="display:flow-root; font-size:1em;">\n')
+            with open('./outbox/' + history['logo'], 'r') as fdata:
+                data = fdata.read()
+                f.write(' <img class="logo" src="data:image/jpg;base64,' + data + '"/>\n')
+            f.write(' <div class="src-name">' + news['head'] + '</div>\n')
+            f.write(' <div class="src-url">(' + news['url'] + ')</div>\n')
+            f.write(' </div><hr style="border-width:0px; margin:0.2em; height:0.1em; background-color:#0000bb;"/>\n')
             f.write(' <ul>\n')
             for t in news['items']:
-                f.write('  <li><div class="title">' + t['title'] + '</div>')
+                f.write('  <li><div class="article">' + t['title'] + '</div>')
                 if 'abstract' in t:
                     f.write('<div class="abstract">' + t['abstract'] + '</div>')
                 f.write('</li>\n')
