@@ -29,7 +29,7 @@ def collectNews(history, timeFrom):
     logger.info('news in <%s>: %d', history['fn'], len(news))
     if len(news) == 0:
         return None
-    return { 'head': history['head'],
+    return { 'name': history['name'],
             'url': history['url'],
             'items': news }
 
@@ -37,18 +37,20 @@ def collectNews(history, timeFrom):
 def main(config):
     logger.info('start %s', __file__)
 
-    title = '今日新闻'
+    head = '今日新闻'
     # create news file in '/tmp'
-    fn = title + datetime.now().strftime('%Y-%m-%d') + '.html'
+    fn = head + datetime.now().strftime('%Y-%m-%d') + '.html'
     tmpF = '/tmp/' + fn
     logger.info('generating file: %s', tmpF)
     f = open(tmpF, 'w')
 
     now = datetime.utcnow().replace(tzinfo=pytz.utc)
-    s = now.astimezone(pytz.timezone('US/Pacific')).strftime('%Y-%m-%d %H:%M %Z')
+    now = now.astimezone(pytz.timezone('US/Pacific')).strftime('%Y-%m-%d %H:%M %Z')
     f.write('<!DOCTYPE html>\n<html>\n')
-    f.write('<head>\n <title>' + title + '</title>\n <meta charset="utf-8"/>\n')
+    f.write('<head>\n <title>' + head + '</title>\n <meta charset="utf-8"/>\n')
     f.write(' <style>\n')
+    f.write('  div.head {text-align:center; padding-top:1em; font-weight:bold; font-size:2em;}\n')
+    f.write('  div.time {text-align:center; padding-bottom:1em; font-size:1em; color:#999999;}\n')
     f.write('  img.logo {float:left; height:3em;margin:0.2em;}\n')
     f.write('  div.src-name {display:table-row; font-weight:normal; font-size:1.4em; color:#0000bb;}\n')
     f.write('  div.src-url {display:table-row; font-style:italic; font-size:0.8em; color:#9999ee;}\n')
@@ -56,14 +58,13 @@ def main(config):
     f.write('  div.abstract {font-family:serif; font-size:0.7em; color:#777777;}\n')
     f.write('  ul {list-style-type:disc; padding-left:2em;}\n')
     f.write('  li {margin-bottom:2em;}\n')
-    f.write('  div.title {text-align:center; padding-top:1em; font-weight:bold; font-size:2em;}\n')
-    f.write('  div.time {text-align:center; padding-bottom:1em; font-size:0.7em; color:#999999;}\n')
     f.write('  div.ending {display:block; text-align:center;height:0.2em; background-color:#999999; margin:6em;}\n')
     f.write(' </style>\n')
+    f.write('</head>\n')
 
-    f.write('</head>\n<body style="margin:1em; font-size:0.25in">\n')
-    f.write(' <div class="title">' + title + '</div>\n')
-    f.write(' <div class="time">' + s + '</div>\n')
+    f.write('<body style="margin:1em; font-size:0.25in">\n')
+    f.write(' <div class="head">' + head + '</div>\n')
+    f.write(' <div class="time">' + now + '</div>\n')
 
     # get start time from past 24 hours
     timeFrom = datetime.now() - timedelta(hours=24, minutes=0)
@@ -73,20 +74,21 @@ def main(config):
         news = collectNews(history, timeFrom)
         if news != None:
             f.write(' <div style="display:flow-root; font-size:1em;">\n')
-            with open('./outbox/' + history['logo'], 'r') as fdata:
-                data = fdata.read()
-                f.write(' <img class="logo" src="data:image/jpg;base64,' + data + '"/>\n')
-            f.write(' <div class="src-name">' + news['head'] + '</div>\n')
-            f.write(' <div class="src-url">(' + news['url'] + ')</div>\n')
-            f.write(' </div><hr style="border-width:0px; margin:0.2em; height:0.1em; background-color:#0000bb;"/>\n')
+            with open('./outbox/' + history['logo'], 'r') as flogo:
+                f.write(flogo.read())
+                pass
+            f.write('  <div class="src-name">' + news['name'] + '</div>\n')
+            f.write('  <div class="src-url">(' + news['url'] + ')</div>\n')
+            f.write(' </div>\n')
+            f.write(' <hr style="border-width:0px; margin:0.2em; height:0.1em; background-color:#0000bb;"/>\n')
             f.write(' <ul>\n')
             for t in news['items']:
-                f.write('  <li><div class="article">' + t['title'] + '</div>')
+                f.write('  <li>\n   <div class="article">' + t['title'] + '</div>\n')
                 if 'abstract' in t:
-                    f.write('<div class="abstract">' + t['abstract'] + '</div>')
-                f.write('</li>\n')
+                    f.write('   <div class="abstract">' + t['abstract'] + '</div>\n')
+                f.write('  </li>\n')
             f.write(' </ul>\n')
-    f.write(' <div class="ending"></div>')
+    f.write(' <div class="ending"></div>\n')
     f.write('</body>\n</html>')
     f.close()
 

@@ -5,15 +5,15 @@
   "history": [
     {
       "fn": "./history_rfi-top-story.json",
-      "head": "法国国际广播电台 ─ 头条",
+      "name": "法国国际广播电台 ─ 头条",
       "url": "https://www.rfi.fr/cn/",
-      "logo": "base64-RFI_logo.txt"
+      "logo": "base64-RFI_logo.htm"
     },
     {
       "fn": "./history_dw-top-story.json",
-      "head": "德国之声中文网 ─ 头条",
+      "name": "德国之声中文网 ─ 头条",
       "url": "https://m.dw.com/zh/在线报导/s-9058",
-      "logo": "base64-DW_logo.txt"
+      "logo": "base64-DW_logo.htm"
     }
   ]
 }

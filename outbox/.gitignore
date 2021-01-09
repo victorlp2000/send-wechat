@@ -3,4 +3,5 @@
 # Except this file
 !contacts.json
 !*.txt
+!*.htm
 !.gitignore

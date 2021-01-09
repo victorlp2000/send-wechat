@@ -136,13 +136,15 @@ def uploadFile(driver, filename):
     # <span class="status ng-scope" ng-if="chatContact.MMStatus == CONF.MSG_SEND_STATUS_SENDING">
     #   <i class="web_wechat_send web_wechat_send_w" ng-class="{'web_wechat_send_w': chatContact.UserName == currentUserName}"></i>
     # </span>
-    uploading = True
-    while uploading:
+    waitUploading = 80  # no more than 8 min, or next scanning come
+    while waitUploading > 0:
         status = driver.driver.find_elements_by_css_selector('span.status.ng-scope')
         if len(status) == 0:
-            uploading = False
+            break
         logger.info('waiting for uploading finish')
-        time.sleep(5)
+        time.sleep(6)
+        waitUploading -= 1
+
     ns = waitFile(filename, 60)
     logger.info('file in use timeout: %d!', ns)
     return True
