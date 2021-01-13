@@ -1,7 +1,2 @@
-# Ignore everything in this directory
-*
-# Except this file
-!contacts.json
-!*.txt
-!*.htm
-!.gitignore
+# exclude directory
+*/

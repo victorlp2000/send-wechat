@@ -34,6 +34,11 @@ def getArticleMeta(driver, url):
     title = browser.find_element_by_xpath(xpath)
     meta['title'] = title.text
 
+    # abstract
+    xpath = '//*[@id="__next"]/div/div[4]/div[1]/article/div[1]/p[1]'
+    abstract = browser.find_element_by_xpath(xpath)
+    meta['abstract'] = abstract.text
+    
     # author
     xpath = '//*[@id="__next"]/div/div[4]/div[1]/article/div[1]/div[1]/p/span'
     author = browser.find_element_by_xpath(xpath)

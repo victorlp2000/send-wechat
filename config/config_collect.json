@@ -4,16 +4,32 @@
   ],
   "history": [
     {
+      "active": true,
       "fn": "./history_rfi-top-story.json",
       "name": "法国国际广播电台 ─ 头条",
       "url": "https://www.rfi.fr/cn/",
       "logo": "base64-RFI_logo.htm"
     },
     {
+      "active": true,
       "fn": "./history_dw-top-story.json",
       "name": "德国之声中文网 ─ 头条",
       "url": "https://m.dw.com/zh/在线报导/s-9058",
       "logo": "base64-DW_logo.htm"
+    },
+    {
+      "active": true,
+      "fn": "./history_wsj-top-story.json",
+      "name": "华尔街日报 ─ 今日要闻",
+      "url": "https://m.dw.com/zh/在线报导/s-9058",
+      "logo": "base64-WSJ_logo.htm"
+    },
+    {
+      "active": true,
+      "fn": "./history_reuters-top-story.json",
+      "name": "路透中文网 ─ 头条",
+      "url": "https://cn.reuters.com",
+      "logo": "base64-REUTERS_logo.htm"
     }
   ]
 }

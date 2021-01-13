@@ -17,7 +17,11 @@ def collectNews(history, timeFrom):
     if meta == None:
         return None
     news = []
+    lastUrl = ''
     for m in meta:
+        if lastUrl == m['url']:
+            continue
+        lastUrl = m['url']
         title = m['title']
         dt = datetime.strptime(m['time'], '%Y-%m-%d %H:%M')
         if dt >= timeFrom:
@@ -62,7 +66,7 @@ def main(config):
     f.write(' </style>\n')
     f.write('</head>\n')
 
-    f.write('<body style="margin:1em; font-size:0.25in">\n')
+    f.write('<body style="margin:1em; font-size:0.2in">\n')
     f.write(' <div class="head">' + head + '</div>\n')
     f.write(' <div class="time">' + now + '</div>\n')
 
@@ -71,6 +75,8 @@ def main(config):
 
     news = None
     for history in config['history']:
+        if not history['active']:
+            continue
         news = collectNews(history, timeFrom)
         if news != None:
             f.write(' <div style="display:flow-root; font-size:1em;">\n')
