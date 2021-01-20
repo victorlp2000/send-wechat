@@ -80,6 +80,9 @@ def getTimePoints(browser):
         return None
     items = []
     for i in times:
-        t = i.find_element_by_css_selector('span.qa-post-auto-meta')
-        items.append(t.text)
+        try:
+            t = i.find_element_by_css_selector('span.qa-post-auto-meta')
+            items.append(t.text)
+        except:
+            pass
     return items
