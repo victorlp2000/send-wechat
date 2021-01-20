@@ -42,7 +42,7 @@ class History(object):
         seconds = (now - last).seconds
         Hour = 60
         if (seconds / 60) < (3 * Hour):
-            logger.info('less than interval time for live article.')
+            logger.info('live article less than 3 hours from %s', i['time'])
             return True
         if len(i['live']) > 0 and len(info['live']) > 0:
             if i['live'][0] == info['live'][0]:
