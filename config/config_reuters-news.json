@@ -1,0 +1,25 @@
+{
+  "name": "reuters-top-story",
+  "contacts": [
+    "File Transfer"
+  ],
+  "settings": {
+    "browser": "Chrome",
+    "headless": true,
+    "userAgent": "",
+    "devScale": 1.45,
+    "pageWidth": 540,
+    "zoom": 100
+  },
+  "main_url": "https://cn.reuters.com/news/generalnews",
+
+  "article_info": {
+    "m_findArticleUrl": "reuters.reuters_news",
+    "m_getArticleMeta": "reuters.reuters_meta"
+  },
+  "article_img": {
+    "m_cleanup": "reuters.reuters_cleanup",
+    "h-title": "路透中文网: 头条",
+    "h-zoom": 105
+  }
+}

@@ -27,7 +27,7 @@
     {
       "active": true,
       "fn": "./history_reuters-top-story.json",
-      "name": "路透中文网 ─ 头条",
+      "name": "路透中文网 ─ 头条/时事要闻",
       "url": "https://cn.reuters.com",
       "logo": "base64-REUTERS_logo.htm"
     }

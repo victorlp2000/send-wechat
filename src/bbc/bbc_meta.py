@@ -82,7 +82,9 @@ def getTimePoints(browser):
     for i in times:
         try:
             t = i.find_element_by_css_selector('span.qa-post-auto-meta')
-            items.append(t.text)
+            # possible 2 format of time: '12:37' or '12:37 January 20, 2021'
+            # here we take the first word '12:37'
+            items.append(str.split(t.text)[0])
         except:
             pass
     return items
