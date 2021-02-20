@@ -20,6 +20,8 @@ timeout $limit python src/scan_article.py config/config_nyt-top-story.json
 ./cleanup.sh
 timeout $limit python src/scan_article.py config/config_reuters-top-story.json
 ./cleanup.sh
+timeout $limit python src/scan_article.py config/config_reuters-news.json
+./cleanup.sh
 timeout $limit python src/scan_article.py config/config_bbc-most-read.json
 ./cleanup.sh
 timeout $limit python src/scan_article.py config/config_dw-most-read.json
