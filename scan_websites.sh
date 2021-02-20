@@ -7,7 +7,7 @@ set -x
 echo 'running ...' $PWD
 limit='3m'
 
-timeout $limit python src/scan_article.py config/config_bbc-top-story.json
+timeout $limit python src/scan_article.py config/config_bbc-guoji.json
 ./cleanup.sh
 timeout $limit python src/scan_article.py config/config_dw-top-story.json
 ./cleanup.sh

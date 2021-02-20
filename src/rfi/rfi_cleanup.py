@@ -41,9 +41,10 @@ def cleanupPage(driver, config):
         myStyle.innerHTML = myCss;
         document.body.insertBefore(myStyle, arguments[0]);
         '''
-    browser.execute_script(js, header)
+    oHeader = browser.find_element_by_css_selector('div.o-header')
+    browser.execute_script(js, oHeader)
 
-    div = header.find_element_by_css_selector('div.o-site-nav-wrapper')
+    div = oHeader.find_element_by_css_selector('div.o-site-nav-wrapper')
     browser.execute_script("arguments[0].style.display = 'none';", div)
 
     selectors = [
