@@ -10,8 +10,11 @@ from helper.my_logger import getMyLogger
 logger = getMyLogger(__name__)
 
 def closePopup(div):
-    logger.debug('close popup')
-    div.find_element_by_tag_name('a').click()
+    buttons = div.find_elements_by_tag_name('button')
+    for button in buttons:
+        if button.get_attribute('id') == 'didomi-notice-agree-button':
+            logger.info('closed popup button')
+            button.click()
     return
 
 def cleanupPage(driver, config):
